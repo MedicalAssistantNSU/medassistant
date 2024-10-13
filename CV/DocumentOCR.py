@@ -108,4 +108,3 @@ class DocumentOCR:
                 self.save_detected_text(ocr_result)
         except CVException as e:
             print(f"An error occurred during OCR processing: {e}")
-
