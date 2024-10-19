@@ -45,7 +45,7 @@ const Menuitems: MenuitemsType[] = [
     id: uniqueId(),
     title: 'История сканирований',
     icon: IconHistory,
-    href: '',
+    href: '/scans',
   },
   {
     id: uniqueId(),
@@ -61,14 +61,14 @@ const Menuitems: MenuitemsType[] = [
     id: uniqueId(),
     title: 'О нас',
     icon: IconStar,
-    href: '/',
+    href: '/about/us',
   },
 
   {
     id: uniqueId(),
     title: 'Поддержка',
     icon: IconHelp,
-    href: '/',
+    href: '/help',
   }
 ];
 

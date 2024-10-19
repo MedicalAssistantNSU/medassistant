@@ -123,6 +123,9 @@ interface ChatContentProps {
                             <Box alignItems="flex-end" display="flex" flexDirection={'column'}>
                               {chat.createdAt ? (
                                 <Typography variant="body2" color="grey.400" mb={1}>
+                                  {formatDistanceToNowStrict(new Date(chat.createdAt), {
+                                      addSuffix: false,
+                                    })}{' '}
                                   ago
                                 </Typography>
                               ) : null}

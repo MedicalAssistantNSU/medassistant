@@ -36,6 +36,7 @@
     "formik": "2.2.9",
     "framer-motion": "^8.5.2",
     "i18next": "22.0.6",
+    "llamaai": "^1.0.4",
     "lodash": "4.17.21",
     "moment": "^2.29.4",
     "react": "^18.2.0",

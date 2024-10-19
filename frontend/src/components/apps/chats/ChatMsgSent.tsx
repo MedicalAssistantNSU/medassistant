@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'src/store/Store';
 import { IconButton, InputBase, Box } from '@mui/material';
 import { IconPaperclip, IconPhoto, IconSend } from '@tabler/icons-react';
 import { sendMsg } from 'src/store/apps/chat/ChatSlice';
+import { getLLamaAnswer } from 'src/utils/llamaai/LlamaService';
 
 const ChatMsgSent = () => {
   const [msg, setMsg] = React.useState<any>('');
@@ -22,6 +23,9 @@ const ChatMsgSent = () => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(sendMsg(newMsg));
+    console.log("hello")
+    const tmp = getLLamaAnswer(newMsg.msg)
+    sendMsg(tmp)
     setMsg('');
   };
 
@@ -38,10 +42,10 @@ const ChatMsgSent = () => {
           id="msg-sent"
           fullWidth
           value={msg}
-          placeholder="Type a Message"
+          placeholder="Написать"
           size="small"
           type="text"
-          inputProps={{ 'aria-label': 'Type a Message' }}
+          inputProps={{ 'aria-label': 'Написать' }}
           onChange={handleChatMsgChange.bind(null)}
         />
         <IconButton

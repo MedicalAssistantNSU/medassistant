@@ -1,17 +1,17 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
-  Box,
-  Menu,
   Avatar,
-  Typography,
-  Divider,
+  Box,
   Button,
+  Divider,
   IconButton,
-  Stack
+  Menu,
+  Stack,
+  Typography
 } from '@mui/material';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as dropdownData from './data';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -19,7 +19,6 @@ import * as dropdownData from './data';
 import { IconMail } from '@tabler/icons-react';
 
 import ProfileImg from 'src/assets/images/profile/1.png';
-import Customizer from '../../shared/customizer/Customizer';
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);

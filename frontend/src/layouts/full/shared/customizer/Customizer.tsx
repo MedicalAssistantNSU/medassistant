@@ -118,7 +118,7 @@ const Customizer: FC = () => {
         {/* ------------------------------------------- */}
         <Scrollbar sx={{ height: 'calc(100vh - 5px)' }}>
           <Box p={2} display="flex" justifyContent={'space-between'} alignItems="center">
-            <Typography variant="h4">Settings</Typography>
+            <Typography variant="h4">Настройки</Typography>
 
             <IconButton color="inherit" onClick={() => setShowDrawer(false)}>
               <IconX size="1rem" />
@@ -137,65 +137,17 @@ const Customizer: FC = () => {
                 <WbSunnyTwoToneIcon
                   color={customizer.activeMode === 'light' ? 'primary' : 'inherit'}
                 />
-                Light
+                Светлая
               </StyledBox>
               <StyledBox onClick={() => dispatch(setDarkMode('dark'))} display="flex" gap={1}>
                 <DarkModeTwoToneIcon
                   color={customizer.activeMode === 'dark' ? 'primary' : 'inherit'}
                 />
-                Dark
+                Тёмная
               </StyledBox>
             </Stack>
 
             <Box pt={3} />
-            {/* ------------------------------------------- */}
-            {/* ------------ Theme Color setting ------------- */}
-            {/* ------------------------------------------- */}
-            <Typography variant="h6" gutterBottom>
-              Цветовой режим
-            </Typography>
-            <Grid container spacing={2}>
-              {thColors.map((thcolor) => (
-                <Grid item xs={4} key={thcolor.id}>
-                  <StyledBox onClick={() => dispatch(setTheme(thcolor.disp))}>
-                    <Tooltip title={`${thcolor.disp}`} placement="top">
-                      <Box
-                        sx={{
-                          backgroundColor: thcolor.bgColor,
-                          width: '25px',
-                          height: '25px',
-                          borderRadius: '60px',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          display: 'flex',
-                          color: 'white',
-                        }}
-                        aria-label={`${thcolor.bgColor}`}
-                      >
-                        {customizer.activeTheme === thcolor.disp ? <IconCheck width={13} /> : ''}
-                      </Box>
-                    </Tooltip>
-                  </StyledBox>
-                </Grid>
-              ))}
-            </Grid>
-
-            {/* ------------------------------------------- */}
-            {/* ------------ Theme Color setting ------------- */}
-            {/* ------------------------------------------- */}
-            <Typography variant="h6" gutterBottom>
-              Theme Border Radius
-            </Typography>
-
-            <Slider
-              size="small"
-              value={customizer.borderRadius}
-              aria-label="Small"
-              min={4}
-              max={24}
-              onChange={(event: any) => dispatch(setBorderRadius(event.target.value))}
-              valueLabelDisplay="auto"
-            />
           </Box>
         </Scrollbar>
       </Drawer>

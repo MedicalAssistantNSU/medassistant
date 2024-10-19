@@ -1,19 +1,15 @@
-import { IconButton, Box, AppBar, useMediaQuery, Toolbar, styled, Stack } from '@mui/material';
+import { AppBar, Box, IconButton, Stack, Toolbar, styled, useMediaQuery } from '@mui/material';
 
-import { useSelector, useDispatch } from 'src/store/Store';
-import { toggleSidebar, toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
+import { useDispatch, useSelector } from 'src/store/Store';
+import { toggleMobileSidebar, toggleSidebar } from 'src/store/customizer/CustomizerSlice';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { IconMenu2 } from '@tabler/icons-react';
-import Notifications from './Notification';
-import Profile from './Profile';
-import Cart from './Cart';
-import Search from './Search';
-import Language from './Language';
 import { AppState } from 'src/store/Store';
-import Navigation from './Navigation';
-import MobileRightSidebar from './MobileRightSidebar';
 import Customizer from '../../shared/customizer/Customizer';
+import Navigation from './Navigation';
+import Profile from './Profile';
+import Search from './Search';
 
 const Header = () => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
@@ -38,36 +34,38 @@ const Header = () => {
   }));
 
   return (
-    <AppBarStyled position="sticky" color="default">
-      <ToolbarStyled>
-        {/* ------------------------------------------- */}
-        {/* Toggle Button Sidebar */}
-        {/* ------------------------------------------- */}
-        <IconButton
-          color="inherit"
-          aria-label="menu"
-          onClick={lgUp ? () => dispatch(toggleSidebar()) : () => dispatch(toggleMobileSidebar())}
-        >
-          <IconMenu2 size="20" />
-        </IconButton>
+      <AppBarStyled position="sticky" color="default">
+          <ToolbarStyled>
+              {/* ------------------------------------------- */}
+              {/* Toggle Button Sidebar */}
+              {/* ------------------------------------------- */}
+              <IconButton
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={
+                      lgUp ? () => dispatch(toggleSidebar()) : () => dispatch(toggleMobileSidebar())
+                  }
+              >
+                  <IconMenu2 size="20" />
+              </IconButton>
 
-        {/* ------------------------------------------- */}
-        {/* Search Dropdown */}
-        {/* ------------------------------------------- */}
-        <Search />
-        {lgUp ? (
-          <>
-            <Navigation />
-          </>
-        ) : null}
+              {/* ------------------------------------------- */}
+              {/* Search Dropdown */}
+              {/* ------------------------------------------- */}
+              <Search />
+              {lgUp ? (
+                  <>
+                      <Navigation />
+                  </>
+              ) : null}
 
-        <Box flexGrow={1} />
-        <Customizer />
-        <Stack spacing={1} direction="row" alignItems="center">
-          <Profile />
-        </Stack>
-      </ToolbarStyled>
-    </AppBarStyled>
+              <Box flexGrow={1} />
+              <Customizer />
+              <Stack spacing={1} direction="row" alignItems="center">
+                  <Profile />
+              </Stack>
+          </ToolbarStyled>
+      </AppBarStyled>
   );
 };
 
