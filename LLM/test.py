@@ -10,5 +10,6 @@ def main():
 
         answer, history = script.send_message(message, history)
 
+
 if __name__ == '__main__':
     main()

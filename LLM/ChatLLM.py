@@ -19,7 +19,7 @@ class ChatLLM:
         self.prompt_template = PromptTemplate.from_template(
             """
             {prompt}
-    
+            
             {history}
             {name}: {message}
             """
@@ -55,7 +55,7 @@ class ChatLLM:
         # collect answer with printing
         answer = ''
         for chunks in self.model.stream(formatted_prompt,
-                                        stop=['</s>', self.username+':', self.username.lower()+':', '<|eot_id|>']
+                                        stop=['</s>', self.username + ':', self.username.lower() + ':', '<|eot_id|>']
                                         ):
             print(chunks, end="", flush=True)
             answer += chunks
