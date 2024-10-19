@@ -18,8 +18,7 @@ class ChatLLM:
 
         self.prompt_template = PromptTemplate.from_template(
             """
-            {prompt}
-            
+            {prompt}\n
             {history}
             {name}: {message}
             """
