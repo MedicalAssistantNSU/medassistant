@@ -2,7 +2,7 @@ import cv2
 import easyocr
 import os
 import argparse
-from exceptions import *
+from exceptions import *  # noqa: F403
 from typing import Optional
 
 """
