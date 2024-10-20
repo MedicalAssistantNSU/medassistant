@@ -24,8 +24,8 @@ func (i *MessageRepo) Create(chat_id int, msg models.Message) (int, error) {
 		return 0, err
 	}
 
-	query1 := fmt.Sprintf("INSERT INTO %s (text, sender_id, image, document, created_at) values ($1, $2, $3, $4, $5) RETURNING id", messageTable)
-	row := tr.QueryRow(query1, msg.Text, msg.SenderId, msg.Image, msg.Document, msg.CreatedAt)
+	query1 := fmt.Sprintf("INSERT INTO %s (content, sender_id, image, document, created_at) values ($1, $2, $3, $4, $5) RETURNING id", messageTable)
+	row := tr.QueryRow(query1, msg.Content, msg.SenderId, msg.Image, msg.Document, msg.CreatedAt)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
@@ -42,7 +42,7 @@ func (i *MessageRepo) Create(chat_id int, msg models.Message) (int, error) {
 
 func (i *MessageRepo) GetAll(user_id, chat_id int) ([]models.Message, error) {
 	var items []models.Message
-	query := fmt.Sprintf(`SELECT il.id, il.text, il.sender_id, il.image, il.document, il.created_at FROM %s il 
+	query := fmt.Sprintf(`SELECT il.id, il.content, il.sender_id, il.image, il.document, il.created_at FROM %s il 
 						INNER JOIN %s li on li.message_id = il.id
 						INNER JOIN %s ul on li.chat_id = ul.chat_id
 						WHERE ul.user_id = $1 AND li.chat_id = $2`,
@@ -54,7 +54,7 @@ func (i *MessageRepo) GetAll(user_id, chat_id int) ([]models.Message, error) {
 
 func (i *MessageRepo) GetItemById(user_id, message_id int) (models.Message, error) {
 	var input models.Message
-	query := fmt.Sprintf(`SELECT il.id, il.text, il.sender_id, il.image, il.document, il.created_at FROM %s il 
+	query := fmt.Sprintf(`SELECT il.id, il.content, il.sender_id, il.image, il.document, il.created_at FROM %s il 
 						INNER JOIN %s li on li.message_id = il.id
 						INNER JOIN %s ul on li.chat_id = ul.chat_id
 						WHERE ul.user_id = $1 AND il.id = $2`,
@@ -72,10 +72,10 @@ func (i *MessageRepo) Delete(user_id, message_id int) error {
 }
 
 func (i *MessageRepo) Update(user_id, message_id int, updatedMessage models.Message) error {
-	query := fmt.Sprintf(`UPDATE %s ti SET text = $1, sender_id = $2, image = $3, document = $4, created_at = $5 FROM %s ul, %s li 
+	query := fmt.Sprintf(`UPDATE %s ti SET content = $1, sender_id = $2, image = $3, document = $4, created_at = $5 FROM %s ul, %s li 
 							WHERE ti.id = li.message_id AND li.chat_id = ul.chat_id AND ul.user_id = $4 AND ti.id = $5`,
 		messageTable, usersChats, chatMessages)
-	_, err := i.db.Exec(query, updatedMessage.Text, updatedMessage.SenderId,
+	_, err := i.db.Exec(query, updatedMessage.Content, updatedMessage.SenderId,
 		updatedMessage.Image, updatedMessage.Document, updatedMessage.CreatedAt, user_id, message_id)
 	return err
 }
