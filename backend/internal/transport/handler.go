@@ -36,6 +36,15 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			chats.GET("/:id", h.getChatById)
 			chats.PUT("/:id", h.updateChat)
 			chats.DELETE("/:id", h.deleteChat)
+
+			messages := chats.Group("/:id")
+			{
+				messages.GET("/", h.getAllMessages)
+				messages.GET("/:message_id", h.getMessageById)
+				messages.POST("/", h.createMessage)
+				messages.DELETE("/:message_id", h.deleteMessage)
+				messages.PUT("/:message_id", h.updateMessage)
+			}
 		}
 	}
 
