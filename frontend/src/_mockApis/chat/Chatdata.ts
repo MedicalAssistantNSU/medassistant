@@ -18,10 +18,6 @@ const ChatData: ChatsType[] = [
   {
     id: 1,
     name: 'Первый чат',
-    status: 'online',
-    thumb: user1,
-    recent: false,
-    excerpt: 'Доктор',
     messages: [
       {
         createdAt: sub(new Date(), { hours: 1 }),
@@ -73,10 +69,6 @@ const ChatData: ChatsType[] = [
   {
     id: 2,
     name: 'Второй чат',
-    status: 'away',
-    thumb: user2,
-    recent: true,
-    excerpt: 'Doctor',
     messages: [
       {
         createdAt: sub(new Date(), { hours: 1 }),

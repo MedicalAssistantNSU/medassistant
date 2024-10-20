@@ -31,9 +31,9 @@ const Logo: FC = () => {
         alignItems: 'center',
       }}>
         {customizer.activeMode === 'dark' ? (
-          <Typography fontSize={20} color={"white"}>MedAsis</Typography>
+          <Typography fontSize={20} color={"white"}>HealthMate</Typography>
         ) : (
-          <Typography fontSize={20}>MedAsis</Typography>
+          <Typography fontSize={20}>HealthMate</Typography>
         )}
       </LinkStyled>
     );

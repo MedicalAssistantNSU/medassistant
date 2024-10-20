@@ -54,7 +54,6 @@ interface ChatContentProps {
               <ListItem key={chatDetails.id} dense disableGutters>
                 <ListItemText
                   primary={<Typography variant="h5">{chatDetails.name}</Typography>}
-                  secondary={chatDetails.status}
                 />
               </ListItem>
               
