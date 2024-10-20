@@ -1,12 +1,12 @@
 package models
 
 type Chat struct {
-	Id   int    `json:"-"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type Message struct {
-	Id        int    `json:"-"`
+	Id        int    `json:"id"`
 	SenderId  int    `json:"user_id"`
 	Content   string `json:"content"`
 	Image     string `json:"image"`

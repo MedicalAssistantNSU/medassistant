@@ -16,7 +16,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// @title           MedAsis
+// @title           HealthMate
 // @version         1.0
 // @host      localhost:8000
 // @BasePath  /

@@ -1,6 +1,7 @@
 package transport
 
 import (
+	_ "med-asis/docs"
 	"med-asis/internal/service"
 
 	"github.com/gin-gonic/gin"

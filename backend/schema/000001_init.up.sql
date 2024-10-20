@@ -9,7 +9,7 @@ CREATE TABLE users
 CREATE TABLE chats
 (
     id          serial       not null unique,
-    name        varchar(255) not null,
+    name        varchar(255) not null
 );
 
 CREATE TABLE user_chats

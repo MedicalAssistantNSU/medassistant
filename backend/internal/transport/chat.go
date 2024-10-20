@@ -91,7 +91,7 @@ func (h *Handler) createChat(c *gin.Context) {
 // @Failure 400,404 {object} transort_error
 // @Failure 500 {object} transort_error
 // @Failure default {object} transort_error
-// @Router /api/chats/{id} [get]
+// @Router /api/v1/chats/{id} [get]
 func (h *Handler) getChatById(c *gin.Context) {
 	userId, ok := c.Get(UserId)
 	if !ok {
@@ -125,7 +125,7 @@ func (h *Handler) getChatById(c *gin.Context) {
 // @Failure 400,404 {object} transort_error
 // @Failure 500 {object} transort_error
 // @Failure default {object} transort_error
-// @Router /api/chats/{id} [put]
+// @Router /api/v1/chats/{id} [put]
 func (h *Handler) updateChat(c *gin.Context) {
 	userId, ok := c.Get(UserId)
 	if !ok {
