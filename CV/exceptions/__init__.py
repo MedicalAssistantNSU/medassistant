@@ -1,1 +1,1 @@
-from .CustomExceptions import CVException, ImageReadError, OCRProcessError, SaveError
+from .CustomExceptions import CVException, ImageReadError, OCRProcessError, SaveError  # noqa: F401
