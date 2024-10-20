@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"med-asis/internal/models"
-	repository "med-asis/internal/repository/postgresql"
+	"med-asis/internal/repository"
+
 	"med-asis/internal/service"
 	"med-asis/internal/transport"
 	"os"
@@ -57,13 +58,13 @@ func main() {
 		}
 	}()
 
-	logrus.Print("TodoApp Started")
+	logrus.Print("MedAsis Started")
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
 
-	logrus.Print("TodoApp Shutting Down")
+	logrus.Print("MedAsis Shutting Down")
 
 	if err := srv.Shutdown(context.Background()); err != nil {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())

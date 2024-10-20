@@ -8,7 +8,11 @@ import (
 )
 
 const (
-	usersTable = "users"
+	usersTable   = "users"
+	chatsTable   = "chats"
+	messageTable = "messages"
+	usersChats   = "user_chats"
+	chatMessages = "chat_messages"
 )
 
 type Config struct {

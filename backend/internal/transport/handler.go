@@ -28,22 +28,13 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api/v1", h.userIdentity)
 	{
-		lists := api.Group("/chats")
+		chats := api.Group("/chats")
 		{
-			lists.POST("/")
-			lists.GET("/")
-			lists.GET("/:id")
-			lists.PUT("/:id")
-			lists.DELETE("/:id")
-
-			items := lists.Group("/:id")
-			{
-				items.GET("/")
-				items.POST("/")
-				items.GET("/:item_id")
-				items.PUT("/:item_id")
-				items.DELETE("/:item_id")
-			}
+			chats.POST("/", h.createChat)
+			chats.GET("/", h.getAllChats)
+			chats.GET("/:id", h.getChatById)
+			chats.PUT("/:id", h.updateChat)
+			chats.DELETE("/:id", h.deleteChat)
 		}
 	}
 

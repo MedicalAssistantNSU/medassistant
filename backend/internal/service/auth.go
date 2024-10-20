@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"med-asis/internal/models"
-	repository "med-asis/internal/repository/postgresql"
+	"med-asis/internal/repository"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
