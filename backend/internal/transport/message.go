@@ -211,7 +211,20 @@ type uploadResponse struct {
 	URL    string `json:"url,omitempty"`
 }
 
-func (h *Handler) UploadFile(c *gin.Context) {
+// @Summary Upload file
+// @Security ApiKeyAuth
+// @Tags files
+// @Description Upload file
+// @ID upload-file
+// @Accept json
+// @Produce json
+// @Param file formData file true "Body with file"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} transort_error
+// @Failure 500 {object} transort_error
+// @Failure default {object} transort_error
+// @Router /api/v1/files/upload [post]
+func (h *Handler) uploadFile(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, MAX_UPLOAD_SIZE)
 
 	file, fileHeader, err := c.Request.FormFile("file")

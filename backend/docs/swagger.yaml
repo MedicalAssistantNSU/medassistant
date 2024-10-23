@@ -13,11 +13,9 @@ definitions:
         type: string
       created_at:
         type: string
-      document:
-        type: string
       id:
         type: integer
-      image:
+      type:
         type: string
       user_id:
         type: integer
@@ -459,6 +457,46 @@ paths:
       summary: Update Chat
       tags:
       - chats
+  /api/v1/files/upload:
+    post:
+      consumes:
+      - application/json
+      description: Upload file
+      operationId: upload-file
+      parameters:
+      - description: Body with file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+      security:
+      - ApiKeyAuth: []
+      summary: Upload file
+      tags:
+      - files
   /auth/sign-in:
     post:
       consumes:

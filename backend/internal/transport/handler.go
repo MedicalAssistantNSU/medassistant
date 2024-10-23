@@ -46,6 +46,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 				messages.PUT("/:message_id", h.updateMessage)
 			}
 		}
+
+		files := api.Group("/files")
+		{
+			files.POST("/upload", h.uploadFile)
+		}
 	}
 
 	return router
