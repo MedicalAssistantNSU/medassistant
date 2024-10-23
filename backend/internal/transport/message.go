@@ -2,7 +2,11 @@ package transport
 
 import (
 	"med-asis/internal/models"
+	"med-asis/pkg"
 	"net/http"
+	"os"
+	"path"
+	"path/filepath"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -209,6 +213,7 @@ type uploadResponse struct {
 	Status string `json:"status"`
 	Msg    string `json:"message,omitempty"`
 	URL    string `json:"url,omitempty"`
+	OCR    string `json:"ocr"`
 }
 
 // @Summary Upload file
@@ -260,8 +265,39 @@ func (h *Handler) uploadFile(c *gin.Context) {
 		return
 	}
 
+	// write file
+	path := filepath.Join("../CV", path.Base(url))
+	newFile, err := os.Create(path)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    err.Error(),
+		})
+		return
+	}
+
+	defer newFile.Close()
+	defer os.Remove(path)
+	if _, err := newFile.Write(buffer); err != nil || newFile.Close() != nil {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    err.Error(),
+		})
+		return
+	}
+
+	out, err := pkg.Perform(path)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, &uploadResponse{
 		Status: "ok",
 		URL:    url,
+		OCR:    out,
 	})
 }

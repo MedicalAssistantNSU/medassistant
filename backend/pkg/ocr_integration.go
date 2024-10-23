@@ -2,37 +2,46 @@ package pkg
 
 import (
 	"bufio"
-	"fmt"
 	"io"
+	"os"
 	"os/exec"
 
 	"github.com/sirupsen/logrus"
 )
 
-func Perform() {
+func Perform(path string) (string, error) {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	cmd := exec.Command("python3", "CV/DocumentOCR.py", "CV/images.jpeg")
+	cmd := exec.Command("python3", "../CV/DocumentOCR.py", path)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	err = cmd.Start()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	go copyOutput(stdout)
 	go copyOutput(stderr)
 	cmd.Wait()
+
+	file, err := os.Open("../CV/processed_images/processed_image.jpg")
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	b, err := io.ReadAll(file)
+	return string(b), err
 }
 
 func copyOutput(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		logrus.Error(scanner.Text())
 	}
 }
