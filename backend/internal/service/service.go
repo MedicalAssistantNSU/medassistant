@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+	"io"
 	"med-asis/internal/models"
 	"med-asis/internal/repository"
 )
@@ -27,10 +29,15 @@ type Message interface {
 	Update(user_id, message_id int, updatedMsg models.Message) error
 }
 
+type Uploader interface {
+	Upload(ctx context.Context, file io.Reader, size int64, contentType string) (string, error)
+}
+
 type Service struct {
 	Authorization
 	Chat
 	Message
+	Uploader
 }
 
 func NewService(repos *repository.Respository) *Service {
@@ -38,5 +45,6 @@ func NewService(repos *repository.Respository) *Service {
 		Authorization: NewAuthService(repos.Authorization),
 		Chat:          NewChatService(repos.ChatRepozitory),
 		Message:       NewMessageService(repos.MessageRepository),
+		Uploader:      NewUpdoaderService(repos.FileStorage),
 	}
 }

@@ -8,6 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const MAX_UPLOAD_SIZE = 20 << 20 // 20 Mb
+
+var IMAGE_TYPES = map[string]interface{}{
+	"image/jpeg": nil,
+	"image/png":  nil,
+}
+
 type AllMessages struct {
 	Data []models.Message `json:"messages"`
 }
@@ -196,4 +203,52 @@ func (h *Handler) updateMessage(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, "i updated it :D")
+}
+
+type uploadResponse struct {
+	Status string `json:"status"`
+	Msg    string `json:"message,omitempty"`
+	URL    string `json:"url,omitempty"`
+}
+
+func (h *Handler) UploadFile(c *gin.Context) {
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, MAX_UPLOAD_SIZE)
+
+	file, fileHeader, err := c.Request.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    err.Error(),
+		})
+		return
+	}
+	defer file.Close()
+
+	buffer := make([]byte, fileHeader.Size)
+	file.Read(buffer)
+	fileType := http.DetectContentType(buffer)
+
+	// Validate File Type
+	if _, ex := IMAGE_TYPES[fileType]; !ex {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    "file type is not supported",
+		})
+		return
+	}
+
+	url, err := h.services.Upload(c.Request.Context(), file, fileHeader.Size, fileType)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, &uploadResponse{
+		Status: "ok",
+		URL:    url,
+	})
 }

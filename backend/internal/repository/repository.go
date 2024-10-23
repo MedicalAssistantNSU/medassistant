@@ -31,12 +31,14 @@ type Respository struct {
 	Authorization
 	ChatRepozitory
 	MessageRepository
+	*FileStorage
 }
 
-func NewRepository(db *sqlx.DB) *Respository {
+func NewRepository(db *sqlx.DB, fs *FileStorage) *Respository {
 	return &Respository{
 		Authorization:     NewAuthPostgres(db),
 		ChatRepozitory:    NewChatRepo(db),
 		MessageRepository: NewMessageRepo(db),
+		FileStorage:       fs,
 	}
 }

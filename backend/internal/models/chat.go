@@ -9,8 +9,7 @@ type Message struct {
 	Id        int    `json:"id"`
 	SenderId  int    `json:"user_id"`
 	Content   string `json:"content"`
-	Image     string `json:"image"`
-	Document  string `json:"document"`
+	Type      string `json:"type"`
 	CreatedAt string `json:"created_at"`
 }
 

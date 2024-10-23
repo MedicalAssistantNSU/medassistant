@@ -24,8 +24,7 @@ CREATE TABLE messages
     id          serial       not null unique,
     content     text,
     sender_id   serial       not null, 
-    document    text,
-    image       bytea,
+    type        varchar(256) not null,
     created_at  varchar(256)
 );
 

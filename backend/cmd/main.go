@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"med-asis/internal/models"
 	"med-asis/internal/repository"
 
@@ -12,6 +13,7 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
+	"github.com/minio/minio-go"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -34,6 +36,20 @@ func main() {
 		logrus.Fatalf("Load .env files failed: %s", err.Error())
 	}
 
+	accessKey := os.Getenv("S3_ACCESS_KEY")
+	secretKey := os.Getenv("S3_SECRET_KEY")
+
+	client, err := minio.New(viper.GetString("storage.endpoint"), accessKey, secretKey, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fileStorage := repository.NewFileStorage(
+		client,
+		viper.GetString("storage.bucket"),
+		viper.GetString("storage.endpoint"),
+	)
+
 	db, err := repository.NewPostgresDB(repository.Config{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
@@ -47,7 +63,7 @@ func main() {
 		logrus.Fatalf("Connection to Postgres DB failed: %s", err.Error())
 	}
 
-	repository := repository.NewRepository(db)
+	repository := repository.NewRepository(db, fileStorage)
 	services := service.NewService(repository)
 	handlers := transport.NewHandler(services)
 

@@ -6,3 +6,7 @@ db:
   port: "5432"
   user: "postgres"
   sslmode: "disable"
+
+storage:
+  endpoint: "s3.ru-1.storage.selcloud.ru"
+  bucket: "first-test"
