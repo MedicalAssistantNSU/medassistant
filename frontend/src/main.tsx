@@ -11,12 +11,15 @@ import { store } from './store/Store';
 import Spinner from './views/spinner/Spinner';
 import './utils/i18n';
 import './_mockApis';
+import { AuthProvider } from './guards/jwt/JwtContext';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <Suspense fallback={<Spinner />}>
       <BrowserRouter>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </BrowserRouter>
     </Suspense>
   </Provider>,

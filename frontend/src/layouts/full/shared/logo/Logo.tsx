@@ -33,7 +33,7 @@ const Logo: FC = () => {
         {customizer.activeMode === 'dark' ? (
           <Typography fontSize={20} color={"white"}>HealthMate</Typography>
         ) : (
-          <Typography fontSize={20}>HealthMate</Typography>
+          <Typography fontSize={20} color={"#4CA1AF"}>HealthMate</Typography>
         )}
       </LinkStyled>
     );

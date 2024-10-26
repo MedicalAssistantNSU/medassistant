@@ -20,13 +20,13 @@ const Login2 = () => {
           position: 'relative',
           '&:before': {
             content: '""',
-            background: 'radial-gradient(#d2f1df, #d3d7fa, #bad8f4)',
+            background: 'radial-gradient(#2C3E50, #4CA1AF)',
             backgroundSize: '400% 400%',
             animation: 'gradient 15s ease infinite',
             position: 'absolute',
             height: '100%',
             width: '100%',
-            opacity: '0.3',
+            opacity: '1',
           },
         }}
       >
@@ -42,14 +42,14 @@ const Login2 = () => {
             alignItems="center"
           >
             <Card elevation={9} sx={{ p: 4, zIndex: 1, width: '100%', maxWidth: '450px' }}>
-              <Box display="flex" alignItems="center" justifyContent="center">
+              <Box ml={"22%"} sx={{transform: "scale(1.2)"}} display="flex" alignItems="center" justifyContent="center">
                 <Logo />
               </Box>
               <AuthLogin
                 subtitle={
                   <Stack direction="row" spacing={1} justifyContent="center" mt={3}>
                     <Typography color="textSecondary" variant="h6" fontWeight="500">
-                      New to Modernize?
+                      Нет аккаунта?
                     </Typography>
                     <Typography
                       component={Link}
@@ -60,7 +60,7 @@ const Login2 = () => {
                         color: 'primary.main',
                       }}
                     >
-                      Create an account
+                      Регистрация
                     </Typography>
                   </Stack>
                 }

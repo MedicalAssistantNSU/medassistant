@@ -11,7 +11,7 @@ import {
   Typography
 } from '@mui/material';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as dropdownData from './data';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -19,14 +19,32 @@ import * as dropdownData from './data';
 import { IconMail } from '@tabler/icons-react';
 
 import ProfileImg from 'src/assets/images/profile/1.png';
+import useMounted from 'src/guards/authGuard/UseMounted';
+import useAuth from 'src/guards/authGuard/UseAuth';
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const mounted = useMounted();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
   };
   const handleClose2 = () => {
     setAnchorEl2(null);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+      if (mounted.current) {
+        handleClose2();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -143,7 +161,7 @@ const Profile = () => {
           </Box>
         ))}
         <Box mt={2}>
-          <Button to="/" variant="outlined" color="primary" component={Link} fullWidth>
+          <Button variant="outlined" color="primary" fullWidth onClick={handleLogout}>
             Logout
           </Button>
         </Box>

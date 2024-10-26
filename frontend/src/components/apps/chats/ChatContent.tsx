@@ -42,7 +42,7 @@ interface ChatContentProps {
           {/* Header Part */}
           {/* ------------------------------------------- */}
           <Box>
-            <Box display="flex" alignItems="center" >
+            <Box p={1} display="flex" alignItems="center" >
               <Box
                 sx={{
                   display: { xs: 'block', md: 'block', lg: 'none' },
