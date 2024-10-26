@@ -31,14 +31,14 @@ func (h *Handler) getAllChats(c *gin.Context) {
 		return
 	}
 
-	chats, err := h.services.Chat.GetAll(id.(int))
+	chats, err := h.services.Chat.GetAllInfo(id.(int))
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, "some problems while getting chats")
 		return
 	}
 
-	c.JSON(http.StatusOK, &getAllChatsResponses{
-		Data: chats,
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"data": chats,
 	})
 }
 

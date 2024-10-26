@@ -9,6 +9,8 @@ import (
 type Authorization interface {
 	CreateUser(user models.User) (int, error)
 	GetUser(username, password string) (models.User, error)
+	GetUserByUsername(username string) (models.User, error)
+	GetUserById(id int) (models.User, error)
 }
 
 type ChatRepozitory interface {
@@ -21,7 +23,7 @@ type ChatRepozitory interface {
 
 type MessageRepository interface {
 	Create(chat_id int, msg models.Message) (int, error)
-	GetAll(user_id, chat_id int) ([]models.Message, error)
+	GetAll(chat_id int) ([]models.Message, error)
 	GetItemById(user_id, message_id int) (models.Message, error)
 	Delete(user_id, message_id int) error
 	Update(user_id, message_id int, updatedMessage models.Message) error

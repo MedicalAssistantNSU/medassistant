@@ -7,10 +7,10 @@ type Chat struct {
 
 type Message struct {
 	Id        int    `json:"id"`
-	SenderId  int    `json:"user_id"`
+	SenderId  int    `json:"sender_id" db:"sender_id"`
 	Content   string `json:"content"`
 	Type      string `json:"type"`
-	CreatedAt string `json:"created_at"`
+	CreatedAt string `json:"created_at" db:"created_at"`
 }
 
 type ChatMessages struct {

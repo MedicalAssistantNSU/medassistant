@@ -20,7 +20,7 @@ func (i *MessageService) Create(chat_id int, msg models.Message) (int, error) {
 }
 
 func (i *MessageService) GetAll(user_id, chat_id int) ([]models.Message, error) {
-	return i.repo.GetAll(user_id, chat_id)
+	return i.repo.GetAll(chat_id)
 }
 
 func (i *MessageService) GetItemById(user_id, message_id int) (models.Message, error) {

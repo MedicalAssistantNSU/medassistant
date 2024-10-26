@@ -11,6 +11,8 @@ type Authorization interface {
 	CreateUser(user models.User) (int, error)
 	GenerateToken(username, password string) (string, error)
 	ParseToken(token string) (int, error)
+	GetUserByUsername(username string) (models.User, error)
+	GetUserById(id int) (models.User, error)
 }
 
 type Chat interface {
@@ -19,6 +21,7 @@ type Chat interface {
 	GetById(userId, id int) (models.Chat, error)
 	Delete(userId, id int) error
 	Update(userId, id int, updatedChat models.Chat) error
+	GetAllInfo(userId int) ([]ChatsOutput, error)
 }
 
 type Message interface {
@@ -43,7 +46,7 @@ type Service struct {
 func NewService(repos *repository.Respository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
-		Chat:          NewChatService(repos.ChatRepozitory),
+		Chat:          NewChatService(repos.ChatRepozitory, repos.MessageRepository),
 		Message:       NewMessageService(repos.MessageRepository),
 		Uploader:      NewUpdoaderService(repos.FileStorage),
 	}

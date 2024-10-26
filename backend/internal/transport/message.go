@@ -2,7 +2,6 @@ package transport
 
 import (
 	"med-asis/internal/models"
-	"med-asis/pkg"
 	"net/http"
 	"os"
 	"path"
@@ -286,7 +285,7 @@ func (h *Handler) uploadFile(c *gin.Context) {
 		return
 	}
 
-	out, err := pkg.Perform(path)
+	//out, err := pkg.Perform(path)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &uploadResponse{
 			Status: "error",
@@ -298,6 +297,5 @@ func (h *Handler) uploadFile(c *gin.Context) {
 	c.JSON(http.StatusOK, &uploadResponse{
 		Status: "ok",
 		URL:    url,
-		OCR:    out,
 	})
 }

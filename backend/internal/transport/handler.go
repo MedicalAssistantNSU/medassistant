@@ -19,6 +19,7 @@ func NewHandler(service *service.Service) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
+	router.Use(CORSMiddleware())
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	auth := router.Group("/auth")
@@ -46,6 +47,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 				messages.PUT("/:message_id", h.updateMessage)
 			}
 		}
+
+		api.GET("/account/my-account", h.getAccountInfo)
 
 		files := api.Group("/files")
 		{

@@ -34,3 +34,19 @@ func (a *AuthPostgres) GetUser(username, password string) (models.User, error) {
 	err := a.db.Get(&user, query, username, password)
 	return user, err
 }
+
+func (a *AuthPostgres) GetUserByUsername(username string) (models.User, error) {
+	var user models.User
+	query := fmt.Sprintf("SELECT id, name, username, password_hash FROM %s WHERE username=$1", usersTable)
+
+	err := a.db.Get(&user, query, username)
+	return user, err
+}
+
+func (a *AuthPostgres) GetUserById(id int) (models.User, error) {
+	var user models.User
+	query := fmt.Sprintf("SELECT id, name, username, password_hash FROM %s WHERE id=$1", usersTable)
+
+	err := a.db.Get(&user, query, id)
+	return user, err
+}

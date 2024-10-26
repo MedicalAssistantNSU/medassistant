@@ -24,7 +24,7 @@ func (i *MessageRepo) Create(chat_id int, msg models.Message) (int, error) {
 		return 0, err
 	}
 
-	query1 := fmt.Sprintf("INSERT INTO %s (content, sender_id, type, created_at) values ($1, $2, $3, $4, $5) RETURNING id", messageTable)
+	query1 := fmt.Sprintf("INSERT INTO %s (content, sender_id, type, created_at) values ($1, $2, $3, $4) RETURNING id", messageTable)
 	row := tr.QueryRow(query1, msg.Content, msg.SenderId, msg.Type, msg.CreatedAt)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
@@ -40,15 +40,15 @@ func (i *MessageRepo) Create(chat_id int, msg models.Message) (int, error) {
 	return id, tr.Commit()
 }
 
-func (i *MessageRepo) GetAll(user_id, chat_id int) ([]models.Message, error) {
+func (i *MessageRepo) GetAll(chat_id int) ([]models.Message, error) {
 	var items []models.Message
 	query := fmt.Sprintf(`SELECT il.id, il.content, il.sender_id, il.type, il.created_at FROM %s il 
 						INNER JOIN %s li on li.message_id = il.id
 						INNER JOIN %s ul on li.chat_id = ul.chat_id
-						WHERE ul.user_id = $1 AND li.chat_id = $2`,
+						WHERE li.chat_id = $1`,
 		messageTable, chatMessages, usersChats)
 
-	err := i.db.Select(&items, query, user_id, chat_id)
+	err := i.db.Select(&items, query, chat_id)
 	return items, err
 }
 

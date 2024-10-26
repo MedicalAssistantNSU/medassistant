@@ -15,6 +15,56 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/account/my-account": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get accound by id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "Get Account Ingo",
+                "operationId": "get-account",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/transport.transort_error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/transport.transort_error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/transport.transort_error"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/transport.transort_error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/chats/": {
             "get": {
                 "security": [
@@ -788,7 +838,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/transport.InputRegister"
                         }
                     }
                 ],
@@ -859,12 +909,9 @@ const docTemplate = `{
                 }
             }
         },
-        "models.User": {
+        "transport.InputAuth": {
             "type": "object",
             "properties": {
-                "name": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string"
                 },
@@ -873,13 +920,16 @@ const docTemplate = `{
                 }
             }
         },
-        "transport.InputAuth": {
+        "transport.InputRegister": {
             "type": "object",
             "properties": {
-                "password": {
+                "email": {
                     "type": "string"
                 },
-                "username": {
+                "name": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }

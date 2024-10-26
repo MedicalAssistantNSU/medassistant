@@ -20,20 +20,20 @@ definitions:
       user_id:
         type: integer
     type: object
-  models.User:
-    properties:
-      name:
-        type: string
-      password:
-        type: string
-      username:
-        type: string
-    type: object
   transport.InputAuth:
     properties:
       password:
         type: string
       username:
+        type: string
+    type: object
+  transport.InputRegister:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
         type: string
     type: object
   transport.transort_error:
@@ -47,6 +47,38 @@ info:
   title: HealthMate
   version: "1.0"
 paths:
+  /api/v1/account/my-account:
+    get:
+      description: Get accound by id
+      operationId: get-account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Account Ingo
+      tags:
+      - account
   /api/v1/chats/:
     get:
       consumes:
@@ -548,7 +580,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/transport.InputRegister'
       produces:
       - application/json
       responses:
