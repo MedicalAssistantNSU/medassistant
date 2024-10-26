@@ -17,7 +17,6 @@ import { loginType } from 'src/types/auth/auth';
 import CustomCheckbox from 'src/components/forms/theme-elements/CustomCheckbox';
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
-import AuthSocialButtons from './AuthSocialButtons';
 import { Form, useFormik, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import useAuth from 'src/guards/authGuard/UseAuth';

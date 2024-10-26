@@ -43,8 +43,9 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
 
     onSubmit: async (values, { setErrors, setStatus, setSubmitting }) => {
       try {
-        await signup(values.email, values.password);
-        navigate('/auth/login1');
+        console.log("register")
+        await signup(values.email, values.password, values.UserName);
+        navigate('/auth/login');
         if (mounted.current) {
           setStatus({ success: true });
           setSubmitting(true);

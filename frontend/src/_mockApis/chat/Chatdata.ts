@@ -21,36 +21,28 @@ const ChatData: ChatsType[] = [
     messages: [
       {
         createdAt: sub(new Date(), { hours: 1 }),
-        msg: chance.sentence({ words: 5 }),
+        content: chance.sentence({ words: 5 }),
         senderId: 1,
         type: 'text',
-        attachment: [
-          { icon: adobe, file: 'service-task.pdf', fileSize: '2MB' },
-          { icon: chrome, file: 'homepage-design.fig', fileSize: '3MB' },
-          { icon: figma, file: 'about-us.htmlf', fileSize: '1KB' },
-          { icon: java, file: 'work-project.zip', fileSize: '20MB' },
-          { icon: zip, file: 'custom.js', fileSize: '2MB' },
-        ],
         id: uniqueId(),
       },
       {
         createdAt: sub(new Date(), { minutes: 30 }),
-        msg: chance.sentence({ words: 10 }),
+        content: chance.sentence({ words: 10 }),
         senderId: 1,
         type: 'text',
-        attachment: [],
         id: uniqueId(),
       },
       {
         createdAt: sub(new Date(), { minutes: 6 }),
-        msg: chance.sentence({ words: 5 }),
+        content: chance.sentence({ words: 5 }),
         senderId: uniqueId(),
         type: 'text',
         attachment: [],
         id: uniqueId(),
       },
       {
-        msg: bg1,
+        content: bg1,
         senderId: uniqueId(),
         type: 'image',
         attachment: [],
@@ -58,7 +50,7 @@ const ChatData: ChatsType[] = [
       },
       {
         createdAt: sub(new Date(), { minutes: 5 }),
-        msg: chance.sentence({ words: 5 }),
+        content: chance.sentence({ words: 5 }),
         senderId: 1,
         type: 'text',
         attachment: [],
@@ -69,52 +61,7 @@ const ChatData: ChatsType[] = [
   {
     id: 2,
     name: 'Второй чат',
-    messages: [
-      {
-        createdAt: sub(new Date(), { hours: 1 }),
-        msg: chance.sentence({ words: 5 }),
-        senderId: uniqueId(),
-        type: 'text',
-        attachment: [
-          { icon: adobe, file: 'service-task.pdf', fileSize: '2MB' },
-          { icon: chrome, file: 'homepage-design.fig', fileSize: '3MB' },
-          { icon: java, file: 'work-project.zip', fileSize: '20MB' },
-          { icon: zip, file: 'custom.js', fileSize: '2MB' },
-        ],
-        id: uniqueId(),
-      },
-      {
-        createdAt: sub(new Date(), { minutes: 30 }),
-        msg: chance.sentence({ words: 10 }),
-        senderId: uniqueId(),
-        type: 'text',
-        attachment: [],
-        id: uniqueId(),
-      },
-      {
-        createdAt: sub(new Date(), { minutes: 6 }),
-        msg: chance.sentence({ words: 5 }),
-        senderId: 2,
-        type: 'text',
-        attachment: [],
-        id: uniqueId(),
-      },
-      {
-        msg: bg1,
-        senderId: 2,
-        type: 'image',
-        attachment: [],
-        id: uniqueId(),
-      },
-      {
-        createdAt: sub(new Date(), { minutes: 1 }),
-        msg: chance.sentence({ words: 5 }),
-        senderId: uniqueId(),
-        type: 'text',
-        attachment: [],
-        id: uniqueId(),
-      },
-    ],
+    messages: [],
   },
 ];
 

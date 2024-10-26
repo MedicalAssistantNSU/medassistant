@@ -4,8 +4,8 @@ import { AppDispatch } from 'src/store/Store';
 import { uniqueId } from 'lodash';
 import { sub } from 'date-fns';
 
-const API_URL = '/api/data/chat/ChatData';
-
+const API_URL = '/api/v1/chats/';
+// 
 interface StateType {
   chats: any[];
   chatContent: number;
@@ -35,20 +35,11 @@ export const ChatSlice = createSlice({
       const conversation = action.payload;
       const { id, msg } = conversation;
 
-      const newMessage = {
-        id: id,
-        msg: msg,
-        type: 'text',
-        attachments: [],
-        createdAt: sub(new Date(), { seconds: 1 }),
-        senderId: uniqueId(),
-      };
-
       state.chats = state.chats.map((chat) =>
-        chat.id === action.payload.id
+        chat.id === id
           ? {
               ...chat,
-              ...chat.messages.push(newMessage),
+              ...chat.messages.push(msg),
             }
           : chat,
       );
@@ -61,7 +52,24 @@ export const { SearchChat, getChats, sendMsg, SelectChat } = ChatSlice.actions;
 export const fetchChats = () => async (dispatch: AppDispatch) => {
   try {
     const response = await axios.get(`${API_URL}`);
-    dispatch(getChats(response.data));
+    dispatch(getChats(response.data.data));
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const addMsg = (chat_id: number, id: number, msg: string) => async (dispatch: AppDispatch) => {
+  try {
+    const newMessage = {
+      id: id,
+      content: msg,
+      type: 'text',
+      createdAt: sub(new Date(), { seconds: 1 }),
+      senderId: uniqueId(),
+    };
+    const response = await axios.post("/api/v1/chats/" + chat_id + "/", newMessage);
+    console.log(response)
+    dispatch(sendMsg({id: chat_id, msg: newMessage}));
   } catch (err: any) {
     throw new Error(err);
   }

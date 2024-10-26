@@ -74,11 +74,11 @@ interface ChatContentProps {
             {/* ------------------------------------------- */}
 
             <Box width="100%">
-              <Scrollbar sx={{ height: '650px', overflow: 'auto', maxHeight: '800px' }}>
+              <Scrollbar sx={{ height: '100%', overflow: 'auto', maxHeight: '800px' }}>
                 <Box p={3}>
                   {chatDetails.messages.map((chat) => {
                     return (
-                      <Box key={chat.id + chat.msg + chat.createdAt}>
+                      <Box key={chat.id + chat.content + chat.createdAt}>
                         {chatDetails.id === chat.senderId ? (
                           <>
                             <Box display="flex">
@@ -101,12 +101,12 @@ interface ChatContentProps {
                                       mr: 'auto',
                                     }}
                                   >
-                                    {chat.msg}
+                                    {chat.content}
                                   </Box>
                                 ) : null}
                                 {chat.type === 'image' ? (
                                   <Box mb={1} sx={{ overflow: 'hidden', lineHeight: '0px' }}>
-                                    <img src={chat.msg} alt="attach" width="150" />
+                                    <img src={chat.content} alt="attach" width="150" />
                                   </Box>
                                 ) : null}
                               </Box>
@@ -138,12 +138,12 @@ interface ChatContentProps {
                                     ml: 'auto',
                                   }}
                                 >
-                                  {chat.msg}
+                                  {chat.content}
                                 </Box>
                               ) : null}
                               {chat.type === 'image' ? (
                                 <Box mb={1} sx={{ overflow: 'hidden', lineHeight: '0px' }}>
-                                  <img src={chat.msg} alt="attach" width="250" />
+                                  <img src={chat.content} alt="attach" width="250" />
                                 </Box>
                               ) : null}
                             </Box>

@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const axiosServices = axios.create();
+const axiosServices = axios.create({
+    baseURL: "http://localhost:8000"
+});
 
 // interceptor for http
 axiosServices.interceptors.response.use(

@@ -77,8 +77,8 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
 
-          const response = await axios.get('/api/account/my-account');
-          const { user } = response.data;
+          const response = await axios.get('/api/v1/account/my-account');
+          const { user } = response.data.user;
 
           dispatch({
             type: 'INITIALIZE',
@@ -112,8 +112,8 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
   }, []);
 
   const signin = async (email: string, password: string) => {
-    const response = await axios.post('/api/account/login', {
-      email,
+    const response = await axios.post('/auth/sign-in', {
+      "username": email,
       password,
     });
     const { accessToken, user } = response.data;
@@ -126,12 +126,11 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
     });
   };
 
-  const signup = async (email: string, password: string, firstName: string, lastName: string) => {
-    const response = await axios.post('/api/account/register', {
-      email,
-      password,
-      firstName,
-      lastName,
+  const signup = async (email: string, password: string, name: string) => {
+    const response = await axios.post('/auth/sign-up', {
+      "email": email,
+      "name": name,
+      "password": password,
     });
     const { accessToken, user } = response.data;
 

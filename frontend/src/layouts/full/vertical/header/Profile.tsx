@@ -25,7 +25,7 @@ import useAuth from 'src/guards/authGuard/UseAuth';
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
   const mounted = useMounted();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleClick2 = (event: any) => {
@@ -93,7 +93,7 @@ const Profile = () => {
           <Avatar src={ProfileImg} alt={ProfileImg} sx={{ width: 95, height: 95 }} />
           <Box>
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-              Боба Биба
+              { user ? user.name : ""}
             </Typography>
             <Typography
               variant="subtitle2"
@@ -103,7 +103,7 @@ const Profile = () => {
               gap={1}
             >
               <IconMail width={15} height={15} />
-              boba@mail.com
+            
             </Typography>
           </Box>
         </Stack>

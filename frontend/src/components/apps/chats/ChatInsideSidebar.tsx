@@ -28,7 +28,7 @@ const ChatInsideSidebar = ({ isInSidebar, chat }: chatType) => {
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
   const totalAttachment = uniq(flatten(chat?.messages.map((item) => item.attachment))).length;
   const totalMedia =
-    uniq(flatten(chat?.messages.map((item) => (item?.type === 'image' ? item.msg : null)))).length -
+    uniq(flatten(chat?.messages.map((item) => (item?.type === 'image' ? item.content : null)))).length -
     1;
 
   const StyledStack = styled(Stack)(() => ({
@@ -67,7 +67,7 @@ const ChatInsideSidebar = ({ isInSidebar, chat }: chatType) => {
                 <Grid item xs={12} lg={4} key={c.id}>
                   {c?.type === 'image' ? (
                     <Avatar
-                      src={c?.msg}
+                      src={c?.content}
                       alt="media"
                       variant="rounded"
                       sx={{ width: '72px', height: '72px' }}

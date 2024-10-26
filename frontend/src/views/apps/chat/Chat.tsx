@@ -30,7 +30,7 @@ const Chats = () => {
         {/* ------------------------------------------- */}
         {/* Right part */}
         {/* ------------------------------------------- */}
-        <Box width={"100%"}>
+        <Box width={"100%"} sx={{height: '100%'}}>
           <ChatContent toggleChatSidebar={() => setMobileSidebarOpen(true)} />
           <Divider />
           <ChatMsgSent />

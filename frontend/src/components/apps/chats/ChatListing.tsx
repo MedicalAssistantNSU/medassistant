@@ -51,7 +51,7 @@ const ChatListing = () => {
     const lastMessage = conversation.messages[conversation.messages.length - 1];
     if (lastMessage) {
       const sender = lastMessage.senderId === conversation.id ? 'You: ' : '';
-      const message = lastMessage.type === 'image' ? 'Sent a photo' : lastMessage.msg;
+      const message = lastMessage.type === 'image' ? 'Sent a photo' : lastMessage.content;
       displayText = `${sender}${message}`;
     }
 
@@ -147,7 +147,7 @@ const ChatListing = () => {
                 />
                 <Box sx={{ flexShrink: '0' }} mt={0.5}>
                   <Typography variant="body2">
-                    {formatDistanceToNowStrict(new Date(lastActivity(chat)), {
+                    {formatDistanceToNowStrict(new Date(lastActivity(chat) ? lastActivity(chat) : 0), {
                       addSuffix: false,
                     })}
                   </Typography>

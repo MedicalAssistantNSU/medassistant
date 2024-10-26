@@ -4,7 +4,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'src/store/Store';
 import { IconButton, InputBase, Box } from '@mui/material';
 import { IconPaperclip, IconPhoto, IconSend } from '@tabler/icons-react';
-import { sendMsg } from 'src/store/apps/chat/ChatSlice';
+import { addMsg, sendMsg } from 'src/store/apps/chat/ChatSlice';
 import { getLLamaAnswer } from 'src/utils/llamaai/LlamaService';
 
 const ChatMsgSent = () => {
@@ -22,15 +22,13 @@ const ChatMsgSent = () => {
   const onChatMsgSubmit = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    dispatch(sendMsg(newMsg));
-    console.log("hello")
-    const tmp = getLLamaAnswer(newMsg.msg)
-    sendMsg(tmp)
+    dispatch(addMsg(id ? id: 1, id, newMsg.msg));
     setMsg('');
   };
 
   return (
-    <Box p={2}>
+    <Box p={2}
+    >
       {/* ------------------------------------------- */}
       {/* sent chat */}
       {/* ------------------------------------------- */}

@@ -6,10 +6,10 @@ type attachType = {
   
   type MessageType = {
     createdAt?: any;
-    msg: string;
+    content: string;
     senderId: number | string;
     type: string;
-    attachment: attachType[];
+    attachment?: attachType[];
     id: string;
   };
   
