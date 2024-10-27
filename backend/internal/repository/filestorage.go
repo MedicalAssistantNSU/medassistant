@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/minio/minio-go"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 type UploadInput struct {
@@ -48,6 +48,6 @@ func (fs *FileStorage) Upload(ctx context.Context, input UploadInput) (string, e
 }
 
 func (fs *FileStorage) generateFileURL(fileName string) string {
-	endpoint := strings.Replace(fs.endpoint, "localstack", "localhost", -1)
-	return fmt.Sprintf("http://%s.%s/%s", fs.bucket, endpoint, fileName)
+	//endpoint := strings.Replace(fs.endpoint, "localstack", "localhost", -1)
+	return fmt.Sprintf("%s/%s", viper.GetString("storage.domain"), fileName)
 }

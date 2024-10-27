@@ -3,9 +3,6 @@ package transport
 import (
 	"med-asis/internal/models"
 	"net/http"
-	"os"
-	"path"
-	"path/filepath"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -86,14 +83,14 @@ func (h *Handler) createMessage(c *gin.Context) {
 		return
 	}
 
-	message_id, err := h.services.Message.Create(chat_id, input)
+	response, err := h.services.Message.Create(chat_id, input)
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"message_id": message_id,
+		"data": response,
 	})
 }
 
@@ -256,36 +253,6 @@ func (h *Handler) uploadFile(c *gin.Context) {
 
 	url, err := h.services.Upload(c.Request.Context(), file, fileHeader.Size, fileType)
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, &uploadResponse{
-			Status: "error",
-			Msg:    err.Error(),
-		})
-		return
-	}
-
-	// write file
-	path := filepath.Join("../CV", path.Base(url))
-	newFile, err := os.Create(path)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, &uploadResponse{
-			Status: "error",
-			Msg:    err.Error(),
-		})
-		return
-	}
-
-	defer newFile.Close()
-	defer os.Remove(path)
-	if _, err := newFile.Write(buffer); err != nil || newFile.Close() != nil {
-		c.JSON(http.StatusBadRequest, &uploadResponse{
-			Status: "error",
-			Msg:    err.Error(),
-		})
-		return
-	}
-
-	//out, err := pkg.Perform(path)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &uploadResponse{
 			Status: "error",

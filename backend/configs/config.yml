@@ -10,3 +10,7 @@ db:
 storage:
   endpoint: "s3.ru-1.storage.selcloud.ru"
   bucket: "first-test"
+  domain: "https://a5cc8782-a9cf-400e-8b1e-53c6ad294d87.selstorage.ru"
+
+cv:
+  path: "../CV/"

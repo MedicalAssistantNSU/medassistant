@@ -63,6 +63,13 @@ func (i *MessageRepo) GetItemById(user_id, message_id int) (models.Message, erro
 	return input, err
 }
 
+func (i *MessageRepo) GetMsgById(message_id int) (models.Message, error) {
+	var input models.Message
+	query := fmt.Sprintf("SELECT il.id, il.content, il.sender_id, il.type, il.created_at FROM %s il WHERE il.id = $1", messageTable)
+	err := i.db.Get(&input, query, message_id)
+	return input, err
+}
+
 func (i *MessageRepo) Delete(user_id, message_id int) error {
 	query := fmt.Sprintf("DELETE FROM %s ti USING %s ul, %s li WHERE ti.id = li.message_id AND li.chat_id = ul.chat_id AND ul.user_id = $1 AND ti.id = $2",
 		messageTable, usersChats, chatMessages)

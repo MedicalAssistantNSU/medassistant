@@ -86,7 +86,7 @@ func (h *Handler) signIn(c *gin.Context) {
 		NewTransportErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	logrus.Printf("create user with %s, %s", input.Username, input.Password)
+
 	token, err := h.services.Authorization.GenerateToken(input.Username, input.Password)
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())

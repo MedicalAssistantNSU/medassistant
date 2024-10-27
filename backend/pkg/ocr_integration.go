@@ -13,10 +13,7 @@ func Perform(path string) (string, error) {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
 	cmd := exec.Command("python3", "../CV/DocumentOCR.py", path)
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return "", err
-	}
+
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return "", err
@@ -25,11 +22,10 @@ func Perform(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	go copyOutput(stdout)
 	go copyOutput(stderr)
 	cmd.Wait()
 
-	file, err := os.Open("../CV/processed_images/processed_image.jpg")
+	file, err := os.Open("processed_images/detected_text.txt")
 	if err != nil {
 		return "", err
 	}
@@ -42,6 +38,6 @@ func Perform(path string) (string, error) {
 func copyOutput(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
-		logrus.Error(scanner.Text())
+		logrus.Info(scanner.Text())
 	}
 }
