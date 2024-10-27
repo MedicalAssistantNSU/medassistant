@@ -20,6 +20,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import ChatInsideSidebar from './ChatInsideSidebar';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
 import ChatListing from './ChatListing';
+import ChatMsgSent from './ChatMsgSent';
 
 
 interface ChatContentProps {
@@ -41,7 +42,8 @@ interface ChatContentProps {
           {/* ------------------------------------------- */}
           {/* Header Part */}
           {/* ------------------------------------------- */}
-          <Box>
+          <Box 
+          >
             <Box p={1} display="flex" alignItems="center" >
               <Box
                 sx={{
@@ -73,8 +75,20 @@ interface ChatContentProps {
             {/* Chat msges */}
             {/* ------------------------------------------- */}
 
-            <Box width="100%">
-              <Scrollbar sx={{ height: '100%', overflow: 'auto', maxHeight: '800px' }}>
+            <Box width="100%"
+            >
+              <Scrollbar sx={{ height: '77vh', overflow: 'auto', maxHeight: '77vh',
+                '&:before': {
+                  content: '""',
+                  background: 'radial-gradient(#2C3E50, #4CA1AF)',
+                  backgroundSize: '200% 200%',
+                  animation: 'gradient 15s ease infinite',
+                  position: 'absolute',
+                  height: '100%',
+                  width: '100%',
+                  opacity: '0.8',
+                },
+              }}>
                 <Box p={3}>
                   {chatDetails.messages.map((chat) => {
                     return (
@@ -106,7 +120,7 @@ interface ChatContentProps {
                                 ) : null}
                                 {chat.type === 'image' ? (
                                   <Box mb={1} sx={{ overflow: 'hidden', lineHeight: '0px' }}>
-                                    <img src={chat.content} alt="attach" width="150" />
+                                    <img src={chat.content} alt="attach" width="250" />
                                   </Box>
                                 ) : null}
                               </Box>
@@ -161,10 +175,12 @@ interface ChatContentProps {
             {/* ------------------------------------------- */}
             <ChatInsideSidebar isInSidebar={false} chat={chatDetails} />
           </Box>
+          <ChatMsgSent />
         </Box>
+        
       ) : (
         <Box display="flex" alignItems="center" p={2} pb={1} pt={1}>
-          <ChatListing />
+          <></>
         </Box>
       )}
     </Box>

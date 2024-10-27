@@ -13,6 +13,16 @@ const MainWrapper = styled('div')(() => ({
   display: 'flex',
   minHeight: '100vh',
   width: '100%',
+  '&:before': {
+                  content: '""',
+                  background: 'radial-gradient(#2C3E50, #4CA1AF)',
+                  backgroundSize: '200% 200%',
+                  animation: 'gradient 15s ease infinite',
+                  position: 'absolute',
+                  height: '100%',
+                  width: '100%',
+                  opacity: '1',
+                },
 }));
 
 const PageWrapper = styled('div')(() => ({

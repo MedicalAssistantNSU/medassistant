@@ -77,9 +77,9 @@ const DarkThemeColors = [
     palette: {
       primary: {
         main: '#01C0C8',
-        light: '#003638',
-        dark: '#00B9C0',
-        contrastText: '#ffffff',
+        light: '#5b93ab',
+        dark: '#4CA1AF',
+        contrastText: '#2c3e50',
       },
       secondary: {
         main: '#FB9678',

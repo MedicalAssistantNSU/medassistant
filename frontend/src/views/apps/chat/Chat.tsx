@@ -16,7 +16,7 @@ const Chats = () => {
 
   return (
     <PageContainer title="Чаты">
-      <Box display={"flex"} width={"100%"} sx={{margin:"0%"}}>
+      <Box mt={2} display={"flex"} width={"100%"} bgcolor={"primary.contrastText"}>
         {/* ------------------------------------------- */}
         {/* Left part */}
         {/* ------------------------------------------- */}
@@ -30,10 +30,9 @@ const Chats = () => {
         {/* ------------------------------------------- */}
         {/* Right part */}
         {/* ------------------------------------------- */}
-        <Box width={"100%"} sx={{height: '100%'}}>
+        <Box width={"100%"} height={"90vh"}>
           <ChatContent toggleChatSidebar={() => setMobileSidebarOpen(true)} />
-          <Divider />
-          <ChatMsgSent />
+    
         </Box>
       </Box>
     </PageContainer>

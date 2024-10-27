@@ -1,7 +1,7 @@
 import axios from '../../../utils/axios';
 import { createSlice } from '@reduxjs/toolkit';
 import { AppDispatch } from 'src/store/Store';
-import { uniqueId } from 'lodash';
+import { toNumber, uniqueId } from 'lodash';
 import { sub } from 'date-fns';
 
 const API_URL = '/api/v1/chats/';
@@ -58,18 +58,20 @@ export const fetchChats = () => async (dispatch: AppDispatch) => {
   }
 };
 
-export const addMsg = (chat_id: number, id: number, msg: string) => async (dispatch: AppDispatch) => {
+export const addMsg = (chat_id: number, id: number, type: string, msg: string) => async (dispatch: AppDispatch) => {
   try {
     const newMessage = {
       id: id,
       content: msg,
-      type: 'text',
+      type: type,
       createdAt: sub(new Date(), { seconds: 1 }),
-      senderId: uniqueId(),
+      senderId: toNumber(uniqueId()),
     };
     const response = await axios.post("/api/v1/chats/" + chat_id + "/", newMessage);
+    
     console.log(response)
     dispatch(sendMsg({id: chat_id, msg: newMessage}));
+    dispatch(sendMsg({id: chat_id, msg: response.data.data}));
   } catch (err: any) {
     throw new Error(err);
   }

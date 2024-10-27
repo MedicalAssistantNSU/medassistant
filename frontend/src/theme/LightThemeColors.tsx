@@ -77,9 +77,9 @@ const LightThemeColors = [
         contrastText: '#ffffff',
       },
       secondary: {
-        main: '#FB9678',
+        main: '#5b93ab',
         light: '#FFF5F2',
-        dark: '#F48B6C',
+        dark: '#4CA1AF',
         contrastText: '#ffffff',
       },
     },
