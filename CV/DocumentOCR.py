@@ -2,7 +2,7 @@ import cv2
 import easyocr
 import os
 import argparse
-from exceptions import *
+from .exceptions import *
 from typing import Optional
 
 """
@@ -86,11 +86,14 @@ class DocumentOCR:
         except Exception as e:
             raise SaveError(f"Failed to save detected text: {e}")
 
-    def run(self, image_path: str) -> None:
+    # In CV/DocumentOCR.py, update the `run` method to return the OCR-detected text
+
+    def run(self, image_path: str) -> str:
         """
-        Execute the OCR process: preprocessing, OCR, and saving results.
+        Execute the OCR process: preprocessing and OCR.
 
         :param image_path: Path to the input image file.
+        :return: Detected text as a string.
         :raises CVException: If something goes wrong.
         """
         try:
@@ -98,11 +101,11 @@ class DocumentOCR:
             processed_image = self.preprocess_document(image_path)
 
             if processed_image is not None:
-                # Perform OCR
+                # Perform OCR and return result
                 ocr_result = self.ocr_image(processed_image)
-
-                # Save the OCR result
-                self.save_detected_text(ocr_result)
+                return ocr_result
+            else:
+                raise OCRProcessError("Image preprocessing returned None.")
         except Exception as e:
             raise CVException(f"An error occurred during OCR processing: {e}")
 
