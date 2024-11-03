@@ -1,10 +1,22 @@
 import json
+import argparse
 from langchain.prompts import PromptTemplate
 from langchain_community.llms.llamafile import Llamafile
 
 
+"""
+Usage: python3 LLM/ChatLLM.py <url> <username> <message> <history>
+Output: None
+"""
+
+
 class ChatLLM:
-    def __init__(self, task='chat', config_file='LLM/prompts_config.json'):
+    def __init__(
+            self,
+            url: str = 'http://localhost:8080',
+            username: str = 'User',
+            task='chat',
+            config_file='LLM/prompts_config.json'):
         """
         Initialize the ChatLLM class with a task-based system prompt.
         The system prompt is selected based on the task provided.
@@ -12,13 +24,24 @@ class ChatLLM:
         :param task: The task for which to load the system prompt (e.g., 'ocr', 'chat').
         :param config_file: Path to the configuration file with system prompts.
         """
-        self.model = Llamafile(base_url='http://localhost:8080')
-        self.username = 'User'
+        base_url = url
+        min_p: float = 0.05
+        n_keep: int = 0  # 0 = tokens are kept when context size is exceeded. -1  = retain all tokens from the prompt.
+        n_predict: int = -1  # -1 = infinity
+
+        self.model = Llamafile(
+            base_url=base_url,
+            min_p=min_p,
+            n_keep=n_keep,
+            n_predict=n_predict,
+        )
+        self.username = username
 
         with open(config_file, 'r') as file:
             prompts = json.load(file)
 
-        self.system_prompt = prompts.get(task, prompts['chat'])
+        self.system_prompt = prompts.get(task)
+        self.contextualize_prompt = prompts.get('contextualize')
 
         self.prompt_template = PromptTemplate.from_template(
             """
@@ -57,7 +80,7 @@ class ChatLLM:
         for chunks in self.model.stream(formatted_prompt,
                                         stop=['</s>', self.username + ':', self.username.lower() + ':', '<|eot_id|>']
                                         ):
-            print(chunks, end="", flush=True)
+            # print(chunks, end="", flush=True)
             answer += chunks
 
         new_history = (history + self.history_template
@@ -65,4 +88,27 @@ class ChatLLM:
                        .to_string()
                        )
 
-        return {'answer': answer, 'history': new_history}
+        print({'answer': answer, 'history': new_history})
+
+    # def contextualize(self, context: str):
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Sending and receiving messages to/from model on localhost")
+    parser.add_argument('url', type=str, help="Url that model is hosted on")
+    parser.add_argument('username', type=str, help="Username that will be shown in chat")
+    parser.add_argument('message', type=str, default='', help="Message from user")
+    parser.add_argument('history', type=str, default='', help="History of interactions, fully handled by this script")
+
+    args = parser.parse_args()
+
+    model = ChatLLM(
+        url=args.url,
+        username=args.username
+    )
+
+    model.send_message(args.message, args.history)
+
+
+if __name__ == "__main__":
+    main()
