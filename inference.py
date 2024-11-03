@@ -1,46 +1,54 @@
-# inference.py
-
 import argparse
 from CV.DocumentOCR import DocumentOCR
 from LLM.ChatLLM import ChatLLM
 
 
-def main(image_path, save_path='processed_output'):
-    # Initialize OCR processor with save path
-    ocr_processor = DocumentOCR(save_path=save_path)
+def main(image_path=None, save_path='processed_output', task='chat', prompt=None):
+    """
+    Main function to process OCR or chat tasks with a language model (LLM).
 
-    # Initialize LLM processor
-    llm = ChatLLM()
+    Parameters:
+    - image_path (str): Path to the image file to process (required for 'ocr' task).
+    - save_path (str): Directory path where results will be saved (default is 'processed_output').
+    - task (str): Type of task to perform, either 'ocr' or 'chat'. Defaults to 'chat'.
+      - 'ocr': Runs OCR on an image and refines the text using LLM.
+      - 'chat': Sends a prompt directly to the LLM for response.
+    - prompt (str): Custom prompt to send to LLM if task is 'chat'. Required for 'chat' task.
+    """
+    llm = ChatLLM(task=task)
 
-    # Run OCR on the provided image
-    print("Running OCR...")
-    ocr_result = ocr_processor.run(image_path)
+    if task == "ocr":
+        ocr_processor = DocumentOCR(save_path=save_path)
+        if image_path is None:
+            print("No image path provided for ocr task.")
+            return
+        print("Running OCR...")
+        ocr_result = ocr_processor.run(image_path)
+        print(f"Detected OCR text:\n{ocr_result}")
 
-    # Print the detected OCR text for debugging
-    print(f"Detected OCR text:\n{ocr_result}")
+        # Use OCR result as input prompt for LLM
+        prompt = f"Original text: {ocr_result}"
+        print("Refining text with LLM...")
+        refined_text = llm.send_message(prompt, "")
+        ocr_processor.save_detected_text(refined_text["answer"])
+    else:
+        # For chat task, send the provided prompt to LLM
+        if prompt is None:
+            print("No prompt provided for chat task.")
+            return
+        print("Sending prompt to LLM...")
+        llm.send_message(prompt, "")
 
-    # Prepare prompt for LLM
-    prompt = ("I've done OCR but I have some mistakes and noise. "
-              "Can you make this text better? Do not change the idea and sense of the text. "
-              "Answer with only refined text and nothing else. Answer should be given in the language of original text. "
-              "If you understand a word, replace it with proper spelling.\n"
-              f"Original text: {ocr_result}")
-
-    # Send OCR result to LLM for refinement
-    print("Refining text with LLM...")
-    refined_text, _ = llm.send_message(prompt, "")
-
-    # Output the refined text
-    print(f"Refined text:\n{refined_text}")
-
-    # Save the refined text
-    ocr_processor.save_detected_text(refined_text)
+    print("\nDone.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process an image with OCR and refine the text with LLM.")
-    parser.add_argument('image_path', type=str, help="Path to the image file to process")
+    parser.add_argument('--image_path', type=str, help="Path to the image file to process (required for 'ocr' task)")
     parser.add_argument('--save_path', type=str, default='processed_output', help="Directory to save results")
-    args = parser.parse_args()
+    parser.add_argument('--task', type=str, choices=['ocr', 'chat'], default='chat',
+                        help="Task for LLM prompt selection, e.g., 'ocr' for OCR processing or 'chat' for direct LLM interaction")
+    parser.add_argument('--prompt', type=str, help="Prompt to send to the LLM if task is 'chat'")
 
-    main(args.image_path, args.save_path)
+    args = parser.parse_args()
+    main(args.image_path, args.save_path, args.task, args.prompt)
