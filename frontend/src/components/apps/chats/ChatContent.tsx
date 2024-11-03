@@ -77,7 +77,7 @@ interface ChatContentProps {
 
             <Box width="100%"
             >
-              <Scrollbar sx={{ height: '77vh', overflow: 'auto', maxHeight: '77vh',
+              <Scrollbar sx={{ height: '75vh', overflow: 'auto', maxHeight: '68vh',
                 '&:before': {
                   content: '""',
                   background: 'radial-gradient(#2C3E50, #4CA1AF)',
@@ -86,7 +86,7 @@ interface ChatContentProps {
                   position: 'absolute',
                   height: '100%',
                   width: '100%',
-                  opacity: '0.8',
+                  opacity: '0.9',
                 },
               }}>
                 <Box p={3}>
@@ -98,8 +98,7 @@ interface ChatContentProps {
                             <Box display="flex">
                               <Box>
                                 {chat.createdAt ? (
-                                  <Typography variant="body2" color="grey.400" mb={1}>
-                                    {chatDetails.name},{' '}
+                                  <Typography variant="body2" color="white" mb={1}>
                                     {formatDistanceToNowStrict(new Date(chat.createdAt), {
                                       addSuffix: false,
                                     })}{' '}
@@ -135,7 +134,7 @@ interface ChatContentProps {
                           >
                             <Box alignItems="flex-end" display="flex" flexDirection={'column'}>
                               {chat.createdAt ? (
-                                <Typography variant="body2" color="grey.400" mb={1}>
+                                <Typography variant="body2" color="white" mb={1}>
                                   {formatDistanceToNowStrict(new Date(chat.createdAt), {
                                       addSuffix: false,
                                     })}{' '}

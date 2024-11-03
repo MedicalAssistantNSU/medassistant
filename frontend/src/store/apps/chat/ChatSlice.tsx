@@ -67,10 +67,10 @@ export const addMsg = (chat_id: number, id: number, type: string, msg: string) =
       createdAt: sub(new Date(), { seconds: 1 }),
       senderId: toNumber(uniqueId()),
     };
-    const response = await axios.post("/api/v1/chats/" + chat_id + "/", newMessage);
-    
-    console.log(response)
     dispatch(sendMsg({id: chat_id, msg: newMessage}));
+    const response = await axios.post("/api/v1/chats/" + chat_id + "/", newMessage);
+    console.log(response)
+    
     dispatch(sendMsg({id: chat_id, msg: response.data.data}));
   } catch (err: any) {
     throw new Error(err);

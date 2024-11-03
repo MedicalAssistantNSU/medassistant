@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-
-	"github.com/spf13/viper"
 )
 
 type MessageService struct {
@@ -33,21 +31,34 @@ func (i *MessageService) Create(chat_id int, msg models.Message) (models.Message
 	response.Type = "text"
 
 	if msg.Type == "image" {
-		path := viper.GetString("cv.path")
+		path := "../"
 		flpath := path + filepath.Base(msg.Content)
 		if err := DownloadFile(flpath, msg.Content); err != nil {
 			response.Content = "Не удалось загрузить файл."
 		}
 		defer os.Remove(flpath)
 
-		out, err := pkg.Perform(path)
+		out, err := pkg.RunTask(pkg.TaskConfig{
+			TaskType: "ocr",
+			Value:    flpath,
+		})
+
 		if err != nil {
 			response.Content = err.Error()
 		} else {
 			response.Content = out
 		}
 	} else {
-		response.Content = msg.Content
+		out, err := pkg.RunTask(pkg.TaskConfig{
+			TaskType: "chat",
+			Value:    msg.Content,
+		})
+
+		if err != nil {
+			response.Content = err.Error()
+		} else {
+			response.Content = out
+		}
 	}
 
 	id, err := i.repo.Create(chat_id, response)

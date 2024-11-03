@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 )
@@ -18,10 +19,20 @@ func Perform(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return "", err
+	}
+
 	err = cmd.Start()
 	if err != nil {
 		return "", err
 	}
+
+	var sb strings.Builder
+
+	go copyOutputInBuffer(stdout, &sb)
 	go copyOutput(stderr)
 	cmd.Wait()
 
@@ -39,5 +50,14 @@ func copyOutput(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		logrus.Info(scanner.Text())
+	}
+}
+
+func copyOutputInBuffer(r io.Reader, sb *strings.Builder) {
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		info := scanner.Text()
+		sb.WriteString(info)
+		logrus.Info(info)
 	}
 }

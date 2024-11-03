@@ -16,7 +16,7 @@ class ChatLLM:
             url: str = 'http://localhost:8080',
             username: str = 'User',
             task='chat',
-            config_file='LLM/prompts_config.json'):
+            config_file='../LLM/prompts_config.json'):
         """
         Initialize the ChatLLM class with a task-based system prompt.
         The system prompt is selected based on the task provided.
