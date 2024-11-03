@@ -6,7 +6,7 @@ def main():
 
     history = ''
     while 1:
-        message = input()
+        message = input("Enter a message: ")
 
         answer, history = script.send_message(message, history)
 

@@ -1,20 +1,24 @@
+import json
 from langchain.prompts import PromptTemplate
 from langchain_community.llms.llamafile import Llamafile
 
 
 class ChatLLM:
-    def __init__(self):
+    def __init__(self, task='chat', config_file='LLM/prompts_config.json'):
         """
-        Init the ChatLLM class.
-        This class connects to a model running at some url
-        and then performs all chains to interact with this model.
-        """
+        Initialize the ChatLLM class with a task-based system prompt.
+        The system prompt is selected based on the task provided.
 
+        :param task: The task for which to load the system prompt (e.g., 'ocr', 'chat').
+        :param config_file: Path to the configuration file with system prompts.
+        """
         self.model = Llamafile(base_url='http://localhost:8080')
-        self.system_prompt = """This is a conversation between User and MedAssistant, a friendly chatbot. \
-        MedAssistant is helpful, kind, honest, good at writing, and never fails to answer any \
-        requests immediately and with precision."""
         self.username = 'User'
+
+        with open(config_file, 'r') as file:
+            prompts = json.load(file)
+
+        self.system_prompt = prompts.get(task, prompts['chat'])
 
         self.prompt_template = PromptTemplate.from_template(
             """
@@ -30,7 +34,7 @@ class ChatLLM:
             """
         )
 
-    def send_message(self, message: str, history: str) -> dict[str: str]:
+    def send_message(self, message: str, history: str) -> dict:
         """
         Method for sending a question from the user to the model.
         Receives both new question and context from previous interactions.
@@ -40,8 +44,6 @@ class ChatLLM:
         :param history: previous interactions
         :return: the answer and updated history for further interactions
         """
-
-        # form a prompt for the model
         formatted_prompt = self.prompt_template.invoke(
             {
                 "prompt": self.system_prompt,
@@ -51,16 +53,13 @@ class ChatLLM:
             }
         )
 
-        # collect answer with printing
         answer = ''
         for chunks in self.model.stream(formatted_prompt,
                                         stop=['</s>', self.username + ':', self.username.lower() + ':', '<|eot_id|>']
                                         ):
             print(chunks, end="", flush=True)
             answer += chunks
-        print()
 
-        # update history
         new_history = (history + self.history_template
                        .invoke({"message": message, "answer": answer})
                        .to_string()
