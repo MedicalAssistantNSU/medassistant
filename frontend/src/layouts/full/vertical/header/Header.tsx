@@ -60,7 +60,6 @@ const Header = () => {
               ) : null}
 
               <Box flexGrow={1} />
-              <Customizer />
               <Stack spacing={1} direction="row" alignItems="center">
                   <Profile />
               </Stack>

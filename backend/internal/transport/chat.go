@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type getAllChatsResponses struct {
+type GetAllChatsResponses struct {
 	Data []models.Chat `json:"data"`
 }
 

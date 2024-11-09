@@ -93,7 +93,7 @@ const Profile = () => {
           <Avatar src={ProfileImg} alt={ProfileImg} sx={{ width: 95, height: 95 }} />
           <Box>
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-              { user ? user.name : ""}
+              { user ? user.name : "Unknown"}
             </Typography>
             <Typography
               variant="subtitle2"
@@ -103,7 +103,7 @@ const Profile = () => {
               gap={1}
             >
               <IconMail width={15} height={15} />
-            
+              {user? user.email : "unknown"}
             </Typography>
           </Box>
         </Stack>
