@@ -1,16 +1,24 @@
-import { Box, Typography } from '@mui/material';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { Grid } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
-import DashboardCard from '../../components/shared/DashboardCard';
+import Questions from 'src/components/pages/faq/Questions';
+import StillQuestions from 'src/components/pages/faq/StillQuestions';
 
-const Help = () => {
-  return (
-      <PageContainer title="Поддержка">
-          <Box mt={2} />
-          <DashboardCard title="Связаться">
-              <Typography>...</Typography>
-          </DashboardCard>
-      </PageContainer>
-  );
+const Faq = () => {
+    return (
+        <PageContainer title="Помощь" description="this is Faq page">
+            {/* breadcrumb */}
+            {/* end breadcrumb */}
+            <Grid container spacing={3}>
+                <Grid item xs>
+                    <Questions />
+                    <StillQuestions />
+                </Grid>
+            </Grid>
+        </PageContainer>
+    );
 };
 
-export default Help;
+export default Faq;
+

@@ -31,7 +31,7 @@ const Chats = () => {
         {/* Right part */}
         {/* ------------------------------------------- */}
         <Box width={"100%"}>
-          <ChatContent toggleChatSidebar={() => setMobileSidebarOpen(true)} />
+          <ChatContent toggleChatSidebar={() => setMobileSidebarOpen(!isMobileSidebarOpen)} />
     
         </Box>
       </Box>

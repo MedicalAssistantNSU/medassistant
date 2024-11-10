@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   List,
@@ -16,6 +16,9 @@ import {
   Button,
   Menu,
   MenuItem,
+  Modal,
+  Fade,
+  Backdrop,
 } from '@mui/material';
 import { useSelector, useDispatch } from 'src/store/Store';
 import Scrollbar from '../../custom-scroll/Scrollbar';
@@ -23,12 +26,27 @@ import { SelectChat, fetchChats, SearchChat } from '../../../store/apps/chat/Cha
 import { ChatsType } from 'src/types/apps/chat';
 import { last } from 'lodash';
 import { formatDistanceToNowStrict } from 'date-fns';
-import { IconChevronDown, IconSearch } from '@tabler/icons-react';
+import { IconChevronDown, IconPlus, IconSearch } from '@tabler/icons-react';
 import user1 from 'src/assets/images/profile/user-1.jpg';
+import CreateChat from '../CreateChat';
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '50%',
+  height: '40%',
+  bgcolor: 'background.paper',
+  overflowY: 'auto',
+  boxShadow: 24,
+  p: 4,
+};
 
 const ChatListing = () => {
   const dispatch = useDispatch();
   const activeChat = useSelector((state) => state.chatReducer.chatContent);
+  const [createChat, setCreateChat] = useState(false);
 
   useEffect(() => {
     dispatch(fetchChats());
@@ -71,6 +89,20 @@ const ChatListing = () => {
 
   return (
     <div>
+      <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={createChat}
+                onClose={() => setCreateChat(false)}
+                closeAfterTransition
+                slots={{ backdrop: Backdrop }}
+            >
+                <Fade in={createChat}>
+                    <Box sx={style}>
+                      <CreateChat/>
+                    </Box>
+                </Fade>
+          </Modal>
       {/* ------------------------------------------- */}
       {/* Search */}
       {/* ------------------------------------------- */}
@@ -118,8 +150,11 @@ const ChatListing = () => {
           >
             <MenuItem onClick={handleClose}>сортировать по времени</MenuItem>
           </Menu>
+          <Button onClick={() => setCreateChat(true)}>
+            <IconPlus />
+          </Button>
         </Box>
-        <Scrollbar sx={{ height: { lg: 'calc(100vh - 100px)', md: '100vh' }, maxHeight: '600px' }}>
+        <Scrollbar sx={{ height: 'calc(90vh - 155px)', overflow: 'auto', maxHeight: 'calc(90vh - 155px)' }}>
           {chats && chats.length ? (
             chats.map((chat) => (
               <ListItemButton

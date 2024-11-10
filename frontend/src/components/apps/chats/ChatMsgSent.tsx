@@ -64,6 +64,7 @@ const ChatMsgSent = () => {
             </Modal>
     <Box p={1}
       mt={1}
+      height={"120px"}
     >
       {/* ------------------------------------------- */}
       {/* sent chat */}

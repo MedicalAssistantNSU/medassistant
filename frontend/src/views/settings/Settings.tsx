@@ -50,7 +50,7 @@ const Settings = () => {
         transition: '0.1s ease-in',
         border: '1px solid rgba(145, 158, 171, 0.12)',
         '&:hover': {
-          transform: 'scale(1.05)',
+          transform: 'scale(1.10)',
         },
       }));
     
@@ -64,15 +64,12 @@ const Settings = () => {
         {/* ------------ Customizer Sidebar ------------- */}
         {/* ------------------------------------------- */}
         <Scrollbar sx={{ }}>
-          <Box p={2} display="flex" justifyContent={'space-between'} alignItems="center">
+          <Box p={1} display="flex" justifyContent={'space-between'} alignItems="center">
             <Typography variant="h4">Настройки</Typography>
 
           </Box>
           <Divider  />
           <Box p={2}>
-            {/* ------------------------------------------- */}
-            {/* ------------ Dark light theme setting ------------- */}
-            {/* ------------------------------------------- */}
             <Typography variant="h6" gutterBottom>
               Тема
             </Typography>

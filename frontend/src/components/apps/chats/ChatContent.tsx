@@ -77,7 +77,7 @@ interface ChatContentProps {
 
             <Box width="100%"
             >
-              <Scrollbar sx={{ height: '75vh', overflow: 'auto', maxHeight: '68vh',
+              <Scrollbar sx={{ height: 'calc(90vh - 155px)', overflow: 'auto', maxHeight: 'calc(90vh - 155px)',
                 '&:before': {
                   content: '""',
                   background: 'radial-gradient(#2C3E50, #4CA1AF)',
@@ -119,7 +119,7 @@ interface ChatContentProps {
                                 ) : null}
                                 {chat.type === 'image' ? (
                                   <Box mb={1} sx={{ overflow: 'hidden', lineHeight: '0px' }}>
-                                    <img src={chat.content} alt="attach" width="250" />
+                                    <a href={chat.content}><img src={chat.content} alt="attach" width="250" /></a>
                                   </Box>
                                 ) : null}
                               </Box>
@@ -156,7 +156,7 @@ interface ChatContentProps {
                               ) : null}
                               {chat.type === 'image' ? (
                                 <Box mb={1} sx={{ overflow: 'hidden', lineHeight: '0px' }}>
-                                  <img src={chat.content} alt="attach" width="250" />
+                                  <a href={chat.content}><img src={chat.content} alt="attach" width="250" /></a>
                                 </Box>
                               ) : null}
                             </Box>

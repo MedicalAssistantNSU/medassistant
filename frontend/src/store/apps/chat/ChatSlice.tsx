@@ -22,10 +22,13 @@ export const ChatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    getChats: (state, action) => {
+    getChats: (state: StateType, action) => {
       state.chats = action.payload;
     },
-    SearchChat: (state, action) => {
+    AppendChat: (state: StateType, action) => {
+      state.chats = state.chats.concat([action.payload]);
+    },
+    SearchChat: (state: StateType, action) => {
       state.chatSearch = action.payload;
     },
     SelectChat: (state: StateType, action) => {
@@ -47,7 +50,7 @@ export const ChatSlice = createSlice({
   },
 });
 
-export const { SearchChat, getChats, sendMsg, SelectChat } = ChatSlice.actions;
+export const { SearchChat, getChats, sendMsg, SelectChat, AppendChat } = ChatSlice.actions;
 
 export const fetchChats = () => async (dispatch: AppDispatch) => {
   try {
