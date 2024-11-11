@@ -29,7 +29,7 @@ def main(image_path=None, save_path='processed_output', task='chat', prompt=None
     else:
         # For chat task, send the provided prompt to LLM
         if prompt is None:
-            raise ValueError("No prompt provided for ocr task.")
+            raise ValueError("No prompt provided")
         llm.send_message(prompt, "")
 
 if __name__ == "__main__":
