@@ -15,7 +15,6 @@ class ChatLLM:
             self,
             url: str = 'http://localhost:8080',
             username: str = 'User',
-            task='chat',
             config_file='LLM/prompts_config.json'):
         """
         Initialize the ChatLLM class with a task-based system prompt.
@@ -38,10 +37,9 @@ class ChatLLM:
         self.username = username
 
         with open(config_file, 'r') as file:
-            prompts = json.load(file)
+            self.prompts = json.load(file)
 
-        self.system_prompt = prompts.get(task)
-        self.contextualize_prompt = prompts.get('contextualize')
+        self.contextualize_prompt = self.prompts.get('contextualize')
 
         self.prompt_template = PromptTemplate.from_template(
             """
@@ -57,19 +55,20 @@ class ChatLLM:
             """
         )
 
-    def send_message(self, message: str, history: str) -> dict:
+    def send_message(self, message: str, history: str, task: str) -> dict:
         """
         Method for sending a question from the user to the model.
         Receives both new question and context from previous interactions.
         Parameters will be passed to prompt template and then to the model.
 
+        :param task: task to be performed
         :param message: message to the model
         :param history: previous interactions
         :return: the answer and updated history for further interactions
         """
         formatted_prompt = self.prompt_template.invoke(
             {
-                "prompt": self.system_prompt,
+                "prompt": self.prompts.get(task),
                 "name": self.username,
                 "message": message,
                 "history": history
@@ -88,7 +87,9 @@ class ChatLLM:
                        .to_string()
                        )
 
-        print({'answer': answer, 'history': new_history})
+        result = {'answer': answer, 'history': new_history}
+        print(result)
+        return result
 
     # def contextualize(self, context: str):
 
