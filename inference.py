@@ -32,6 +32,7 @@ def main(image_path=None, save_path='processed_output', task='chat', prompt=None
             raise ValueError("No prompt provided")
         llm.send_message(prompt, "")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process an image with OCR and refine the text with LLM.")
     parser.add_argument('--image_path', type=str, help="Path to the image file to process (required for 'ocr' task)")
