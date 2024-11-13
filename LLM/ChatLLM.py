@@ -125,7 +125,6 @@ def main():
     parser.add_argument('username', type=str, help="Username that will be shown in chat")
     parser.add_argument('message', type=str, default='', help="Message from user")
     parser.add_argument('history', type=str, default='', help="History of interactions, fully handled by this script")
-
     args = parser.parse_args()
 
     model = ChatLLM(
