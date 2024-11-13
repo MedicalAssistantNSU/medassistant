@@ -96,7 +96,6 @@ class ChatLLM:
                                             '<|endoftext|>',
                                         ]
                                         ):
-            # print(chunks, end="", flush=True)
             answer += chunks
 
         new_history = (history + self.history_template
@@ -105,9 +104,7 @@ class ChatLLM:
                        )
 
         if len(new_history) > self.max_history_length:
-            # print('CONTEXTUALIZE')
             new_history = self.contextualize(new_history)
-            # print(f'NEW HISTORY: {new_history}')
 
         print({'answer': answer, 'history': new_history})
         return {'answer': answer, 'history': new_history}
