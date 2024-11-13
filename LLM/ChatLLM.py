@@ -30,12 +30,14 @@ class ChatLLM:
         self.n_predict: int = -1  # -1 = infinity
         self.context_length = 131072
         self.max_history_length = 3 * self.context_length
+        self.cache = False
 
         self.model = Llamafile(
             base_url=self.base_url,
             min_p=self.min_p,
             n_keep=self.n_keep,
             n_predict=self.n_predict,
+            cache=self.cache,
         )
         self.username = username
 
@@ -65,7 +67,7 @@ class ChatLLM:
             """
         )
 
-    def send_message(self, message: str, history: str) -> None:
+    def send_message(self, message: str, history: str) -> dict:
         """
         Method for sending a question from the user to the model.
         Receives both new question and context from previous interactions.
@@ -108,6 +110,7 @@ class ChatLLM:
             # print(f'NEW HISTORY: {new_history}')
 
         print({'answer': answer, 'history': new_history})
+        return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
         formatted_prompt = self.contextualize_template.invoke(
