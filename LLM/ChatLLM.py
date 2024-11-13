@@ -6,7 +6,7 @@ from langchain_community.llms.llamafile import Llamafile
 
 """
 Usage: python3 LLM/ChatLLM.py <url> <username> <message> <history>
-Output: None
+Output: None (everything now goes to stdout)
 """
 
 
@@ -24,16 +24,20 @@ class ChatLLM:
         :param task: The task for which to load the system prompt (e.g., 'ocr', 'chat').
         :param config_file: Path to the configuration file with system prompts.
         """
-        base_url = url
-        min_p: float = 0.05
-        n_keep: int = 0  # 0 = tokens are kept when context size is exceeded. -1  = retain all tokens from the prompt.
-        n_predict: int = -1  # -1 = infinity
+        self.base_url = url
+        self.min_p: float = 0.05
+        self.n_keep: int = 0  # 0 = no tokens are kept when context size is exceeded. -1  = retain all tokens.
+        self.n_predict: int = -1  # -1 = infinity
+        self.context_length = 131072
+        self.max_history_length = 3 * self.context_length
+        self.cache = False
 
         self.model = Llamafile(
-            base_url=base_url,
-            min_p=min_p,
-            n_keep=n_keep,
-            n_predict=n_predict,
+            base_url=self.base_url,
+            min_p=self.min_p,
+            n_keep=self.n_keep,
+            n_predict=self.n_predict,
+            cache=self.cache,
         )
         self.username = username
 
@@ -54,6 +58,12 @@ class ChatLLM:
             """
             User: {message}
             MedAssistant: {answer}
+            """
+        )
+        self.contextualize_template = PromptTemplate.from_template(
+            """
+            {contextualize_prompt}
+            Chat history: {context}
             """
         )
 
@@ -78,9 +88,14 @@ class ChatLLM:
 
         answer = ''
         for chunks in self.model.stream(formatted_prompt,
-                                        stop=['</s>', self.username + ':', self.username.lower() + ':', '<|eot_id|>']
+                                        stop=[
+                                            '</s>',
+                                            self.username + ':',
+                                            self.username.lower() + ':',
+                                            '<|eot_id|>',
+                                            '<|endoftext|>',
+                                        ]
                                         ):
-            # print(chunks, end="", flush=True)
             answer += chunks
 
         new_history = (history + self.history_template
@@ -88,9 +103,20 @@ class ChatLLM:
                        .to_string()
                        )
 
-        print({'answer': answer, 'history': new_history})
+        if len(new_history) > self.max_history_length:
+            new_history = self.contextualize(new_history)
 
-    # def contextualize(self, context: str):
+        print({'answer': answer, 'history': new_history})
+        return {'answer': answer, 'history': new_history}
+
+    def contextualize(self, context: str):
+        formatted_prompt = self.contextualize_template.invoke(
+            {
+                "contextualize_prompt": self.contextualize_prompt,
+                "context": context,
+            }
+        )
+        return self.model.invoke(formatted_prompt)
 
 
 def main():
@@ -99,14 +125,12 @@ def main():
     parser.add_argument('username', type=str, help="Username that will be shown in chat")
     parser.add_argument('message', type=str, default='', help="Message from user")
     parser.add_argument('history', type=str, default='', help="History of interactions, fully handled by this script")
-
     args = parser.parse_args()
 
     model = ChatLLM(
         url=args.url,
         username=args.username
     )
-
     model.send_message(args.message, args.history)
 
 
