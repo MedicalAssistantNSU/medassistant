@@ -132,7 +132,6 @@ def main():
         url=args.url,
         username=args.username
     )
-
     model.send_message(args.message, args.history)
 
 
