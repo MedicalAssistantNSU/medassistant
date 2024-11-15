@@ -56,6 +56,36 @@ func (h *Handler) getAllMessages(c *gin.Context) {
 	})
 }
 
+// @Summary Get all scans
+// @Security ApiKeyAuth
+// @Tags messages
+// @Description Get all scans
+// @ID get-all-scans
+// @Accept  json
+// @Produce  json
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} transort_error
+// @Failure 500 {object} transort_error
+// @Failure default {object} transort_error
+// @Router /api/v1/scans/ [get]
+func (h *Handler) getAllScans(c *gin.Context) {
+	user_id, ok := c.Get(UserId)
+	if !ok {
+		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
+		return
+	}
+
+	messages, err := h.services.Message.GetScans(user_id.(int))
+	if err != nil {
+		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, &AllMessages{
+		Data: messages,
+	})
+}
+
 // @Summary Create message
 // @Security ApiKeyAuth
 // @Tags message
@@ -71,6 +101,12 @@ func (h *Handler) getAllMessages(c *gin.Context) {
 // @Failure default {object} transort_error
 // @Router /api/v1/chats/{chat_id}/ [post]
 func (h *Handler) createMessage(c *gin.Context) {
+	user_id, ok := c.Get(UserId)
+	if !ok {
+		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
+		return
+	}
+
 	chat_id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -83,6 +119,7 @@ func (h *Handler) createMessage(c *gin.Context) {
 		return
 	}
 
+	input.SenderId = user_id.(int)
 	response, err := h.services.Message.Create(chat_id, input)
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())

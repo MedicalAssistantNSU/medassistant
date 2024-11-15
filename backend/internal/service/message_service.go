@@ -73,6 +73,10 @@ func (i *MessageService) GetAll(user_id, chat_id int) ([]models.Message, error) 
 	return i.repo.GetAll(chat_id)
 }
 
+func (i *MessageService) GetScans(user_id int) ([]models.Message, error) {
+	return i.repo.GetScans(user_id)
+}
+
 func (i *MessageService) GetItemById(user_id, message_id int) (models.Message, error) {
 	return i.repo.GetItemById(user_id, message_id)
 }

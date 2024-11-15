@@ -54,6 +54,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			files.POST("/upload", h.uploadFile)
 		}
+
+		scans := api.Group("/scans")
+		{
+			scans.GET("/", h.getAllScans)
+		}
 	}
 
 	return router

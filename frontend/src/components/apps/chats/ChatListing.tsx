@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 import { useSelector, useDispatch } from 'src/store/Store';
 import Scrollbar from '../../custom-scroll/Scrollbar';
-import { SelectChat, fetchChats, SearchChat } from '../../../store/apps/chat/ChatSlice';
+import { SelectChat, fetchChats, SearchChat, fetchScans } from '../../../store/apps/chat/ChatSlice';
 import { ChatsType } from 'src/types/apps/chat';
 import { last } from 'lodash';
 import { formatDistanceToNowStrict } from 'date-fns';

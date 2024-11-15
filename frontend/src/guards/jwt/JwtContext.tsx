@@ -132,9 +132,9 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
       "name": name,
       "password": password,
     });
-    const { accessToken, user } = response.data;
-
-    window.localStorage.setItem('accessToken', accessToken);
+    const data = response.data;
+    const user = data.user
+    window.localStorage.setItem('accessToken', data.accessToken);
     dispatch({
       type: 'REGISTER',
       payload: {

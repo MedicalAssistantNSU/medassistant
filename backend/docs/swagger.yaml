@@ -2,6 +2,8 @@ basePath: /
 definitions:
   models.Chat:
     properties:
+      context:
+        type: string
       id:
         type: integer
       name:
@@ -11,14 +13,14 @@ definitions:
     properties:
       content:
         type: string
-      created_at:
+      createdAt:
         type: string
       id:
         type: integer
+      senderId:
+        type: integer
       type:
         type: string
-      user_id:
-        type: integer
     type: object
   transport.InputAuth:
     properties:
@@ -29,11 +31,11 @@ definitions:
     type: object
   transport.InputRegister:
     properties:
-      email:
-        type: string
       name:
         type: string
       password:
+        type: string
+      username:
         type: string
     type: object
   transport.transort_error:
@@ -529,6 +531,40 @@ paths:
       summary: Upload file
       tags:
       - files
+  /api/v1/scans:
+    get:
+      consumes:
+      - application/json
+      description: Get all scans
+      operationId: get-all-scans
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all scans
+      tags:
+      - messages
   /auth/sign-in:
     post:
       consumes:

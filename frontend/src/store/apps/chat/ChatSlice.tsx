@@ -10,12 +10,14 @@ interface StateType {
   chats: any[];
   chatContent: number;
   chatSearch: string;
+  scans: any[];
 }
 
 const initialState = {
   chats: [],
   chatContent: 1,
   chatSearch: '',
+  scans: [],
 };
 
 export const ChatSlice = createSlice({
@@ -24,6 +26,9 @@ export const ChatSlice = createSlice({
   reducers: {
     getChats: (state: StateType, action) => {
       state.chats = action.payload;
+    },
+    getScans: (state: StateType, action) => {
+      state.scans = action.payload;
     },
     AppendChat: (state: StateType, action) => {
       state.chats = state.chats.concat([action.payload]);
@@ -50,7 +55,7 @@ export const ChatSlice = createSlice({
   },
 });
 
-export const { SearchChat, getChats, sendMsg, SelectChat, AppendChat } = ChatSlice.actions;
+export const { SearchChat, getChats, sendMsg, SelectChat, AppendChat, getScans} = ChatSlice.actions;
 
 export const fetchChats = () => async (dispatch: AppDispatch) => {
   try {
@@ -61,14 +66,22 @@ export const fetchChats = () => async (dispatch: AppDispatch) => {
   }
 };
 
-export const addMsg = (chat_id: number, id: number, type: string, msg: string) => async (dispatch: AppDispatch) => {
+export const fetchScans = () => async (dispatch: AppDispatch) => {
+  try {
+    const response = await axios.get("/api/v1/scans/");
+    dispatch(getScans(response.data.messages));
+    console.log(response.data.messages)
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const addMsg = (chat_id: number, type: string, msg: string) => async (dispatch: AppDispatch) => {
   try {
     const newMessage = {
-      id: id,
       content: msg,
       type: type,
       createdAt: sub(new Date(), { seconds: 1 }),
-      senderId: toNumber(uniqueId()),
     };
     dispatch(sendMsg({id: chat_id, msg: newMessage}));
     const response = await axios.post("/api/v1/chats/" + chat_id + "/", newMessage);
