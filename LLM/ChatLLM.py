@@ -1,7 +1,18 @@
 import json
 import argparse
+
+from haystack.document_stores.in_memory import InMemoryDocumentStore
 from langchain.prompts import PromptTemplate
 from langchain_community.llms.llamafile import Llamafile
+from haystack import Pipeline, Document
+from haystack.utils import Secret
+from haystack.components.writers import DocumentWriter
+from haystack.components.retrievers.in_memory import InMemoryEmbeddingRetriever
+from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
+from haystack.components.embedders import OpenAITextEmbedder
+from haystack.components.generators import OpenAIGenerator
+from haystack.components.builders import PromptBuilder
+from haystack_integrations.components.generators.ollama import OllamaGenerator
 
 
 """
@@ -13,7 +24,7 @@ Output: None (everything now goes to stdout)
 class ChatLLM:
     def __init__(
             self,
-            url: str = 'http://localhost:8080',
+            url: str = 'http://localhost:11435',
             username: str = 'User',
             task='chat',
             config_file='LLM/prompts_config.json'):
@@ -25,19 +36,16 @@ class ChatLLM:
         :param config_file: Path to the configuration file with system prompts.
         """
         self.base_url = url
-        self.min_p: float = 0.05
-        self.n_keep: int = 0  # 0 = no tokens are kept when context size is exceeded. -1  = retain all tokens.
-        self.n_predict: int = -1  # -1 = infinity
         self.context_length = 131072
         self.max_history_length = 3 * self.context_length
-        self.cache = False
 
-        self.model = Llamafile(
-            base_url=self.base_url,
-            min_p=self.min_p,
-            n_keep=self.n_keep,
-            n_predict=self.n_predict,
-            cache=self.cache,
+        self.generator = OllamaGenerator(
+            model="phi",
+            url=url,
+            streaming_callback=lambda chunk: print(chunk.content, end="", flush=True),
+            generation_kwargs={
+                "temperature": 0.8,
+            }
         )
         self.username = username
 
@@ -47,25 +55,57 @@ class ChatLLM:
         self.system_prompt = prompts.get(task)
         self.contextualize_prompt = prompts.get('contextualize')
 
-        self.prompt_template = PromptTemplate.from_template(
+        # self.prompt_template = PromptTemplate.from_template(
+        #     """
+        #     {prompt}\n
+        #     {history}
+        #     {name}: {message}
+        #     """
+        # )
+        self.prompt_template = """
+            {{prompt}}
+            
+            Also you have these documents:
+            {% for doc in documents %}
+                {{ doc.content }}
+            {% endfor %}
+            
+            The previous dialog:
+            {{history}}
+            
+            Please, answer to this message from {{name}}: {{message}}
             """
-            {prompt}\n
-            {history}
-            {name}: {message}
+        self.prompt_builder = PromptBuilder(template=self.prompt_template)
+
+        self.history_template = """
+            {{name}}: {{message}}
+            MedAssistant: {{answer}}
             """
+        self.history_builder = PromptBuilder(template=self.history_template)
+
+        self.contextualize_template = """
+            {{contextualize_prompt}}
+            Chat history: {{context}}
+            """
+        self.contextualize_builder = PromptBuilder(template=self.contextualize_template)
+
+        document_store = InMemoryDocumentStore()
+        document_store.write_documents([
+            Document(content="My name is Jean and I live in Paris."),
+            Document(content="My name is Mark and I live in Berlin."),
+            Document(content="My name is Giorgio and I live in Rome.")
+        ])
+
+        self.rag_pipe = Pipeline()
+        self.rag_pipe.add_component("retriever", InMemoryBM25Retriever(document_store=document_store))
+        self.rag_pipe.add_component("prompt_builder", self.prompt_builder)
+        self.rag_pipe.add_component(
+            "generator",
+            self.generator
         )
-        self.history_template = PromptTemplate.from_template(
-            """
-            User: {message}
-            MedAssistant: {answer}
-            """
-        )
-        self.contextualize_template = PromptTemplate.from_template(
-            """
-            {contextualize_prompt}
-            Chat history: {context}
-            """
-        )
+
+        self.rag_pipe.connect("retriever", "prompt_builder.documents")
+        self.rag_pipe.connect("prompt_builder", "generator")
 
     def send_message(self, message: str, history: str) -> dict:
         """
@@ -81,45 +121,34 @@ class ChatLLM:
         if len(history) > self.max_history_length:
             history = self.contextualize(history)
 
-        formatted_prompt = self.prompt_template.invoke(
-            {
+        answer = self.rag_pipe.run({
+            "prompt_builder": {
                 "prompt": self.system_prompt,
+                "history": history,
                 "name": self.username,
                 "message": message,
-                "history": history
+                # "query": message
+            },
+            "retriever": {
+                "query": message,
             }
-        )
+        })['generator']['replies'][0]
 
-        answer = ''
-        for chunks in self.model.stream(formatted_prompt,
-                                        stop=[
-                                            '</s>',
-                                            self.username + ':',
-                                            self.username.lower() + ':',
-                                            '<|eot_id|>',
-                                            '<|endoftext|>',
-                                        ]
-                                        ):
-            answer += chunks
-
-        new_history = (history + self.history_template
-                       .invoke({"message": message, "answer": answer})
-                       .to_string()
-                       )
+        # print(self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
+        new_history = (history + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
 
         if len(new_history) > self.max_history_length:
             new_history = self.contextualize(new_history)
 
+        # print({'answer': answer, 'history': new_history})
         return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
-        formatted_prompt = self.contextualize_template.invoke(
-            {
-                "contextualize_prompt": self.contextualize_prompt,
-                "context": context,
-            }
-        )
-        return self.model.invoke(formatted_prompt)
+        formatted_prompt = self.contextualize_builder.run(
+            contextualize_prompt=self.contextualize_prompt,
+            context=context,
+        )['prompt']
+        return self.generator.run(formatted_prompt)
 
 
 def main():

@@ -71,3 +71,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args.user_id, args.chat_id, args.history, args.image_path, args.prompt)
+
+# python3 inference.py 0 0 --history "" --image_path "./test3.jpg"

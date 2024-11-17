@@ -1,0 +1,25 @@
+FROM ./Phi-3.5-mini-instruct-Q8_0.gguf
+
+TEMPLATE """{{ if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}{{ if .Prompt }}<|im_start|>user
+{{ .Prompt }}<|im_end|>
+{{ end }}<|im_start|>assistant
+"""
+
+PARAMETER temperature 0.8
+PARAMETER num_predict -1
+PARAMETER min_p 0.05
+
+PARAMETER stop "<|start_header_id|>"
+PARAMETER stop "<|end_header_id|>"
+PARAMETER stop "<|eot_id|>"
+PARAMETER stop "<|im_end|>"
+PARAMETER stop "<|end_of_answer|>"
+PARAMETER stop "<|reserved_special_token"
+PARAMETER stop "User:"
+PARAMETER stop "user:"
+PARAMETER stop "Пользователь:"
+PARAMETER stop "пользователь:"
+PARAMETER stop "Человек:"
+PARAMETER stop "человек:"
