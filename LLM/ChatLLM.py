@@ -77,6 +77,10 @@ class ChatLLM:
         :param history: previous interactions
         :return: the answer and updated history for further interactions
         """
+
+        if len(history) > self.max_history_length:
+            history = self.contextualize(history)
+
         formatted_prompt = self.prompt_template.invoke(
             {
                 "prompt": self.system_prompt,
@@ -106,7 +110,6 @@ class ChatLLM:
         if len(new_history) > self.max_history_length:
             new_history = self.contextualize(new_history)
 
-        print({'answer': answer, 'history': new_history})
         return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
