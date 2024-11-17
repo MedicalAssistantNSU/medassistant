@@ -1,54 +1,73 @@
 import argparse
+import os
 from CV.DocumentOCR import DocumentOCR
 from LLM.ChatLLM import ChatLLM
 
 
-def main(image_path=None, save_path='processed_output', task='chat', prompt=None):
+def save_to_history(user_save_path, text):
+    """Save information in chat history file"""
+    history_path = os.path.join(user_save_path, "history.txt")
+    with open(history_path, 'a', encoding='utf-8') as history_file:
+        history_file.write(f"{text}\n")
+
+
+def load_detected_text(file_path):
+    """Load detected text from file if it exists."""
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    return None
+
+
+def main(user_id="user_test", chat_id="chat_test", history="", image_path=None, prompt=None):
     """
-    Main function to process OCR or chat tasks with a language model (LLM).
+    Main function to process OCR and interact with a language model (LLM).
 
     Parameters:
-    - image_path (str): Path to the image file to process (required for 'ocr' task).
-    - save_path (str): Directory path where results will be saved (default is 'processed_output').
-    - task (str): Type of task to perform, either 'ocr' or 'chat'. Defaults to 'chat'.
-      - 'ocr': Runs OCR on an image and refines the text using LLM.
-      - 'chat': Sends a prompt directly to the LLM for response.
-    - prompt (str): Custom prompt to send to LLM if task is 'chat'. Required for 'chat' task.
+    - user_id (str): Unique identifier for the user.
+    - chat_id (str): Unique identifier for the chat session.
+    - history (str): History of the chat.
+    - image_path (str): Path to the new image file to process.
+    - prompt (str): Custom prompt to send to LLM if a specific question needs to be asked.
     """
-    llm = ChatLLM(task=task)
+    # Set up paths and initialize LLM
+    user_save_path = os.path.join("processed_output", user_id, chat_id)
+    os.makedirs(user_save_path, exist_ok=True)
+    llm = ChatLLM()
+    history = "" if history is None else history
 
-    if task == "ocr":
-        ocr_processor = DocumentOCR(save_path=save_path)
-        if image_path is None:
-            print("No image path provided for ocr task.")
-            return
-        print("Running OCR...")
-        ocr_result = ocr_processor.run(image_path)
-        print(f"Detected OCR text:\n{ocr_result}")
+    if image_path:
+        ocr_processor = DocumentOCR(save_path=user_save_path)
+        detected_text = ocr_processor.run(image_path)
 
-        # Use OCR result as input prompt for LLM
-        prompt = f"Original text: {ocr_result}"
-        print("Refining text with LLM...")
-        refined_text = llm.send_message(prompt, "")
-        ocr_processor.save_detected_text(refined_text["answer"])
-    else:
-        # For chat task, send the provided prompt to LLM
-        if prompt is None:
-            print("No prompt provided for chat task.")
-            return
-        print("Sending prompt to LLM...")
-        llm.send_message(prompt, "")
+        if detected_text is None:
+            raise ValueError("OCR did not return a valid response")
+        else:
+            history += detected_text
 
-    print("\nDone.")
+    # Chat task - interpret detected text or respond with prompt
+    if prompt is None:
+        # Default prompt to simplify the text in Russian
+        prompt = ("Tell the same what is written in the last document by a doctor but in simpler terms for easier"
+                  " understanding in Russian. It should remain all the details. "
+                  "The answer should be in Russian.")
+
+    # Send the prompt to LLM with combined context
+    chat_response = llm.send_message(prompt, history)
+    print(chat_response)
+
+    # Check if LLM returned a valid response
+    if not chat_response:
+        raise ValueError("LLM did not return a valid response.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process an image with OCR and refine the text with LLM.")
-    parser.add_argument('--image_path', type=str, help="Path to the image file to process (required for 'ocr' task)")
-    parser.add_argument('--save_path', type=str, default='processed_output', help="Directory to save results")
-    parser.add_argument('--task', type=str, choices=['ocr', 'chat'], default='chat',
-                        help="Task for LLM prompt selection, e.g., 'ocr' for OCR processing or 'chat' for direct LLM interaction")
-    parser.add_argument('--prompt', type=str, help="Prompt to send to the LLM if task is 'chat'")
+    parser.add_argument('user_id', type=str, help="Unique identifier for the user")
+    parser.add_argument('chat_id', type=str, help="Unique identifier for the chat session")
+    parser.add_argument('--history', type=str, help="History of chat")
+    parser.add_argument('--image_path', type=str, help="Path to the new image file to process")
+    parser.add_argument('--prompt', type=str, help="Custom prompt to send to the LLM")
 
     args = parser.parse_args()
-    main(args.image_path, args.save_path, args.task, args.prompt)
+    main(args.user_id, args.chat_id, args.history, args.image_path, args.prompt)

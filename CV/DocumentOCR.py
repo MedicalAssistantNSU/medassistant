@@ -86,8 +86,6 @@ class DocumentOCR:
         except Exception as e:
             raise SaveError(f"Failed to save detected text: {e}")
 
-    # In CV/DocumentOCR.py, update the `run` method to return the OCR-detected text
-
     def run(self, image_path: str) -> str:
         """
         Execute the OCR process: preprocessing and OCR.
