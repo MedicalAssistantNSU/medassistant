@@ -93,7 +93,7 @@ interface ChatContentProps {
                   {chatDetails.messages.map((chat) => {
                     return (
                       <Box key={chat.id + chat.content + chat.createdAt}>
-                        {chatDetails.id === chat.senderId ? (
+                        {0 === chat.senderId ? (
                           <>
                             <Box display="flex">
                               <Box>

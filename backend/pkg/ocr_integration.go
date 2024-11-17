@@ -57,7 +57,7 @@ func copyOutputInBuffer(r io.Reader, sb *strings.Builder) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		info := scanner.Text()
-		sb.WriteString(info)
 		logrus.Info(info)
+		sb.WriteString(info)
 	}
 }

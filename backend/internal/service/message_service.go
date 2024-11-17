@@ -1,6 +1,8 @@
 package service
 
 import (
+	"encoding/json"
+	"fmt"
 	"io"
 	"med-asis/internal/models"
 	"med-asis/internal/repository"
@@ -8,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/sirupsen/logrus"
 )
 
 type MessageService struct {
@@ -20,14 +24,21 @@ func NewMessageService(repo repository.MessageRepository) *MessageService {
 	}
 }
 
+type InferenceJSON struct {
+	Answer  string
+	History string
+}
+
 func (i *MessageService) Create(chat_id int, msg models.Message) (models.Message, error) {
 	_, err := i.repo.Create(chat_id, msg)
 	if err != nil {
 		return models.Message{}, err
 	}
 
+	var output map[string]string
+
 	response := msg
-	response.SenderId = chat_id
+	response.SenderId = 0
 	response.Type = "text"
 
 	if msg.Type == "image" {
@@ -41,23 +52,38 @@ func (i *MessageService) Create(chat_id int, msg models.Message) (models.Message
 		out, err := pkg.RunTask(pkg.TaskConfig{
 			TaskType: "ocr",
 			Value:    flpath,
+			UserId:   fmt.Sprintf("%d", msg.SenderId),
+			ChatId:   fmt.Sprintf("%d", chat_id),
 		})
 
 		if err != nil {
 			response.Content = err.Error()
 		} else {
-			response.Content = out
+			if err := json.Unmarshal([]byte(out), &output); err != nil {
+				response.Content = err.Error()
+			} else {
+				response.Content = output["history"]
+			}
+			logrus.Info(out)
 		}
 	} else {
 		out, err := pkg.RunTask(pkg.TaskConfig{
 			TaskType: "chat",
 			Value:    msg.Content,
+			UserId:   fmt.Sprintf("%d", msg.SenderId),
+			ChatId:   fmt.Sprintf("%d", chat_id),
 		})
 
 		if err != nil {
 			response.Content = err.Error()
 		} else {
-			response.Content = out
+			if err := json.Unmarshal([]byte(out), &output); err != nil {
+				response.Content = err.Error()
+			} else {
+				response.Content = output["history"]
+			}
+			logrus.Info(output)
+			logrus.Info(out)
 		}
 	}
 
