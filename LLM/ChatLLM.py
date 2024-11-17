@@ -110,7 +110,6 @@ class ChatLLM:
         if len(new_history) > self.max_history_length:
             new_history = self.contextualize(new_history)
 
-        print({'answer': answer, 'history': new_history})
         return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
