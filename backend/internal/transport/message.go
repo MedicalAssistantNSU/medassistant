@@ -2,10 +2,12 @@ package transport
 
 import (
 	"med-asis/internal/models"
+	"med-asis/internal/service"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 const MAX_UPLOAD_SIZE = 20 << 20 // 20 Mb
@@ -119,15 +121,33 @@ func (h *Handler) createMessage(c *gin.Context) {
 		return
 	}
 
-	input.SenderId = user_id.(int)
-	response, err := h.services.Message.Create(chat_id, input)
+	chat, err := h.services.Chat.GetById(user_id.(int), chat_id)
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
+	input.SenderId = user_id.(int)
+	response, err := h.services.Message.Create(chat_id, service.CreateMsg{
+		Msg:     input,
+		History: chat.Context,
+	})
+	if err != nil {
+		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	updatedChat := models.Chat{
+		Name:    chat.Name,
+		Context: response.History,
+	}
+
+	logrus.Info(chat.Context)
+
+	h.services.Chat.Update(user_id.(int), chat_id, updatedChat)
+
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"data": response,
+		"data": response.Msg,
 	})
 }
 

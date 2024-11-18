@@ -25,7 +25,7 @@ type Chat interface {
 }
 
 type Message interface {
-	Create(chat_id int, msg models.Message) (models.Message, error)
+	Create(chat_id int, msg CreateMsg) (*CreateMsg, error)
 	GetAll(user_id, chat_id int) ([]models.Message, error)
 	GetItemById(user_id, message_id int) (models.Message, error)
 	Delete(user_id, message_id int) error

@@ -12,6 +12,7 @@ type TaskConfig struct {
 	Value    string
 	UserId   string
 	ChatId   string
+	History  string
 }
 
 func RunTask(cfg TaskConfig) (string, error) {
@@ -19,9 +20,11 @@ func RunTask(cfg TaskConfig) (string, error) {
 	var cmd *exec.Cmd
 
 	if cfg.TaskType == "ocr" {
-		cmd = exec.Command("python3", "../inference.py", cfg.UserId, cfg.ChatId, "--image_path", cfg.Value)
+		cmd = exec.Command("python3", "../inference.py", cfg.UserId, cfg.ChatId,
+			"--image_path", cfg.Value, "--history", cfg.History)
 	} else {
-		cmd = exec.Command("python3", "../inference.py", cfg.UserId, cfg.ChatId, "--prompt", cfg.Value)
+		cmd = exec.Command("python3", "../inference.py", cfg.UserId, cfg.ChatId,
+			"--prompt", cfg.Value, "--history", cfg.History)
 	}
 
 	stderr, err := cmd.StderrPipe()

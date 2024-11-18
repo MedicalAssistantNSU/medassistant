@@ -68,7 +68,7 @@ func (l *ChatRepo) Delete(userId int, id int) error {
 }
 
 func (l *ChatRepo) Update(userId, id int, updatedChat models.Chat) error {
-	query := fmt.Sprintf("UPDATE %s lt SET name = $1 context = $2 FROM %s ul WHERE lt.id = ul.chat_id AND ul.user_id = $3 AND lt.id = $4",
+	query := fmt.Sprintf("UPDATE %s lt SET name = $1, context = $2 FROM %s ul WHERE lt.id = ul.chat_id AND ul.user_id = $3 AND lt.id = $4",
 		chatsTable, usersChats)
 
 	_, err := l.db.Exec(query, updatedChat.Name, updatedChat.Context, userId, id)

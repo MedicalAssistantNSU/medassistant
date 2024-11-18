@@ -29,22 +29,27 @@ type InferenceJSON struct {
 	History string
 }
 
-func (i *MessageService) Create(chat_id int, msg models.Message) (models.Message, error) {
-	_, err := i.repo.Create(chat_id, msg)
+type CreateMsg struct {
+	Msg     models.Message
+	History string
+}
+
+func (i *MessageService) Create(chat_id int, msg CreateMsg) (*CreateMsg, error) {
+	_, err := i.repo.Create(chat_id, msg.Msg)
 	if err != nil {
-		return models.Message{}, err
+		return nil, err
 	}
 
 	var output map[string]string
 
-	response := msg
+	response := msg.Msg
 	response.SenderId = 0
 	response.Type = "text"
 
-	if msg.Type == "image" {
+	if msg.Msg.Type == "image" {
 		path := "../"
-		flpath := path + filepath.Base(msg.Content)
-		if err := DownloadFile(flpath, msg.Content); err != nil {
+		flpath := path + filepath.Base(msg.Msg.Content)
+		if err := DownloadFile(flpath, msg.Msg.Content); err != nil {
 			response.Content = "Не удалось загрузить файл."
 		}
 		defer os.Remove(flpath)
@@ -52,8 +57,9 @@ func (i *MessageService) Create(chat_id int, msg models.Message) (models.Message
 		out, err := pkg.RunTask(pkg.TaskConfig{
 			TaskType: "ocr",
 			Value:    flpath,
-			UserId:   fmt.Sprintf("%d", msg.SenderId),
+			UserId:   fmt.Sprintf("%d", msg.Msg.SenderId),
 			ChatId:   fmt.Sprintf("%d", chat_id),
+			History:  msg.History,
 		})
 
 		if err != nil {
@@ -62,16 +68,17 @@ func (i *MessageService) Create(chat_id int, msg models.Message) (models.Message
 			if err := json.Unmarshal([]byte(out), &output); err != nil {
 				response.Content = err.Error()
 			} else {
-				response.Content = output["history"]
+				response.Content = output["answer"]
 			}
 			logrus.Info(out)
 		}
 	} else {
 		out, err := pkg.RunTask(pkg.TaskConfig{
 			TaskType: "chat",
-			Value:    msg.Content,
-			UserId:   fmt.Sprintf("%d", msg.SenderId),
+			Value:    msg.Msg.Content,
+			UserId:   fmt.Sprintf("%d", msg.Msg.SenderId),
 			ChatId:   fmt.Sprintf("%d", chat_id),
+			History:  msg.History,
 		})
 
 		if err != nil {
@@ -80,19 +87,24 @@ func (i *MessageService) Create(chat_id int, msg models.Message) (models.Message
 			if err := json.Unmarshal([]byte(out), &output); err != nil {
 				response.Content = err.Error()
 			} else {
-				response.Content = output["history"]
+				response.Content = output["answer"]
 			}
-			logrus.Info(output)
-			logrus.Info(out)
+			logrus.Info("HISTORY", output["history"])
+			logrus.Info("ANSWER", output["answer"])
 		}
 	}
 
 	id, err := i.repo.Create(chat_id, response)
 	if err != nil {
-		return models.Message{}, err
+		return nil, err
 	}
 
-	return i.repo.GetMsgById(id)
+	newMsg, err := i.repo.GetMsgById(id)
+
+	return &CreateMsg{
+		Msg:     newMsg,
+		History: output["history"],
+	}, err
 }
 
 func (i *MessageService) GetAll(user_id, chat_id int) ([]models.Message, error) {

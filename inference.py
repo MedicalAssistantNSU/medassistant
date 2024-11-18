@@ -1,8 +1,9 @@
 import argparse
 import os
+import json
 from CV.DocumentOCR import DocumentOCR
 from LLM.ChatLLM import ChatLLM
-import json
+
 
 def save_to_history(user_save_path, text):
     """Save information in chat history file"""
