@@ -2,15 +2,8 @@ import json
 import argparse
 
 from haystack.document_stores.in_memory import InMemoryDocumentStore
-from langchain.prompts import PromptTemplate
-from langchain_community.llms.llamafile import Llamafile
 from haystack import Pipeline, Document
-from haystack.utils import Secret
-from haystack.components.writers import DocumentWriter
-from haystack.components.retrievers.in_memory import InMemoryEmbeddingRetriever
 from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
-from haystack.components.embedders import OpenAITextEmbedder
-from haystack.components.generators import OpenAIGenerator
 from haystack.components.builders import PromptBuilder
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
@@ -55,26 +48,20 @@ class ChatLLM:
         self.system_prompt = prompts.get(task)
         self.contextualize_prompt = prompts.get('contextualize')
 
-        # self.prompt_template = PromptTemplate.from_template(
-        #     """
-        #     {prompt}\n
-        #     {history}
-        #     {name}: {message}
-        #     """
-        # )
         self.prompt_template = """
             {{prompt}}
-            
+
             Also you have these documents:
             {% for doc in documents %}
                 {{ doc.content }}
             {% endfor %}
-            
+
             The previous dialog:
             {{history}}
-            
+
             Please, answer to this message from {{name}}: {{message}}
             """
+
         self.prompt_builder = PromptBuilder(template=self.prompt_template)
 
         self.history_template = """
