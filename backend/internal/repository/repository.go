@@ -28,6 +28,7 @@ type MessageRepository interface {
 	Delete(user_id, message_id int) error
 	Update(user_id, message_id int, updatedMessage models.Message) error
 	GetMsgById(message_id int) (models.Message, error)
+	GetScans(user_id int) ([]models.Message, error)
 }
 
 type Respository struct {

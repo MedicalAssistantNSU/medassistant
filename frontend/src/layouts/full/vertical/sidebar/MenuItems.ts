@@ -51,7 +51,7 @@ const Menuitems: MenuitemsType[] = [
     id: uniqueId(),
     title: 'Настройки',
     icon: IconSettings,
-    href: '',
+    href: '/settings',
   },
   {
     navlabel: true,

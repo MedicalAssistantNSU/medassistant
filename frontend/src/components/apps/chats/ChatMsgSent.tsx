@@ -7,6 +7,7 @@ import { IconPaperclip, IconPhoto, IconSend } from '@tabler/icons-react';
 import { addMsg, sendMsg } from 'src/store/apps/chat/ChatSlice';
 import { getLLamaAnswer } from 'src/utils/llamaai/LlamaService';
 import FileUpload from '../FileUpload';
+import useAuth from 'src/guards/authGuard/UseAuth';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -23,6 +24,7 @@ const style = {
 
 const ChatMsgSent = () => {
   const [msg, setMsg] = useState("");
+  const {user} = useAuth()
   const [openImage, setOpenImage] = useState(false);
   const [image, setImage] = useState("");
   const dispatch = useDispatch();
@@ -41,7 +43,7 @@ const ChatMsgSent = () => {
     }
     console.log(msg)
     console.log(image)
-    dispatch(addMsg(id ? id: 1, id, image != "" ? "image" : "text", image != "" ? image : msg));
+    dispatch(addMsg(id ? id: 1, image != "" ? "image" : "text", image != "" ? image : msg));
     setMsg("");
     setImage("");
   };
@@ -64,6 +66,7 @@ const ChatMsgSent = () => {
             </Modal>
     <Box p={1}
       mt={1}
+      height={"120px"}
     >
       {/* ------------------------------------------- */}
       {/* sent chat */}

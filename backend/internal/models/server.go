@@ -14,8 +14,8 @@ func (s *ServerApi) Run(port string, handlers http.Handler) error {
 	s.server = &http.Server{
 		Addr:         ":" + port,
 		Handler:      handlers,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		ReadTimeout:  60 * time.Second,
+		WriteTimeout: 60 * time.Second,
 	}
 
 	return s.server.ListenAndServe()

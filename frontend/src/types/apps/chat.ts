@@ -4,7 +4,7 @@ type attachType = {
     fileSize?: string;
   };
   
-  type MessageType = {
+export type MessageType = {
     createdAt?: any;
     content: string;
     senderId: number | string;

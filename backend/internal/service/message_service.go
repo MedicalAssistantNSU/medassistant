@@ -1,6 +1,8 @@
 package service
 
 import (
+	"encoding/json"
+	"fmt"
 	"io"
 	"med-asis/internal/models"
 	"med-asis/internal/repository"
@@ -9,7 +11,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/spf13/viper"
+	"github.com/sirupsen/logrus"
 )
 
 type MessageService struct {
@@ -22,44 +24,95 @@ func NewMessageService(repo repository.MessageRepository) *MessageService {
 	}
 }
 
-func (i *MessageService) Create(chat_id int, msg models.Message) (models.Message, error) {
-	_, err := i.repo.Create(chat_id, msg)
+type InferenceJSON struct {
+	Answer  string
+	History string
+}
+
+type CreateMsg struct {
+	Msg     models.Message
+	History string
+}
+
+func (i *MessageService) Create(chat_id int, msg CreateMsg) (*CreateMsg, error) {
+	_, err := i.repo.Create(chat_id, msg.Msg)
 	if err != nil {
-		return models.Message{}, err
+		return nil, err
 	}
 
-	response := msg
-	response.SenderId = chat_id
+	var output map[string]string
+
+	response := msg.Msg
+	response.SenderId = 0
 	response.Type = "text"
 
-	if msg.Type == "image" {
-		path := viper.GetString("cv.path")
-		flpath := path + filepath.Base(msg.Content)
-		if err := DownloadFile(flpath, msg.Content); err != nil {
+	if msg.Msg.Type == "image" {
+		path := "../"
+		flpath := path + filepath.Base(msg.Msg.Content)
+		if err := DownloadFile(flpath, msg.Msg.Content); err != nil {
 			response.Content = "Не удалось загрузить файл."
 		}
 		defer os.Remove(flpath)
 
-		out, err := pkg.Perform(path)
+		out, err := pkg.RunTask(pkg.TaskConfig{
+			TaskType: "ocr",
+			Value:    flpath,
+			UserId:   fmt.Sprintf("%d", msg.Msg.SenderId),
+			ChatId:   fmt.Sprintf("%d", chat_id),
+			History:  msg.History,
+		})
+
 		if err != nil {
 			response.Content = err.Error()
 		} else {
-			response.Content = out
+			if err := json.Unmarshal([]byte(out), &output); err != nil {
+				response.Content = err.Error()
+			} else {
+				response.Content = output["answer"]
+			}
+			logrus.Info(out)
 		}
 	} else {
-		response.Content = msg.Content
+		out, err := pkg.RunTask(pkg.TaskConfig{
+			TaskType: "chat",
+			Value:    msg.Msg.Content,
+			UserId:   fmt.Sprintf("%d", msg.Msg.SenderId),
+			ChatId:   fmt.Sprintf("%d", chat_id),
+			History:  msg.History,
+		})
+
+		if err != nil {
+			response.Content = err.Error()
+		} else {
+			if err := json.Unmarshal([]byte(out), &output); err != nil {
+				response.Content = err.Error()
+			} else {
+				response.Content = output["answer"]
+			}
+			logrus.Info("HISTORY", output["history"])
+			logrus.Info("ANSWER", output["answer"])
+		}
 	}
 
 	id, err := i.repo.Create(chat_id, response)
 	if err != nil {
-		return models.Message{}, err
+		return nil, err
 	}
 
-	return i.repo.GetMsgById(id)
+	newMsg, err := i.repo.GetMsgById(id)
+
+	return &CreateMsg{
+		Msg:     newMsg,
+		History: output["history"],
+	}, err
 }
 
 func (i *MessageService) GetAll(user_id, chat_id int) ([]models.Message, error) {
 	return i.repo.GetAll(chat_id)
+}
+
+func (i *MessageService) GetScans(user_id int) ([]models.Message, error) {
+	return i.repo.GetScans(user_id)
 }
 
 func (i *MessageService) GetItemById(user_id, message_id int) (models.Message, error) {

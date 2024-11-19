@@ -52,6 +52,16 @@ func (i *MessageRepo) GetAll(chat_id int) ([]models.Message, error) {
 	return items, err
 }
 
+func (i *MessageRepo) GetScans(user_id int) ([]models.Message, error) {
+	var items []models.Message
+	query := fmt.Sprintf(`SELECT il.id, il.content, il.sender_id, il.type, il.created_at FROM %s il 
+						WHERE (il.sender_id = $1 AND il.type = $2)`,
+		messageTable)
+
+	err := i.db.Select(&items, query, user_id, "image")
+	return items, err
+}
+
 func (i *MessageRepo) GetItemById(user_id, message_id int) (models.Message, error) {
 	var input models.Message
 	query := fmt.Sprintf(`SELECT il.id, il.content, il.sender_id, il.type, il.created_at FROM %s il 

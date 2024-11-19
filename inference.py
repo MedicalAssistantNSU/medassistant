@@ -1,5 +1,6 @@
 import argparse
 import os
+import json
 from CV.DocumentOCR import DocumentOCR
 from LLM.ChatLLM import ChatLLM
 
@@ -54,7 +55,7 @@ def main(user_id="user_test", chat_id="chat_test", history="", image_path=None, 
 
     # Send the prompt to LLM with combined context
     chat_response = llm.send_message(prompt, history)
-    print(chat_response)
+    print(json.dumps(chat_response))
 
     # Check if LLM returned a valid response
     if not chat_response:

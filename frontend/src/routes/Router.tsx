@@ -5,11 +5,12 @@ import { Navigate } from 'react-router-dom';
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 import ScanHistoryPage from 'src/views/scan-history/ScanHistoryPage';
 import AboutUs from 'src/views/aboutus/AboutUs';
-import Help from 'src/views/help/Help';
 import AuthGuard from 'src/guards/authGuard/AuthGuard';
 import GuestGuard from 'src/guards/authGuard/GuestGaurd';
 import Login2 from 'src/views/authentication/auth2/Login2';
 import Register2 from 'src/views/authentication/auth2/Register2';
+import Settings from 'src/views/settings/Settings';
+import Faq from 'src/views/help/Help';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -34,7 +35,8 @@ const Router = [
       { path: '/sample-page', exact: true, element: <SamplePage /> },
       { path: '/scans', exact: true, element: <ScanHistoryPage /> },
       { path: '/about/us', exact: true, element: <AboutUs /> },
-      { path: '/help', exact: true, element: <Help /> },
+      { path: '/help', exact: true, element: <Faq /> },
+      { path: '/settings', exact: true, element: <Settings /> },
       { path: '/apps/chats', element: <Chats /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],

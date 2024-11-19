@@ -23,8 +23,8 @@ func (l *ChatRepo) Create(userId int, chat models.Chat) (int, error) {
 		return 0, err
 	}
 
-	query1 := fmt.Sprintf("INSERT INTO %s (name) values ($1) RETURNING id", chatsTable)
-	row := tr.QueryRow(query1, chat.Name)
+	query1 := fmt.Sprintf("INSERT INTO %s (name, context) values ($1, $2) RETURNING id", chatsTable)
+	row := tr.QueryRow(query1, chat.Name, "")
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
@@ -41,7 +41,7 @@ func (l *ChatRepo) Create(userId int, chat models.Chat) (int, error) {
 
 func (l *ChatRepo) GetAll(userId int) ([]models.Chat, error) {
 	var chats []models.Chat
-	query := fmt.Sprintf("SELECT lt.id, lt.name FROM %s lt INNER JOIN %s ul on ul.chat_id = lt.id WHERE ul.user_id = $1", chatsTable, usersChats)
+	query := fmt.Sprintf("SELECT lt.id, lt.name, lt.context FROM %s lt INNER JOIN %s ul on ul.chat_id = lt.id WHERE ul.user_id = $1", chatsTable, usersChats)
 
 	err := l.db.Select(&chats, query, userId)
 	if err != nil {
@@ -52,7 +52,7 @@ func (l *ChatRepo) GetAll(userId int) ([]models.Chat, error) {
 
 func (l *ChatRepo) GetById(userId, id int) (models.Chat, error) {
 	var chat models.Chat
-	query := fmt.Sprintf("SELECT lt.id, lt.name FROM %s lt INNER JOIN %s ul on ul.chat_id = lt.id WHERE ul.user_id = $1 AND lt.id = $2",
+	query := fmt.Sprintf("SELECT lt.id, lt.name, lt.context FROM %s lt INNER JOIN %s ul on ul.chat_id = lt.id WHERE ul.user_id = $1 AND lt.id = $2",
 		chatsTable, usersChats)
 
 	err := l.db.Get(&chat, query, userId, id)
@@ -68,9 +68,9 @@ func (l *ChatRepo) Delete(userId int, id int) error {
 }
 
 func (l *ChatRepo) Update(userId, id int, updatedChat models.Chat) error {
-	query := fmt.Sprintf("UPDATE %s lt SET name = $1 FROM %s ul WHERE lt.id = ul.chat_id AND ul.user_id = $2 AND lt.id = $3",
+	query := fmt.Sprintf("UPDATE %s lt SET name = $1, context = $2 FROM %s ul WHERE lt.id = ul.chat_id AND ul.user_id = $3 AND lt.id = $4",
 		chatsTable, usersChats)
 
-	_, err := l.db.Exec(query, updatedChat.Name, userId, id)
+	_, err := l.db.Exec(query, updatedChat.Name, updatedChat.Context, userId, id)
 	return err
 }

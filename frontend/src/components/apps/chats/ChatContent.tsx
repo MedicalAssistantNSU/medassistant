@@ -77,7 +77,7 @@ interface ChatContentProps {
 
             <Box width="100%"
             >
-              <Scrollbar sx={{ height: '77vh', overflow: 'auto', maxHeight: '77vh',
+              <Scrollbar sx={{ height: 'calc(90vh - 155px)', overflow: 'auto', maxHeight: 'calc(90vh - 155px)',
                 '&:before': {
                   content: '""',
                   background: 'radial-gradient(#2C3E50, #4CA1AF)',
@@ -86,20 +86,19 @@ interface ChatContentProps {
                   position: 'absolute',
                   height: '100%',
                   width: '100%',
-                  opacity: '0.8',
+                  opacity: '0.9',
                 },
               }}>
                 <Box p={3}>
                   {chatDetails.messages.map((chat) => {
                     return (
                       <Box key={chat.id + chat.content + chat.createdAt}>
-                        {chatDetails.id === chat.senderId ? (
+                        {0 === chat.senderId ? (
                           <>
                             <Box display="flex">
                               <Box>
                                 {chat.createdAt ? (
-                                  <Typography variant="body2" color="grey.400" mb={1}>
-                                    {chatDetails.name},{' '}
+                                  <Typography variant="body2" color="white" mb={1}>
                                     {formatDistanceToNowStrict(new Date(chat.createdAt), {
                                       addSuffix: false,
                                     })}{' '}
@@ -120,7 +119,7 @@ interface ChatContentProps {
                                 ) : null}
                                 {chat.type === 'image' ? (
                                   <Box mb={1} sx={{ overflow: 'hidden', lineHeight: '0px' }}>
-                                    <img src={chat.content} alt="attach" width="250" />
+                                    <a href={chat.content}><img src={chat.content} alt="attach" width="250" /></a>
                                   </Box>
                                 ) : null}
                               </Box>
@@ -135,7 +134,7 @@ interface ChatContentProps {
                           >
                             <Box alignItems="flex-end" display="flex" flexDirection={'column'}>
                               {chat.createdAt ? (
-                                <Typography variant="body2" color="grey.400" mb={1}>
+                                <Typography variant="body2" color="white" mb={1}>
                                   {formatDistanceToNowStrict(new Date(chat.createdAt), {
                                       addSuffix: false,
                                     })}{' '}
@@ -157,7 +156,7 @@ interface ChatContentProps {
                               ) : null}
                               {chat.type === 'image' ? (
                                 <Box mb={1} sx={{ overflow: 'hidden', lineHeight: '0px' }}>
-                                  <img src={chat.content} alt="attach" width="250" />
+                                  <a href={chat.content}><img src={chat.content} alt="attach" width="250" /></a>
                                 </Box>
                               ) : null}
                             </Box>

@@ -77,14 +77,17 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
 
-          const response = await axios.get('/api/v1/account/my-account');
-          const { user } = response.data.user;
-
+          const response = await axios.get('/api/v1/account/my-account', {
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': "Bearer " + accessToken,
+            }});
+          const user = response.data.user;
           dispatch({
             type: 'INITIALIZE',
             payload: {
               isAuthenticated: true,
-              user,
+              user: user,
             },
           });
         } else {
@@ -114,7 +117,7 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
   const signin = async (email: string, password: string) => {
     const response = await axios.post('/auth/sign-in', {
       "username": email,
-      password,
+      "password": password,
     });
     const { accessToken, user } = response.data;
     setSession(accessToken);
@@ -132,9 +135,9 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
       "name": name,
       "password": password,
     });
-    const { accessToken, user } = response.data;
-
-    window.localStorage.setItem('accessToken', accessToken);
+    const data = response.data;
+    const user = data.user
+    window.localStorage.setItem('accessToken', data.accessToken);
     dispatch({
       type: 'REGISTER',
       payload: {
