@@ -1,5 +1,8 @@
 
-processed_output
+LLM/llm_gguf/*.gguf
+MedicalTextbooks/
+
+processed_output/
 *.jpg
 *.jpeg
 *.png
