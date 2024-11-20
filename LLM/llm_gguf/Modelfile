@@ -7,6 +7,7 @@ TEMPLATE """{{ if .System }}<|im_start|>system
 {{ end }}<|im_start|>assistant
 """
 
+PARAMETER num_ctx 512
 PARAMETER temperature 0.8
 PARAMETER num_predict -1
 PARAMETER min_p 0.05

@@ -29,13 +29,13 @@ class ChatLLM:
         :param config_file: Path to the configuration file with system prompts.
         """
         self.base_url = url
-        self.context_length = 131072
+        self.context_length = 2048
         self.max_history_length = 3 * self.context_length
 
         self.generator = OllamaGenerator(
             model="phi",
             url=url,
-            streaming_callback=lambda chunk: print(chunk.content, end="", flush=True),
+            # streaming_callback=lambda chunk: print(chunk.content, end="", flush=True),
             generation_kwargs={
                 "temperature": 0.8,
             }
@@ -121,14 +121,12 @@ class ChatLLM:
             }
         })['generator']['replies'][0]
 
-        # print(self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
         new_history = (history + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
 
         if len(new_history) > self.max_history_length:
             new_history = self.contextualize(new_history)
 
-        # print({'answer': answer, 'history': new_history})
-        return {'answer': answer, 'history': new_history}
+        return {'answer': answer.encode(encoding='utf-8'), 'history': new_history.encode(encoding='utf-8')}
 
     def contextualize(self, context: str):
         formatted_prompt = self.contextualize_builder.run(
@@ -155,3 +153,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# python3 LLM/ChatLLM.py http://localhost:11435 name "Расскажи анекдот" ""
