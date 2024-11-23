@@ -1,21 +1,20 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React from 'react';
 import {
-  Box,
-  Theme,
-  useMediaQuery,
-  Typography,
-  Stack,
-  Avatar,
-  Grid,
-  Alert,
-  IconButton,
-  styled,
+    Alert,
+    Avatar,
+    Box,
+    Grid,
+    IconButton,
+    Stack,
+    styled,
+    Theme,
+    Typography,
+    useMediaQuery,
 } from '@mui/material';
-import { ChatsType } from 'src/types/apps/chat';
-import { uniq, flatten } from 'lodash';
 import { IconDownload } from '@tabler/icons-react';
+import { flatten, uniq } from 'lodash';
+import { ChatsType } from 'src/types/apps/chat';
 
 interface chatType {
   isInSidebar?: boolean;

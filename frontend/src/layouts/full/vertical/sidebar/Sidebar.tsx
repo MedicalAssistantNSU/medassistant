@@ -1,11 +1,9 @@
-import { useMediaQuery, Box, Drawer, useTheme } from '@mui/material';
-import SidebarItems from './SidebarItems';
-import Logo from '../../shared/logo/Logo';
-import { useSelector, useDispatch } from 'src/store/Store';
-import { hoverSidebar, toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
+import { Box, Drawer, useMediaQuery, useTheme } from '@mui/material';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
-import { Profile } from './SidebarProfile/Profile';
-import { AppState } from 'src/store/Store';
+import { AppState, useDispatch, useSelector } from 'src/store/Store';
+import { hoverSidebar, toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
+import Logo from '../../shared/logo/Logo';
+import SidebarItems from './SidebarItems';
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));

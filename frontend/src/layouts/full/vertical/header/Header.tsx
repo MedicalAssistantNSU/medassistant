@@ -6,14 +6,13 @@ import { toggleMobileSidebar, toggleSidebar } from 'src/store/customizer/Customi
 // @ts-ignore
 import { IconMenu2 } from '@tabler/icons-react';
 import { AppState } from 'src/store/Store';
-import Customizer from '../../shared/customizer/Customizer';
 import Navigation from './Navigation';
 import Profile from './Profile';
 import Search from './Search';
 
 const Header = () => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
-  const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
+//   const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
 
   // drawer
   const customizer = useSelector((state: AppState) => state.customizer);

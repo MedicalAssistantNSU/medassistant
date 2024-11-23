@@ -1,11 +1,8 @@
-import { useDispatch } from 'react-redux';
-import axios from '../../utils/axios';
-import React, { Component, useState } from 'react';
-import useAuth from 'src/guards/authGuard/UseAuth';
-import { FormikProvider, useFormik } from 'formik';
-import axiosServices from '../../utils/axios';
-import { AppendChat, fetchChats } from 'src/store/apps/chat/ChatSlice';
 import { Box, Button, Typography } from '@mui/material';
+import { FormikProvider, useFormik } from 'formik';
+import { useDispatch } from 'react-redux';
+import { AppendChat } from 'src/store/apps/chat/ChatSlice';
+import axiosServices from '../../utils/axios';
 import CustomTextField from '../forms/theme-elements/CustomTextField';
 
 

@@ -1,0 +1,63 @@
+services:
+  db:
+    ports:
+      - "5432"
+    networks:
+        new:
+          aliases:
+            - database
+    container_name: postgresql
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_USER=postgres
+    restart: always
+
+
+  migrate:
+        image: migrate/migrate
+        networks:
+            - new
+        volumes:
+            - .:/migrations
+        command: ["-path", "/schema", "-database",  "postgres://postgres:qwerty@database:5432/postgres?sslmode=disable", "up"]
+        links: 
+            - db
+
+
+  backend:
+    build:
+      context: ./backend/
+    container_name: backend_healthmate
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+  frontend:
+    container_name: frontend_helthmate
+    depends_on:
+      - backend
+    build:
+      context: ./frontend/
+    ports:
+      - 3000:3000
+    restart: always
+    stdin_open: true
+    tty: true
+
+
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - 80:80
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+    depends_on:
+      - frontend
+      - backend
+      - db
+
+networks:
+      new:
