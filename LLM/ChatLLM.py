@@ -126,7 +126,7 @@ class ChatLLM:
         if len(new_history) > self.max_history_length:
             new_history = self.contextualize(new_history)
 
-        return {'answer': answer.encode(encoding='utf-8'), 'history': new_history.encode(encoding='utf-8')}
+        return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
         formatted_prompt = self.contextualize_builder.run(
