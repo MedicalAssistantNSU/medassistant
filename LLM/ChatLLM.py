@@ -1,6 +1,9 @@
 import json
 import argparse
 
+from os import listdir
+from os.path import isfile, join
+
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack import Pipeline, Document
 from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
@@ -20,7 +23,12 @@ class ChatLLM:
             url: str = 'http://localhost:11435',
             username: str = 'User',
             task='chat',
-            config_file='../LLM/prompts_config.json'):
+            config_file='../LLM/prompts_config.json',
+            rag_docs_path='../LLM/RAG_docs/Anatomy_Gray.txt',
+            # # For ChatLLM tests:
+            # config_file='LLM/prompts_config.json',
+            # rag_docs_path='LLM/RAG_docs',
+    ):
         """
         Initialize the ChatLLM class with a task-based system prompt.
         The system prompt is selected based on the task provided.
@@ -35,7 +43,8 @@ class ChatLLM:
         self.generator = OllamaGenerator(
             model="phi",
             url=url,
-            # streaming_callback=lambda chunk: print(chunk.content, end="", flush=True),
+            # For ChatLLM tests:
+            streaming_callback=lambda chunk: print(chunk.content, end="", flush=True),
             generation_kwargs={
                 "temperature": 0.8,
             }
@@ -77,14 +86,34 @@ class ChatLLM:
         self.contextualize_builder = PromptBuilder(template=self.contextualize_template)
 
         document_store = InMemoryDocumentStore()
-        document_store.write_documents([
-            Document(content="My name is Jean and I live in Paris."),
-            Document(content="My name is Mark and I live in Berlin."),
-            Document(content="My name is Giorgio and I live in Rome.")
-        ])
+
+        # Files for RAG should be .txt with one json at one line
+        # jsons with args [id, contents]
+        rag_files = [f for f in listdir(rag_docs_path) if isfile(join(rag_docs_path, f))]
+        for rag_filename in rag_files:
+            with open(f'{rag_docs_path}/{rag_filename}', 'r') as rag_file:
+                for line in rag_file.readlines():
+                    doc = json.loads(line)
+                    document_store.write_documents([
+                        Document(
+                            id=doc['id'],
+                            content=doc['contents'],
+                            # embedding=
+                        )
+                    ])
+                    print(f'{rag_filename} id={doc["id"]} loaded')
+
+        print("RAG DOCS LOADED")
 
         self.rag_pipe = Pipeline()
-        self.rag_pipe.add_component("retriever", InMemoryBM25Retriever(document_store=document_store))
+        self.rag_pipe.add_component(
+            "retriever",
+            InMemoryBM25Retriever(
+                document_store=document_store,
+                top_k=1,
+                # scale_score=True
+            )
+        )
         self.rag_pipe.add_component("prompt_builder", self.prompt_builder)
         self.rag_pipe.add_component(
             "generator",
@@ -108,7 +137,7 @@ class ChatLLM:
         if len(history) > self.max_history_length:
             history = self.contextualize(history)
 
-        answer = self.rag_pipe.run({
+        answer_full = self.rag_pipe.run({
             "prompt_builder": {
                 "prompt": self.system_prompt,
                 "history": history,
@@ -119,7 +148,8 @@ class ChatLLM:
             "retriever": {
                 "query": message,
             }
-        })['generator']['replies'][0]
+        })
+        answer = answer_full['generator']['replies'][0]
 
         new_history = (history + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
 
