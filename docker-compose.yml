@@ -1,12 +1,10 @@
 services:
   db:
     ports:
-      - "5432"
-    networks:
-        new:
-          aliases:
-            - database
+      - 5432:5432
     container_name: postgresql
+    networks:
+          new:
     image: postgres
     environment:
       - POSTGRES_DB=postgres
@@ -18,25 +16,31 @@ services:
   migrate:
         image: migrate/migrate
         networks:
-            - new
+          new:
+        depends_on:
+          - db
         volumes:
-            - .:/migrations
-        command: ["-path", "/schema", "-database",  "postgres://postgres:qwerty@database:5432/postgres?sslmode=disable", "up"]
-        links: 
-            - db
+            - ./backend/schema:/schema
+        command: ["-path", "/schema", "-database",  "postgres://postgres:qwerty@db:5432/postgres?sslmode=disable", "up"]
 
 
   backend:
     build:
       context: ./backend/
+    restart: on-failure
+    networks:
+        new:
     container_name: backend_healthmate
     ports:
       - 8080:8080
     depends_on:
+      - migrate
       - db
 
   frontend:
     container_name: frontend_helthmate
+    networks:
+        new:
     depends_on:
       - backend
     build:
@@ -50,6 +54,8 @@ services:
 
   nginx:
     image: nginx:stable-alpine
+    networks:
+        new:
     ports:
       - 80:80
     volumes:
@@ -60,4 +66,4 @@ services:
       - db
 
 networks:
-      new:
+  new:
