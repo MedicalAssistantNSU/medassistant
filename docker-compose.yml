@@ -26,7 +26,8 @@ services:
 
   backend:
     build:
-      context: ./backend/
+      context: .
+      dockerfile: backend/Dockerfile
     restart: on-failure
     networks:
         new:
