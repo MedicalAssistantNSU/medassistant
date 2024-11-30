@@ -21,12 +21,15 @@ ADD LLM/ /app/LLM/
 ADD inference.py /app/
 ADD requirements.txt /app/
 
+WORKDIR /app
+
 RUN apt install -y python3.9-venv
 RUN python3.9 -m venv venv
-RUN . /venv/bin/activate
-RUN venv/bin/pip install -r app/requirements.txt
-RUN venv/bin/pip install opencv-python
-
+RUN . /app/venv/bin/activate
+RUN /app/venv/bin/pip install opencv-python
+RUN /app/venv/bin/pip install -r requirements.txt 
+RUN ["/bin/bash", "-c", "source venv/bin/activate"]
+ENV PATH="/app/venv/bin:$PATH"
 
 RUN apt install -y golang-go
 

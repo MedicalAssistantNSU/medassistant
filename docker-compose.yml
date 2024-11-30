@@ -29,6 +29,8 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     restart: on-failure
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
         new:
     container_name: backend_healthmate

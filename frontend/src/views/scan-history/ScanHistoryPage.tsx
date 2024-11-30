@@ -28,7 +28,7 @@ const ScanHistoryPage = () => {
           {/* end breadcrumb */}
           <Typography fontSize={30} color={"primary.main"} textAlign={'center'}> Недавние сканирования </Typography>
           <Box p={1}>
-                  {scans.map((scan) => (
+                  {scans ? scans.map((scan) => (
                     <ButtonBase sx={{width: "90%", margin: "0 5%"}} component={Link} to="/apps/chats">
                       <Box width={"100%"} key={scan.id + scan.content + scan.createdAt}>
                         
@@ -58,7 +58,7 @@ const ScanHistoryPage = () => {
                       </Box>
                       </ButtonBase>
             
-                  ))}
+                  )) : <></>}
                 </Box>
           
       </PageContainer>
