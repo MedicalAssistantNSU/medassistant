@@ -1,33 +1,29 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React, { useEffect, useState } from 'react';
 import {
-  Avatar,
-  List,
-  ListItemText,
-  ListItemAvatar,
-  TextField,
-  Box,
-  Alert,
-  Badge,
-  ListItemButton,
-  Typography,
-  InputAdornment,
-  Button,
-  Menu,
-  MenuItem,
-  Modal,
-  Fade,
-  Backdrop,
+    Alert,
+    Backdrop,
+    Box,
+    Button,
+    Fade,
+    InputAdornment,
+    List,
+    ListItemButton,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Modal,
+    TextField,
+    Typography,
 } from '@mui/material';
-import { useSelector, useDispatch } from 'src/store/Store';
-import Scrollbar from '../../custom-scroll/Scrollbar';
-import { SelectChat, fetchChats, SearchChat, fetchScans } from '../../../store/apps/chat/ChatSlice';
-import { ChatsType } from 'src/types/apps/chat';
-import { last } from 'lodash';
-import { formatDistanceToNowStrict } from 'date-fns';
 import { IconChevronDown, IconPlus, IconSearch } from '@tabler/icons-react';
-import user1 from 'src/assets/images/profile/user-1.jpg';
+import { formatDistanceToNowStrict } from 'date-fns';
+import { last } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'src/store/Store';
+import { ChatsType } from 'src/types/apps/chat';
+import { SearchChat, SelectChat, fetchChats } from '../../../store/apps/chat/ChatSlice';
+import Scrollbar from '../../custom-scroll/Scrollbar';
 import CreateChat from '../CreateChat';
 
 const style = {

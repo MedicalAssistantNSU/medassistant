@@ -17,7 +17,7 @@ Output: None (everything now goes to stdout)
 class ChatLLM:
     def __init__(
             self,
-            url: str = 'http://localhost:11435',
+            url: str = 'http://host.docker.internal:11435',
             username: str = 'User',
             task='chat',
             config_file='../LLM/prompts_config.json'):

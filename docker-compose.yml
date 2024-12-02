@@ -1,0 +1,72 @@
+services:
+  db:
+    ports:
+      - 5432:5432
+    container_name: postgresql
+    networks:
+          new:
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_USER=postgres
+    restart: always
+
+
+  migrate:
+        image: migrate/migrate
+        networks:
+          new:
+        depends_on:
+          - db
+        volumes:
+            - ./backend/schema:/schema
+        command: ["-path", "/schema", "-database",  "postgres://postgres:qwerty@db:5432/postgres?sslmode=disable", "up"]
+
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: on-failure
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+        new:
+    container_name: backend_healthmate
+    ports:
+      - 8080:8080
+    depends_on:
+      - migrate
+      - db
+
+  frontend:
+    container_name: frontend_helthmate
+    networks:
+        new:
+    depends_on:
+      - backend
+    build:
+      context: ./frontend/
+    ports:
+      - 3000:3000
+    restart: always
+    stdin_open: true
+    tty: true
+
+
+  nginx:
+    image: nginx:stable-alpine
+    networks:
+        new:
+    ports:
+      - 80:80
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+    depends_on:
+      - frontend
+      - backend
+      - db
+
+networks:
+  new:

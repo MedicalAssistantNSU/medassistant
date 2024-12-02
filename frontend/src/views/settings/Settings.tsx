@@ -1,39 +1,22 @@
-import { FC, useState } from 'react';
 import {
-  Fab,
-  Drawer,
-  Grid,
-  Slider,
   Divider,
-  styled,
-  IconButton,
-  Typography,
-  Tooltip,
   Stack,
-  Button,
-  ButtonBase,
+  styled,
+  Typography
 } from '@mui/material';
-import { useSelector, useDispatch } from 'src/store/Store';
 import Box, { BoxProps } from '@mui/material/Box';
+import { useDispatch, useSelector } from 'src/store/Store';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { IconX, IconSettings, IconCheck } from '@tabler/icons-react';
+import DarkModeTwoToneIcon from '@mui/icons-material/DarkModeTwoTone';
+import WbSunnyTwoToneIcon from '@mui/icons-material/WbSunnyTwoTone';
+import PageContainer from 'src/components/container/PageContainer';
+import Scrollbar from 'src/components/custom-scroll/Scrollbar';
+import DashboardCard from 'src/components/shared/DashboardCard';
 import {
-  setTheme,
-  setDir,
-  setDarkMode,
-  toggleLayout,
-  toggleSidebar,
-  toggleHorizontal,
-  setBorderRadius,
-  setCardShadow,
+  setDarkMode
 } from 'src/store/customizer/CustomizerSlice';
 import { AppState } from 'src/store/Store';
-import Scrollbar from 'src/components/custom-scroll/Scrollbar';
-import WbSunnyTwoToneIcon from '@mui/icons-material/WbSunnyTwoTone';
-import DarkModeTwoToneIcon from '@mui/icons-material/DarkModeTwoTone';
-import PageContainer from 'src/components/container/PageContainer';
-import DashboardCard from 'src/components/shared/DashboardCard';
 
 
 const Settings = () => {

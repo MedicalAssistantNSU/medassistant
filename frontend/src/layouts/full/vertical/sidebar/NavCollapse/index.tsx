@@ -3,16 +3,16 @@
 import React from 'react';
 
 import { useState } from 'react';
-import { useSelector } from 'src/store/Store';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'src/store/Store';
 
 // mui imports
 import {
-  ListItemIcon,
-  ListItemButton,
   Collapse,
-  styled,
+  ListItemButton,
+  ListItemIcon,
   ListItemText,
+  styled,
   useTheme,
 } from '@mui/material';
 
@@ -91,7 +91,7 @@ const NavCollapse = ({
     color:
       open && level < 2
         ? 'white'
-        : `inherit` && level > 1 && open
+        : level > 1 && open
         ? theme.palette.primary.main
         : theme.palette.text.secondary,
     borderRadius: `${customizer.borderRadius}px`,

@@ -1,25 +1,21 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React from 'react';
 import {
-  Typography,
+  Box,
   Divider,
+  IconButton,
   ListItem,
   ListItemText,
-  IconButton,
-  Box,
-  Stack,
-  useMediaQuery,
-  Theme
+  Typography
 } from '@mui/material';
-import { IconChevronLeft, IconDotsVertical, IconMenu2 } from '@tabler/icons-react';
+import { IconChevronLeft, IconDotsVertical } from '@tabler/icons-react';
+import React from 'react';
 import { useSelector } from 'src/store/Store';
 
-import { ChatsType } from 'src/types/apps/chat';
 import { formatDistanceToNowStrict } from 'date-fns';
-import ChatInsideSidebar from './ChatInsideSidebar';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
-import ChatListing from './ChatListing';
+import { ChatsType } from 'src/types/apps/chat';
+import ChatInsideSidebar from './ChatInsideSidebar';
 import ChatMsgSent from './ChatMsgSent';
 
 
@@ -29,7 +25,7 @@ interface ChatContentProps {
 
   const ChatContent: React.FC<ChatContentProps> = ({ toggleChatSidebar }) => {
   const [open, setOpen] = React.useState(true);
-  const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
+  // const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
   const chatDetails: ChatsType = useSelector(
     (state) => state.chatReducer.chats[state.chatReducer.chatContent - 1],

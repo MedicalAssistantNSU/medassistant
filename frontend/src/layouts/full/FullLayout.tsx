@@ -1,23 +1,21 @@
+import { Box, Container, styled, useTheme } from '@mui/material';
 import { FC } from 'react';
-import { styled, Container, Box, useTheme } from '@mui/material';
-import { useSelector } from 'src/store/Store';
 import { Outlet } from 'react-router-dom';
-import { AppState } from 'src/store/Store';
+import { AppState, useSelector } from 'src/store/Store';
+import HorizontalHeader from '../full/horizontal/header/Header';
+import Navigation from '../full/horizontal/navbar/Navigation';
 import Header from './vertical/header/Header';
 import Sidebar from './vertical/sidebar/Sidebar';
-import Customizer from './shared/customizer/Customizer';
-import Navigation from '../full/horizontal/navbar/Navigation';
-import HorizontalHeader from '../full/horizontal/header/Header';
 
 const MainWrapper = styled('div')(() => ({
-  display: 'flex',
-  minHeight: '100vh',
-  width: '100%',
-  background: 'radial-gradient(#2C3E50, #4CA1AF)',
-  backgroundSize: '200% 200%',
-  animation: 'gradient 15s ease infinite',
-  position: 'absolute',
-  opacity: '1',
+    display: 'flex',
+    minHeight: '100vh',
+    width: '100%',
+    background: 'radial-gradient(#2C3E50, #4CA1AF)',
+    backgroundSize: '200% 200%',
+    animation: 'gradient 15s ease infinite',
+    position: 'absolute',
+    opacity: '1',
 }));
 
 const PageWrapper = styled('div')(() => ({

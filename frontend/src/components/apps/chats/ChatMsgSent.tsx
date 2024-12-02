@@ -1,30 +1,27 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'src/store/Store';
-import { IconButton, InputBase, Box, Backdrop, Modal, Fade } from '@mui/material';
+import { Backdrop, Box, Fade, IconButton, InputBase, Modal } from '@mui/material';
 import { IconPaperclip, IconPhoto, IconSend } from '@tabler/icons-react';
-import { addMsg, sendMsg } from 'src/store/apps/chat/ChatSlice';
-import { getLLamaAnswer } from 'src/utils/llamaai/LlamaService';
+import React, { useState } from 'react';
+import { addMsg } from 'src/store/apps/chat/ChatSlice';
+import { useDispatch, useSelector } from 'src/store/Store';
 import FileUpload from '../FileUpload';
-import useAuth from 'src/guards/authGuard/UseAuth';
 
 const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '50%',
-  height: '85%',
-  bgcolor: 'background.paper',
-  overflowY: 'auto',
-  boxShadow: 24,
-  p: 4,
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '50%',
+    height: '85%',
+    bgcolor: 'background.paper',
+    overflowY: 'auto',
+    boxShadow: 24,
+    p: 4,
 };
 
 const ChatMsgSent = () => {
   const [msg, setMsg] = useState("");
-  const {user} = useAuth()
   const [openImage, setOpenImage] = useState(false);
   const [image, setImage] = useState("");
   const dispatch = useDispatch();

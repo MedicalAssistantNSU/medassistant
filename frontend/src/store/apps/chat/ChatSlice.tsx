@@ -1,8 +1,7 @@
-import axios from '../../../utils/axios';
 import { createSlice } from '@reduxjs/toolkit';
-import { AppDispatch } from 'src/store/Store';
-import { toNumber, uniqueId } from 'lodash';
 import { sub } from 'date-fns';
+import { AppDispatch } from 'src/store/Store';
+import axios from '../../../utils/axios';
 
 const API_URL = '/api/v1/chats/';
 // 

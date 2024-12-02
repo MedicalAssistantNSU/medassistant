@@ -1,16 +1,9 @@
-import mock from '../mock';
-import bg1 from 'src/assets/images/blog/blog-img1.jpg';
-import user1 from 'src/assets/images/profile/user-1.jpg';
-import user2 from 'src/assets/images/profile/user-2.jpg';
-import adobe from 'src/assets/images/chat/icon-adobe.svg';
-import chrome from 'src/assets/images/chat/icon-chrome.svg';
-import figma from 'src/assets/images/chat/icon-figma.svg';
-import java from 'src/assets/images/chat/icon-javascript.svg';
-import zip from 'src/assets/images/chat/icon-zip-folder.svg';
 import { Chance } from 'chance';
-import type { ChatsType } from 'src/types/apps/chat';
 import { sub } from 'date-fns';
 import { uniqueId } from 'lodash';
+import bg1 from 'src/assets/images/blog/blog-img1.jpg';
+import type { ChatsType } from 'src/types/apps/chat';
+import mock from '../mock';
 
 const chance = new Chance();
 

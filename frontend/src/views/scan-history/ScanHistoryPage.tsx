@@ -1,14 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Box, ButtonBase, Typography } from '@mui/material';
-import PageContainer from 'src/components/container/PageContainer';
-import DashboardCard from '../../components/shared/DashboardCard';
-import { useDispatch, useSelector } from 'src/store/Store';
-import { MessageType } from 'src/types/apps/chat';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { useEffect } from 'react';
-import { fetchScans } from 'src/store/apps/chat/ChatSlice';
 import { Link } from 'react-router-dom';
+import PageContainer from 'src/components/container/PageContainer';
+import { fetchScans } from 'src/store/apps/chat/ChatSlice';
+import { useDispatch, useSelector } from 'src/store/Store';
+import { MessageType } from 'src/types/apps/chat';
 
 
 const ScanHistoryPage = () => {
@@ -16,7 +15,7 @@ const ScanHistoryPage = () => {
 
     useEffect(() => {
         dispatch(fetchScans());
-      }, [dispatch]);
+    }, [dispatch]);
 
     const scans: MessageType[] = useSelector(
         (state) => state.chatReducer.scans,
@@ -29,7 +28,7 @@ const ScanHistoryPage = () => {
           {/* end breadcrumb */}
           <Typography fontSize={30} color={"primary.main"} textAlign={'center'}> Недавние сканирования </Typography>
           <Box p={1}>
-                  {scans.map((scan) => (
+                  {scans ? scans.map((scan) => (
                     <ButtonBase sx={{width: "90%", margin: "0 5%"}} component={Link} to="/apps/chats">
                       <Box width={"100%"} key={scan.id + scan.content + scan.createdAt}>
                         
@@ -59,7 +58,7 @@ const ScanHistoryPage = () => {
                       </Box>
                       </ButtonBase>
             
-                  ))}
+                  )) : <></>}
                 </Box>
           
       </PageContainer>

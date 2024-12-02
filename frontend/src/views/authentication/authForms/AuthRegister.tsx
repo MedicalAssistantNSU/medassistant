@@ -1,18 +1,16 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React from 'react';
-import { Box, Typography, Button, Divider, Alert } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Alert, Box, Button, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
-import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
 import { Stack } from '@mui/system';
-import { registerType } from 'src/types/auth/auth';
-import AuthSocialButtons from './AuthSocialButtons';
-import { Form, useFormik, FormikProvider } from 'formik';
-import * as Yup from 'yup';
-import useMounted from 'src/guards/authGuard/UseMounted';
+import { FormikProvider, useFormik } from 'formik';
 import useAuth from 'src/guards/authGuard/UseAuth';
+import useMounted from 'src/guards/authGuard/UseMounted';
+import { registerType } from 'src/types/auth/auth';
+import * as Yup from 'yup';
+import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
+import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 
 const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
   const mounted = useMounted();
@@ -39,7 +37,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
       acceptTerms: true,
     },
 
-    // validationSchema: registerSchema,
+    validationSchema: registerSchema,
 
     onSubmit: async (values, { setErrors, setStatus, setSubmitting }) => {
       try {
