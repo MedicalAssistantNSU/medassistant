@@ -16,8 +16,6 @@ import { useState } from 'react';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
 import * as dropdownData from './data';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { IconBellRinging } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 

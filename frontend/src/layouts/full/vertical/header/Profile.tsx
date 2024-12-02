@@ -103,7 +103,7 @@ const Profile = () => {
               gap={1}
             >
               <IconMail width={15} height={15} />
-              {user? user.email : "unknown"}
+              {user ? user.username : "unknown"}
             </Typography>
           </Box>
         </Stack>
@@ -162,7 +162,7 @@ const Profile = () => {
         ))}
         <Box mt={2}>
           <Button variant="outlined" color="primary" fullWidth onClick={handleLogout}>
-            Logout
+            Выйти
           </Button>
         </Box>
       </Menu>

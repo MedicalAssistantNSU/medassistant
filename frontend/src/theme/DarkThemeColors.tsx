@@ -82,9 +82,9 @@ const DarkThemeColors = [
         contrastText: '#2c3e50',
       },
       secondary: {
-        main: '#FB9678',
-        light: '#40241C',
-        dark: '#F48B6C',
+        main: '#ffffff',
+        light: '#05313F',
+        dark: '#06769A',
         contrastText: '#ffffff',
       },
     },

@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { IconSearch, IconX } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import Menuitems from '../sidebar/MenuItems';
+import { AppState, useSelector } from 'src/store/Store';
 
 interface menuType {
   title: string;
@@ -30,6 +31,7 @@ const Search = () => {
   // drawer top
   const [showDrawer2, setShowDrawer2] = useState(false);
   const [search, setSerach] = useState('');
+  const customizer = useSelector((state: AppState) => state.customizer);
 
   const handleDrawerClose2 = () => {
     setShowDrawer2(false);
@@ -49,7 +51,7 @@ const Search = () => {
       <>
           <IconButton
               aria-label="show 4 new mails"
-              color="inherit"
+              color={customizer.activeMode === 'dark' ? "secondary": "inherit"}
               aria-controls="search-menu"
               aria-haspopup="true"
               onClick={() => setShowDrawer2(true)}
@@ -70,10 +72,10 @@ const Search = () => {
                   <Stack direction="row" spacing={2} alignItems="center">
                       <TextField
                           id="tb-search"
-                          placeholder="Search here"
+                          placeholder="Поиск"
                           fullWidth
                           onChange={(e) => setSerach(e.target.value)}
-                          inputProps={{ 'aria-label': 'Search here' }}
+                          inputProps={{ 'aria-label': 'Поиск' }}
                       />
                       <IconButton size="small" onClick={handleDrawerClose2}>
                           <IconX size="18" />
@@ -98,7 +100,6 @@ const Search = () => {
                                           >
                                               <ListItemText
                                                   primary={menu.title}
-                                                  secondary={menu?.href}
                                                   sx={{ my: 0, py: 0.5 }}
                                               />
                                           </ListItemButton>

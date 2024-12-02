@@ -11,6 +11,8 @@ import Login2 from 'src/views/authentication/auth2/Login2';
 import Register2 from 'src/views/authentication/auth2/Register2';
 import Settings from 'src/views/settings/Settings';
 import Faq from 'src/views/help/Help';
+import UserProfile from 'src/views/apps/user-profile/UserProfile';
+import Gallery from 'src/views/apps/user-profile/Gallery';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -35,6 +37,8 @@ const Router = [
       { path: '/sample-page', exact: true, element: <SamplePage /> },
       { path: '/scans', exact: true, element: <ScanHistoryPage /> },
       { path: '/about/us', exact: true, element: <AboutUs /> },
+      { path: '/user-profile', element: <UserProfile /> },
+      { path: '/gallery', element: <Gallery /> },
       { path: '/help', exact: true, element: <Faq /> },
       { path: '/settings', exact: true, element: <Settings /> },
       { path: '/apps/chats', element: <Chats /> },
