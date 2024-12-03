@@ -17,6 +17,7 @@ class SaveError(CVException):
     """Raised when there is an error saving the OCR output."""
     pass
 
+
 class BlurryTextError(CVException):
     """Raised when there is a blurry text on image what makes the results of OCR very poor."""
     pass
