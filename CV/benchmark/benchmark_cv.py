@@ -4,8 +4,7 @@ import os
 from nltk.metrics.distance import edit_distance
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from DocumentOCR import DocumentOCR
-
+from DocumentOCR import DocumentOCR  # noqa: E402
 
 # Paths
 images_folder = "benchmark_cv"
