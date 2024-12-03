@@ -1,8 +1,11 @@
-import os
 import json
+import sys
+import os
 from nltk.metrics.distance import edit_distance
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from DocumentOCR import DocumentOCR
+
 
 # Paths
 images_folder = "benchmark_cv"
@@ -40,7 +43,7 @@ with open(true_text_file, 'r') as f:
     true_texts = {line.split(' ')[0]: ' '.join(line.split(' ')[1:]) for line in f.readlines()}
 
 # Initialize the OCR processor
-ocr_processor = DocumentOCR(save_path="user_save_path")
+ocr_processor = DocumentOCR(save_path="../user_save_path")
 
 # Process images
 results = {}
