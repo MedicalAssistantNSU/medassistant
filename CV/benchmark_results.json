@@ -1,0 +1,51 @@
+{
+    "8.jpg": {
+        "Character Error Rate (CER)": 0.16644021739130435,
+        "Word Error Rate (WER)": 0.43956043956043955,
+        "Exact Match Accuracy": false,
+        "Edit Distance": 245
+    },
+    "1.jpeg": {
+        "Character Error Rate (CER)": 0.007407407407407408,
+        "Word Error Rate (WER)": 0.047619047619047616,
+        "Exact Match Accuracy": false,
+        "Edit Distance": 4
+    },
+    "9.jpg": {
+        "Character Error Rate (CER)": 0.062142857142857146,
+        "Word Error Rate (WER)": 0.2571428571428571,
+        "Exact Match Accuracy": false,
+        "Edit Distance": 87
+    },
+    "6.jpeg": "failed, blurry",
+    "4.jpg": {
+        "Character Error Rate (CER)": 0.05,
+        "Word Error Rate (WER)": 0.22826086956521738,
+        "Exact Match Accuracy": false,
+        "Edit Distance": 36
+    },
+    "5.png": {
+        "Character Error Rate (CER)": 0.05415754923413567,
+        "Word Error Rate (WER)": 0.29707112970711297,
+        "Exact Match Accuracy": false,
+        "Edit Distance": 99
+    },
+    "7.jpg": {
+        "Character Error Rate (CER)": 0.13315400134498992,
+        "Word Error Rate (WER)": 0.3768844221105528,
+        "Exact Match Accuracy": false,
+        "Edit Distance": 198
+    },
+    "2.jpg": {
+        "Character Error Rate (CER)": 0.048,
+        "Word Error Rate (WER)": 0.3111111111111111,
+        "Exact Match Accuracy": false,
+        "Edit Distance": 18
+    },
+    "3.jpg": {
+        "Character Error Rate (CER)": 0.14976174268209666,
+        "Word Error Rate (WER)": 0.42528735632183906,
+        "Exact Match Accuracy": false,
+        "Edit Distance": 220
+    }
+}
