@@ -1,8 +1,9 @@
 import cv2
 import easyocr
+import numpy as np
 import os
 import argparse
-from .exceptions import *
+from exceptions import *
 from typing import Optional
 
 """
@@ -46,6 +47,14 @@ class DocumentOCR:
             # Convert to grayscale and apply Gaussian Blur
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             blurred = cv2.GaussianBlur(gray, (1, 1), 0)
+
+            edges = cv2.Canny(blurred, 100, 200)
+            edge_density = np.sum(edges)
+            threshold_edge_density = 10000000
+
+            if edge_density < threshold_edge_density:
+                raise BlurryTextError(f"The text on image is hard to read, edge density is {edge_density}. Please try "
+                                      f"again.")
 
             return blurred
         except Exception as e:
