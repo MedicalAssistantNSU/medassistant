@@ -12,7 +12,7 @@ const Chats = () => {
 
   return (
     <PageContainer title="Чаты">
-      <Box mt={2} display={"flex"} height={"85vh"} width={"100%"} bgcolor={"primary.contrastText"}>
+      <Box mt={2} display={"flex"} height={"85vh"} width={"100%"} bgcolor={"secondary.contrastText"}>
         {/* ------------------------------------------- */}
         {/* Left part */}
         {/* ------------------------------------------- */}

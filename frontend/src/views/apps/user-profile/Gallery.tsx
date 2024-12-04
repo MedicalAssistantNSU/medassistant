@@ -5,6 +5,8 @@ import { Box, Grid } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import ProfileBanner from 'src/components/apps/userprofile/profile/ProfileBanner';
 import GalleryCard from 'src/components/apps/userprofile/gallery/GalleryCard';
+import { AppState, useSelector } from 'src/store/Store';
+import ChildCard from 'src/components/shared/ChildCard';
 
 
 const Gallery = () => {
@@ -15,9 +17,9 @@ const Gallery = () => {
           <ProfileBanner />
         </Grid>
         <Grid item sm={12}>
-          <Box sx={{backgroundColor: "primary.light"}} mt={1} p={4}>
+          <ChildCard>
             <GalleryCard />
-          </Box>
+          </ChildCard>
         </Grid>
       </Grid>
     </PageContainer>

@@ -22,12 +22,12 @@ const ProfileTab = () => {
 
   const ProfileTabs: profileType[] = [
     {
-      label: 'Profile',
+      label: 'Профиль',
       icon: <IconUserCircle size="20" />,
       to: '/user-profile',
     },
     {
-      label: 'Gallery',
+      label: 'Галерея',
       icon: <IconPhoto size="20" />,
       to: '/gallery',
     },

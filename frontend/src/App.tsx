@@ -7,6 +7,7 @@ import ScrollToTop from './components/shared/ScrollToTop';
 import Router from './routes/Router';
 import { AppState } from './store/Store';
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   const routing = useRoutes(Router);
@@ -18,6 +19,7 @@ function App() {
         <CssBaseline />
         <ScrollToTop>{routing}</ScrollToTop>
       </RTL>
+      <Toaster />
     </ThemeProvider>
   );
 }

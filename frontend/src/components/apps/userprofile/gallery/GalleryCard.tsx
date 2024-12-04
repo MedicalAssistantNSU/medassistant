@@ -49,17 +49,17 @@ const GalleryCard = () => {
             <Box>
               <Typography variant="h3">
                 Галерея &nbsp;
-                <Chip label={getPhotos ? getPhotos.length : 0} color="secondary" size="small" />
+                <Chip label={getPhotos ? getPhotos.length : 0} color="primary" size="small" />
               </Typography>
             </Box>
             <Box ml="auto">
               <TextField
                 id="outlined-search"
-                placeholder="Search Gallery"
+                placeholder="Поиск по галереи"
                 size="small"
                 type="search"
                 variant="outlined"
-                inputProps={{ 'aria-label': 'Search Gallery' }}
+                inputProps={{ 'aria-label': 'Поиск по галереи' }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">

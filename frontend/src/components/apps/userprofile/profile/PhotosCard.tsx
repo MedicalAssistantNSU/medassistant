@@ -3,14 +3,7 @@
 import React, { useEffect } from 'react';
 import { Typography, ImageList, ImageListItem, Skeleton, Box } from '@mui/material';
 
-import img1 from 'src/assets/images/products/s1.jpg';
-import img2 from 'src/assets/images/products/s2.jpg';
-import img3 from 'src/assets/images/products/s3.jpg';
-import img4 from 'src/assets/images/products/s4.jpg';
-import img5 from 'src/assets/images/products/s5.jpg';
-import img6 from 'src/assets/images/products/s6.jpg';
-import img7 from 'src/assets/images/products/s11.jpg';
-import img8 from 'src/assets/images/products/s8.jpg';
+import img1 from 'src/assets/images/products/document.jpg';
 import ChildCard from 'src/components/shared/ChildCard';
 
 interface photoType {
@@ -24,31 +17,31 @@ const photos: photoType[] = [
     id: 1,
   },
   {
-    img: img2,
+    img: img1,
     id: 2,
   },
   {
-    img: img3,
+    img: img1,
     id: 3,
   },
   {
-    img: img4,
+    img: img1,
     id: 4,
   },
   {
-    img: img5,
+    img: img1,
     id: 5,
   },
   {
-    img: img6,
+    img: img1,
     id: 6,
   },
   {
-    img: img7,
+    img: img1,
     id: 7,
   },
   {
-    img: img8,
+    img: img1,
     id: 8,
   },
   {

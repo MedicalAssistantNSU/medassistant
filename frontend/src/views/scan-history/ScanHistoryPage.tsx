@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { Box, ButtonBase, Typography } from '@mui/material';
+import { Box, ButtonBase, Chip, Typography } from '@mui/material';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -26,7 +26,9 @@ const ScanHistoryPage = () => {
           {/* breadcrumb */}
           <Box mt={4} />
           {/* end breadcrumb */}
-          <Typography fontSize={30} color={"primary.main"} textAlign={'center'}> Недавние сканирования </Typography>
+          <Box p={2} boxShadow={15} sx={{backgroundColor:"secondary.contrastText"}} width={"60%"} borderRadius={30} margin={"0 auto"}>
+          <Typography fontSize={25} color={"secondary.dark"} textAlign={'center'}> Недавние сканирования </Typography>
+          </Box>
           <Box p={1}>
                   {scans ? scans.map((scan) => (
                     <ButtonBase sx={{width: "90%", margin: "0 5%"}} component={Link} to="/apps/chats">

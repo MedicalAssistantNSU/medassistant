@@ -95,7 +95,7 @@ const ChatListing = () => {
             >
                 <Fade in={createChat}>
                     <Box sx={style}>
-                      <CreateChat/>
+                      <CreateChat setCreateChat={setCreateChat} />
                     </Box>
                 </Fade>
           </Modal>
@@ -187,7 +187,7 @@ const ChatListing = () => {
             ))
           ) : (
             <Box m={2}>
-              <Alert severity="error" variant="filled" sx={{ color: 'white' }}>
+              <Alert severity="error" variant="filled" sx={{ color: 'primary.contrastText', bgcolor: "primary.light"}}>
                 Чаты не найдены
               </Alert>
             </Box>
