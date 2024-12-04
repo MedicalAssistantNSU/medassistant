@@ -32,14 +32,14 @@ const CreateChat = ({setCreateChat} : {setCreateChat: (value: React.SetStateActi
                     messages: []
                 }
                 console.log(newChat)
-                dispatch(AppendChat(newChat))
+                await dispatch(AppendChat(newChat))
                 toast.success('Чат создан.');
                 console.log(response);
-                //setCreateChat(false)
             } catch (err: any) {
                 toast.error('Чат не создался.');
                 console.log(err);
             }
+            setCreateChat(() => false)
         },
     });
 

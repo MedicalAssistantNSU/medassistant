@@ -1,31 +1,18 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React from 'react';
 import {
-  Grid,
-  Box,
-  Typography,
-  Button,
   Avatar,
-  Stack,
+  Box,
   CardMedia,
+  Grid,
   styled,
-  Fab,
+  Typography
 } from '@mui/material';
 import profilecover from 'src/assets/images/backgrounds/profile.png';
 import userimg from 'src/assets/images/profile/1.png';
-import {
-  IconBrandDribbble,
-  IconBrandFacebook,
-  IconBrandTwitter,
-  IconBrandYoutube,
-  IconFileDescription,
-  IconUserCheck,
-  IconUserCircle,
-} from '@tabler/icons-react';
-import ProfileTab from './ProfileTab';
-import BlankCard from '../../../shared/BlankCard';
 import useAuth from 'src/guards/authGuard/UseAuth';
+import BlankCard from '../../../shared/BlankCard';
+import ProfileTab from './ProfileTab';
 
 const ProfileBanner = () => {
   const { user } = useAuth()

@@ -1,11 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React from 'react';
-import { Box, Grid } from '@mui/material';
-import PageContainer from 'src/components/container/PageContainer';
-import ProfileBanner from 'src/components/apps/userprofile/profile/ProfileBanner';
+import { Grid } from '@mui/material';
 import GalleryCard from 'src/components/apps/userprofile/gallery/GalleryCard';
-import { AppState, useSelector } from 'src/store/Store';
+import ProfileBanner from 'src/components/apps/userprofile/profile/ProfileBanner';
+import PageContainer from 'src/components/container/PageContainer';
 import ChildCard from 'src/components/shared/ChildCard';
 
 

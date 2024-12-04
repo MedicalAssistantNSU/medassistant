@@ -1,23 +1,22 @@
 import {
   Box,
-  Stack,
-  Grid,
-  Typography,
-  Chip,
-  TextField,
-  InputAdornment,
-  IconButton,
   CardMedia,
-  Skeleton
+  Chip,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography
 } from '@mui/material';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+import { IconSearch } from '@tabler/icons-react';
+import { formatDistanceToNowStrict } from 'date-fns';
 import React, { useEffect } from 'react';
 import BlankCard from 'src/components/shared/BlankCard';
-import { useSelector, useDispatch } from 'src/store/Store';
-import { IconDotsVertical, IconSearch } from '@tabler/icons-react';
-import { format, formatDistanceToNowStrict } from 'date-fns';
 import { fetchScans } from 'src/store/apps/chat/ChatSlice';
+import { useDispatch, useSelector } from 'src/store/Store';
 import { MessageType } from 'src/types/apps/chat';
 
 const GalleryCard = () => {
@@ -27,7 +26,7 @@ const GalleryCard = () => {
   }, [dispatch]);
 
 
-  const [search, setSearch] = React.useState('');
+  const [_, setSearch] = React.useState('');
   const getPhotos : MessageType[]  = useSelector((state) => state.chatReducer.scans);
 
   // skeleton

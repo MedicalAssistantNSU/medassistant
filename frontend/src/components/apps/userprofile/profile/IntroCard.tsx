@@ -1,10 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import React from 'react';
 import { Stack, Typography } from '@mui/material';
 
+import { IconAccessible, IconBriefcase, IconMail, IconMapPin } from '@tabler/icons-react';
 import ChildCard from 'src/components/shared/ChildCard';
-import { IconAccessible, IconBriefcase, IconDeviceDesktop, IconMail, IconMapPin } from '@tabler/icons-react';
 
 const IntroCard = () => (
   <ChildCard>

@@ -177,11 +177,11 @@ const ChatListing = () => {
                   sx={{ my: 0 }}
                 />
                 <Box sx={{ flexShrink: '0' }} mt={0.5}>
-                  <Typography variant="body2">
-                    {formatDistanceToNowStrict(new Date(lastActivity(chat) ? lastActivity(chat) : 0), {
+                  {lastActivity(chat) ? <Typography variant="body2">
+                    {formatDistanceToNowStrict(new Date(lastActivity(chat)), {
                       addSuffix: false,
                     })}
-                  </Typography>
+                  </Typography> : <></>}
                 </Box>
               </ListItemButton>
             ))
@@ -192,6 +192,7 @@ const ChatListing = () => {
               </Alert>
             </Box>
           )}
+
         </Scrollbar>
       </List>
     </div>

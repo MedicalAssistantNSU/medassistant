@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+import { Box, Tab, Tabs } from '@mui/material';
+import { IconPhoto, IconUserCircle } from '@tabler/icons-react';
 import React from 'react';
-import { Tabs, Tab, Box } from '@mui/material';
-import { IconHeart, IconPhoto, IconUserCircle } from '@tabler/icons-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const ProfileTab = () => {
