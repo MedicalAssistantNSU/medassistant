@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import axios from '../../utils/axios';
+import { Box, Button, Grid, Input } from '@mui/material';
+import img1 from 'src/assets/images/products/plus.jpg';
+import { MuiFileInput } from 'mui-file-input'
+import toast from 'react-hot-toast';
 
 
 function FileUpload({load} : {load : React.Dispatch<React.SetStateAction<string>>}) {
     const [file, setFile] = useState();
-    const [uploadedFile, setUploadedFile] = useState();
+    const [_, setUploadedFile] = useState();
     const [error, setError] = useState();
 
     function handleChange(event: any) {
@@ -27,10 +31,12 @@ function FileUpload({load} : {load : React.Dispatch<React.SetStateAction<string>
                 console.log(response.data);
                 setUploadedFile(response.data.url);
                 load(response.data.url);
+                toast.success("Документ прикреплен.")
             })
             .catch((error) => {
                 console.error('Error uploading file: ', error);
                 setError(error);
+                toast.error("Произошла ошибка при загрузке файла.")
             });
     }
 
@@ -38,11 +44,49 @@ function FileUpload({load} : {load : React.Dispatch<React.SetStateAction<string>
         <div className="App">
             <form onSubmit={handleSubmit}>
                 <h1>Загрузка файла</h1>
-                <input type="file" onChange={handleChange} />
-                <button type="submit">Прикрепить</button>
-            </form>
-            {uploadedFile && <img width={'90%'} src={uploadedFile} alt="Uploaded content" />}
+            
+            <Grid container>
+                <Grid item xs={12} container >
+                    <Grid item xs={7}>
+            <Button
+                variant="contained"
+                component="label"
+                color={"secondary"}
+            >
+                Выбрать
+            <input type="file" onChange={handleChange} hidden/>
+            </Button>
+            </Grid>
+            <Grid item xs={5}>
+            {file ? 
+                <>
+                <Button
+                color={"error"}
+                onClick={()=>setFile(undefined)}
+                >
+                    Удалить
+                </Button>
+                <Button type="submit"
+                >
+                    Прикрепить
+                </Button>
+                </>
+            : <></>}
+                </Grid>
+            </Grid>
+            
+            <Grid xs={12}>
+            <br />
+
+            <Box justifyContent={'center'}>
+                    <img  width={"100%"} src={file ? URL.createObjectURL(file) : img1}  />
+                </Box>
+            </Grid>
+            </Grid>    
             {error && <p>Error uploading file: {error}</p>}
+                
+            </form>
+            
         </div>
     );
 }

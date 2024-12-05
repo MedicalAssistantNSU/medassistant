@@ -13,7 +13,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '50%',
-    height: '85%',
+    height: '50%',
     bgcolor: 'background.paper',
     overflowY: 'auto',
     boxShadow: 24,
@@ -63,7 +63,7 @@ const ChatMsgSent = () => {
             </Modal>
     <Box p={1}
       mt={1}
-      height={"120px"}
+      height={"60px"}
     >
       {/* ------------------------------------------- */}
       {/* sent chat */}
@@ -90,10 +90,10 @@ const ChatMsgSent = () => {
         >
           <IconSend stroke={1.5} size="20" />
         </IconButton>
-        <IconButton aria-label="delete" onClick={() => setOpenImage(true)}>
+        {/* <IconButton aria-label="delete" onClick={() => setOpenImage(true)}>
           <IconPhoto stroke={1.5} size="20" />
-        </IconButton>
-        <IconButton aria-label="delete">
+        </IconButton> */}
+        <IconButton aria-label="delete" onClick={() => setOpenImage(true)}>
           <IconPaperclip stroke={1.5} size="20" />
         </IconButton>
       </form>

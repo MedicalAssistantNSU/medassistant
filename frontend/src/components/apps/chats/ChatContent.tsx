@@ -73,7 +73,7 @@ interface ChatContentProps {
 
             <Box width="100%"
             >
-              <Scrollbar sx={{ height: 'calc(90vh - 155px)', overflow: 'auto', maxHeight: 'calc(90vh - 155px)',
+              <Scrollbar sx={{ height: 'calc(100vh - 240px)', overflow: 'auto', maxHeight: 'calc(100vh - 240px)',
                 '&:before': {
                   content: '""',
                   background: 'radial-gradient(#2C3E50, #4CA1AF)',
@@ -170,6 +170,7 @@ interface ChatContentProps {
             {/* ------------------------------------------- */}
             <ChatInsideSidebar isInSidebar={false} chat={chatDetails} />
           </Box>
+          
           <ChatMsgSent />
         </Box>
         

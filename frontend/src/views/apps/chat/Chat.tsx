@@ -28,7 +28,6 @@ const Chats = () => {
         {/* ------------------------------------------- */}
         <Box width={"100%"}>
           <ChatContent toggleChatSidebar={() => setMobileSidebarOpen(!isMobileSidebarOpen)} />
-    
         </Box>
       </Box>
     </PageContainer>
