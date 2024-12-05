@@ -31,10 +31,19 @@ type MessageRepository interface {
 	GetScans(user_id int) ([]models.Message, error)
 }
 
+type PostRepository interface {
+	Update(id int, updatedPost models.Post) error
+	Delete(id int) error
+	GetById(id int) (models.Post, error)
+	GetAll() ([]models.Post, error)
+	Create(post models.Post) (int, error)
+}
+
 type Respository struct {
 	Authorization
 	ChatRepozitory
 	MessageRepository
+	PostRepository
 	*FileStorage
 }
 
@@ -43,6 +52,7 @@ func NewRepository(db *sqlx.DB, fs *FileStorage) *Respository {
 		Authorization:     NewAuthPostgres(db),
 		ChatRepozitory:    NewChatRepo(db),
 		MessageRepository: NewMessageRepo(db),
+		PostRepository:    NewPostRepo(db),
 		FileStorage:       fs,
 	}
 }

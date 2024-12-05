@@ -22,6 +22,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router.Use(CORSMiddleware())
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	_ = router.GET("/ws", h.handleWebSocket)
+
 	auth := router.Group("/auth")
 	{
 		auth.POST("/sign-up", h.signUp)
@@ -46,6 +48,15 @@ func (h *Handler) InitRoutes() *gin.Engine {
 				messages.DELETE("/:message_id", h.deleteMessage)
 				messages.PUT("/:message_id", h.updateMessage)
 			}
+		}
+
+		posts := api.Group("/posts")
+		{
+			posts.POST("/", h.createPost)
+			posts.GET("/", h.getAllPosts)
+			posts.GET("/:id", h.getPostById)
+			posts.PUT("/:id", h.updatePost)
+			posts.DELETE("/:id", h.deletePost)
 		}
 
 		api.GET("/account/my-account", h.getAccountInfo)

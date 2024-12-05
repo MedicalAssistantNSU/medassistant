@@ -33,6 +33,14 @@ type Message interface {
 	GetScans(user_id int) ([]models.Message, error)
 }
 
+type Post interface {
+	Create(post models.Post) (int, error)
+	GetAll() ([]models.Post, error)
+	GetById(id int) (models.Post, error)
+	Delete(id int) error
+	Update(id int, updatedPost models.Post) error
+}
+
 type Uploader interface {
 	Upload(ctx context.Context, file io.Reader, size int64, contentType string) (string, error)
 }
@@ -41,6 +49,7 @@ type Service struct {
 	Authorization
 	Chat
 	Message
+	Post
 	Uploader
 }
 
@@ -50,5 +59,6 @@ func NewService(repos *repository.Respository) *Service {
 		Chat:          NewChatService(repos.ChatRepozitory, repos.MessageRepository),
 		Message:       NewMessageService(repos.MessageRepository),
 		Uploader:      NewUpdoaderService(repos.FileStorage),
+		Post:          NewPostService(repos.PostRepository),
 	}
 }

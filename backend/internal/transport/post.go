@@ -4,63 +4,61 @@ import (
 	"med-asis/internal/models"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 )
 
-type GetAllChatsResponses struct {
-	Data []models.Chat `json:"data"`
+type GetAllPostsResponses struct {
+	Data []models.Post `json:"data"`
 }
 
-// @Summary Get all chats
+// @Summary Get all posts
 // @Security ApiKeyAuth
-// @Tags chats
-// @Description Get all chats
-// @ID get-all-chats
+// @Tags posts
+// @Description Get all posts
+// @ID get-all-posts
 // @Accept  json
 // @Produce  json
 // @Success 200 {integer} integer 1
 // @Failure 400,404 {object} transort_error
 // @Failure 500 {object} transort_error
 // @Failure default {object} transort_error
-// @Router /api/v1/chats/ [get]
-func (h *Handler) getAllChats(c *gin.Context) {
-	id, ok := c.Get(UserId)
+// @Router /api/v1/posts/ [get]
+func (h *Handler) getAllPosts(c *gin.Context) {
+	_, ok := c.Get(UserId)
 	if !ok {
 		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
 		return
 	}
 
-	chats, err := h.services.Chat.GetAllInfo(id.(int))
+	posts, err := h.services.Post.GetAll()
 	if err != nil {
-		NewTransportErrorResponse(c, http.StatusInternalServerError, "some problems while getting chats")
+		NewTransportErrorResponse(c, http.StatusInternalServerError, "some problems while getting posts")
 		return
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"data": chats,
+		"data": posts,
 	})
 }
 
-// @Summary Create chat
+// @Summary Create post
 // @Security ApiKeyAuth
-// @Tags chats
-// @Description create chat
-// @ID create-chat
+// @Tags posts
+// @Description create post
+// @ID create-post
 // @Accept  json
 // @Produce  json
-// @Param input body models.Chat true "chat info"
+// @Param input body models.Post true "post info"
 // @Success 200 {integer} integer 1
 // @Failure 400,404 {object} transort_error
 // @Failure 500 {object} transort_error
 // @Failure default {object} transort_error
-// @Router /api/v1/chats/ [post]
-func (h *Handler) createChat(c *gin.Context) {
-	var input models.Chat
+// @Router /api/v1/posts/ [post]
+func (h *Handler) createPost(c *gin.Context) {
+	var input models.Post
 
-	userId, ok := c.Get(UserId)
+	_, ok := c.Get(UserId)
 	if !ok {
 		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
 		return
@@ -71,7 +69,7 @@ func (h *Handler) createChat(c *gin.Context) {
 		return
 	}
 
-	id, err := h.services.Chat.Create(userId.(int), input)
+	id, err := h.services.Post.Create(input)
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, "some problems")
 		return
@@ -81,73 +79,73 @@ func (h *Handler) createChat(c *gin.Context) {
 	})
 }
 
-// @Summary Get Chat by Id
+// @Summary Get Post by Id
 // @Security ApiKeyAuth
-// @Tags chats
-// @Description Get chat by Id
-// @ID get-chat-by-id
+// @Tags posts
+// @Description Get post by Id
+// @ID get-post-by-id
 // @Accept  json
 // @Produce  json
-// @Param id  path int true "Chat ID"
+// @Param id  path int true "Post ID"
 // @Success 200 {integer} integer 1
 // @Failure 400,404 {object} transort_error
 // @Failure 500 {object} transort_error
 // @Failure default {object} transort_error
-// @Router /api/v1/chats/{id} [get]
-func (h *Handler) getChatById(c *gin.Context) {
-	userId, ok := c.Get(UserId)
+// @Router /api/v1/posts/{id} [get]
+func (h *Handler) getPostById(c *gin.Context) {
+	_, ok := c.Get(UserId)
 	if !ok {
 		NewTransportErrorResponse(c, http.StatusBadRequest, "You not authorized!!!")
 		return
 	}
 
-	list_id, err := strconv.Atoi(c.Param("id"))
+	postId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		NewTransportErrorResponse(c, http.StatusBadRequest, "bad list id")
+		NewTransportErrorResponse(c, http.StatusBadRequest, "bad post id")
 		return
 	}
 
-	list, err := h.services.Chat.GetById(userId.(int), list_id)
+	post, err := h.services.Post.GetById(postId)
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, list)
+	c.JSON(http.StatusOK, post)
 }
 
-// @Summary Update Chat
+// @Summary Update Post
 // @Security ApiKeyAuth
-// @Tags chats
-// @Description Update chat by Id
-// @ID update-chat
+// @Tags posts
+// @Description Update post by Id
+// @ID update-post
 // @Accept  json
 // @Produce  json
-// @Param id  path int true "Chat ID"
+// @Param id  path int true "Post ID"
 // @Success 200 {integer} integer 1
 // @Failure 400,404 {object} transort_error
 // @Failure 500 {object} transort_error
 // @Failure default {object} transort_error
-// @Router /api/v1/chats/{id} [put]
-func (h *Handler) updateChat(c *gin.Context) {
-	userId, ok := c.Get(UserId)
+// @Router /api/v1/posts/{id} [put]
+func (h *Handler) updatePost(c *gin.Context) {
+	_, ok := c.Get(UserId)
 	if !ok {
 		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
 		return
 	}
 
-	chat_id, err := strconv.Atoi(c.Param("id"))
+	chatId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	var input models.Chat
+	var input models.Post
 	if err := c.BindJSON(&input); err != nil {
 		NewTransportErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.services.Chat.Update(userId.(int), chat_id, input); err != nil {
+	if err := h.services.Post.Update(chatId, input); err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -155,54 +153,36 @@ func (h *Handler) updateChat(c *gin.Context) {
 	c.JSON(http.StatusOK, "i updated it")
 }
 
-// @Summary Delete Chat
+// @Summary Delete Post
 // @Security ApiKeyAuth
-// @Tags chats
-// @Description Delete chat by Id
-// @ID delete-chat
+// @Tags posts
+// @Description Delete post by Id
+// @ID delete-post
 // @Accept  json
 // @Produce  json
-// @Param id  path int true "Chat ID"
+// @Param id  path int true "Post ID"
 // @Success 200 {integer} integer 1
 // @Failure 400,404 {object} transort_error
 // @Failure 500 {object} transort_error
 // @Failure default {object} transort_error
-// @Router /api/v1/chats/{id} [delete]
-func (h *Handler) deleteChat(c *gin.Context) {
-	userId, ok := c.Get(UserId)
+// @Router /api/v1/posts/{id} [delete]
+func (h *Handler) deletePost(c *gin.Context) {
+	_, ok := c.Get(UserId)
 	if !ok {
 		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
 		return
 	}
 
-	chat_id, err := strconv.Atoi(c.Param("id"))
+	chatId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.services.Chat.Delete(userId.(int), chat_id); err != nil {
+	if err := h.services.Post.Delete(chatId); err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	c.JSON(http.StatusOK, "i deleted it :D")
-}
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-func (h *Handler) handleWebSocket(c *gin.Context) {
-	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-	defer conn.Close()
-	for {
-		conn.WriteMessage(websocket.TextMessage, []byte("Hello Websocket!"))
-		time.Sleep(time.Second)
-	}
 }
