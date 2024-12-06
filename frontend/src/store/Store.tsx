@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import CustomizerReducer from './customizer/CustomizerSlice';
 import ChatsReducer from './apps/chat/ChatSlice';
+import PostsReducer from './apps/posts/PostSlice';
 import { combineReducers } from 'redux';
 import {
   useDispatch as useAppDispatch,
@@ -12,12 +13,14 @@ export const store = configureStore({
   reducer: {
     customizer: CustomizerReducer,
     chatReducer: ChatsReducer,
+    postReducer: PostsReducer,
   },
 });
 
 const rootReducer = combineReducers({
   customizer: CustomizerReducer,
   chatReducer: ChatsReducer,
+  postReducer: PostsReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

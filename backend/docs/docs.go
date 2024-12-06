@@ -1268,16 +1268,16 @@ const docTemplate = `{
                 "content": {
                     "type": "string"
                 },
+                "created_at": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "imageURL": {
-                    "type": "string"
-                },
-                "publishedAt": {
+                "image_url": {
                     "type": "string"
                 },
                 "title": {

@@ -39,6 +39,7 @@ type Post interface {
 	GetById(id int) (models.Post, error)
 	Delete(id int) error
 	Update(id int, updatedPost models.Post) error
+	InitPosts()
 }
 
 type Uploader interface {

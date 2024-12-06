@@ -33,7 +33,7 @@ func (h *Handler) getAllPosts(c *gin.Context) {
 
 	posts, err := h.services.Post.GetAll()
 	if err != nil {
-		NewTransportErrorResponse(c, http.StatusInternalServerError, "some problems while getting posts")
+		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 

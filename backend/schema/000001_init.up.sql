@@ -42,7 +42,7 @@ CREATE TABLE posts
 (
     id              serial       not null unique,
     title           varchar(256) not null,
-    description     varchar(256) not null, 
+    description     text not null, 
     content         text not null,
     published_at    varchar(256),
     image_url       varchar(256)
