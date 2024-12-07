@@ -4,10 +4,8 @@ import (
 	"med-asis/internal/models"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 )
 
 type GetAllChatsResponses struct {
@@ -187,22 +185,4 @@ func (h *Handler) deleteChat(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, "i deleted it :D")
-}
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-func (h *Handler) handleWebSocket(c *gin.Context) {
-	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-	defer conn.Close()
-	for {
-		conn.WriteMessage(websocket.TextMessage, []byte("Hello Websocket!"))
-		time.Sleep(time.Second)
-	}
 }

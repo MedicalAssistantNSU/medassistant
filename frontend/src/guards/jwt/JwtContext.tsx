@@ -5,6 +5,7 @@ import { createContext, useEffect, useReducer } from 'react';
 // @ts-ignore
 import axios from 'src/utils/axios';
 import { isValidToken, setSession } from './Jwt';
+import toast from 'react-hot-toast';
 
 // ----------------------------------------------------------------------
 export interface InitialStateType {
@@ -121,6 +122,7 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
     });
     const { accessToken, user } = response.data;
     setSession(accessToken);
+    toast.success("Добро пожаловать.")
     dispatch({
       type: 'LOGIN',
       payload: {
@@ -138,6 +140,7 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
     const data = response.data;
     const user = data.user
     setSession(data.accessToken);
+    toast.success("Добро пожаловать.")
     dispatch({
       type: 'REGISTER',
       payload: {

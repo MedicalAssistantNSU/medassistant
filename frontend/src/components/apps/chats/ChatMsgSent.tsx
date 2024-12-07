@@ -2,10 +2,14 @@
 // @ts-ignore
 import { Backdrop, Box, Fade, IconButton, InputBase, Modal } from '@mui/material';
 import { IconPaperclip, IconPhoto, IconSend } from '@tabler/icons-react';
-import React, { useState } from 'react';
-import { addMsg } from 'src/store/apps/chat/ChatSlice';
+import React, { useEffect, useRef, useState } from 'react';
+import { addMsg, fetchChats } from 'src/store/apps/chat/ChatSlice';
 import { useDispatch, useSelector } from 'src/store/Store';
 import FileUpload from '../FileUpload';
+import { sub } from 'date-fns';
+import { reject } from 'lodash';
+
+const URL = 'ws://localhost:8080/api/v2/chats/'
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -20,13 +24,36 @@ const style = {
     p: 4,
 };
 
-const ChatMsgSent = () => {
+const ChatMsgSent = ({setIsLoaging, IsLoading} : {setIsLoaging: React.Dispatch<React.SetStateAction<boolean>>, IsLoading: boolean}) => {
   const [msg, setMsg] = useState("");
   const [openImage, setOpenImage] = useState(false);
   const [image, setImage] = useState("");
   const dispatch = useDispatch();
+  const token = localStorage.getItem("accessToken")
+  const id = useSelector((state) => state.chatReducer.chatContent)
 
-  const id = useSelector((state) => state.chatReducer.chatContent);
+  const socketRef = useRef(new WebSocket(URL + token)); 
+
+  useEffect(() => {
+    socketRef.current = new WebSocket(URL + token);
+
+    socketRef.current.onmessage = (event) => {
+      const response = JSON.parse(event.data);
+
+      dispatch(addMsg(id ? id: 1, response));
+      dispatch(fetchChats());
+      setIsLoaging(false)
+    };
+
+    socketRef.current.onerror = (error) => {
+      console.error("WebSocket Error: ", error);
+    };
+
+    return () => {
+      socketRef.current.close();
+    };
+  }, []);
+
 
   const handleChatMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMsg(e.target.value);
@@ -38,11 +65,21 @@ const ChatMsgSent = () => {
     if (image != "") {
       setMsg(image)
     }
-    console.log(msg)
-    console.log(image)
-    dispatch(addMsg(id ? id: 1, image != "" ? "image" : "text", image != "" ? image : msg));
+  
+    const newMessage = {
+      chatId: id,
+      content: image != "" ? image : msg,
+      type: image != "" ? "image" : "text",
+      createdAt: sub(new Date(), { seconds: 1 }),
+    };
+
+    console.log(newMessage)
+
+    dispatch(addMsg(id ? id: 1, newMessage));
     setMsg("");
     setImage("");
+    socketRef.current.send(JSON.stringify(newMessage))
+    setIsLoaging(true)
   };
 
   return (
@@ -85,7 +122,7 @@ const ChatMsgSent = () => {
         <IconButton
           aria-label="delete"
           onClick={onChatMsgSubmit}
-          disabled={!msg && image==""}
+          disabled={(!msg && image=="") || IsLoading}
           color="primary"
         >
           <IconSend stroke={1.5} size="20" />

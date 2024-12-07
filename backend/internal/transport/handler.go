@@ -22,17 +22,15 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router.Use(CORSMiddleware())
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	_ = router.GET("/ws", h.handleWebSocket)
-
 	auth := router.Group("/auth")
 	{
 		auth.POST("/sign-up", h.signUp)
 		auth.POST("/sign-in", h.signIn)
 	}
 
-	api := router.Group("/api/v1", h.userIdentity)
+	api1 := router.Group("/api/v1", h.userIdentity)
 	{
-		chats := api.Group("/chats")
+		chats := api1.Group("/chats")
 		{
 			chats.POST("/", h.createChat)
 			chats.GET("/", h.getAllChats)
@@ -50,7 +48,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			}
 		}
 
-		posts := api.Group("/posts")
+		posts := api1.Group("/posts")
 		{
 			posts.POST("/", h.createPost)
 			posts.GET("/", h.getAllPosts)
@@ -59,16 +57,24 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			posts.DELETE("/:id", h.deletePost)
 		}
 
-		api.GET("/account/my-account", h.getAccountInfo)
+		api1.GET("/account/my-account", h.getAccountInfo)
 
-		files := api.Group("/files")
+		files := api1.Group("/files")
 		{
 			files.POST("/upload", h.uploadFile)
 		}
 
-		scans := api.Group("/scans")
+		scans := api1.Group("/scans")
 		{
 			scans.GET("/", h.getAllScans)
+		}
+	}
+
+	api2 := router.Group("/api/v2")
+	{
+		chats := api2.Group("/chats")
+		{
+			chats.GET("/:auth", h.wsChat)
 		}
 	}
 
