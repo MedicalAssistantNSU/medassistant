@@ -1,11 +1,8 @@
-import { Box, Button, CardMedia, Typography } from '@mui/material';
-import { FormikProvider } from 'formik';
-import { useDispatch } from 'react-redux';
+import { Box, CardMedia, Typography } from '@mui/material';
 import { useSelector } from 'src/store/Store';
 import { PostType } from 'src/types/apps/posts';
 
 const PostInfo = () => {
-    const dispatch = useDispatch();
     const post : PostType = useSelector((state) => state.postReducer.selectedPost);
 
     return (

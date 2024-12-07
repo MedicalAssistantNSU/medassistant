@@ -1,13 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Backdrop, Box, Fade, IconButton, InputBase, Modal } from '@mui/material';
-import { IconPaperclip, IconPhoto, IconSend } from '@tabler/icons-react';
+import { IconPaperclip, IconSend } from '@tabler/icons-react';
+import { sub } from 'date-fns';
 import React, { useEffect, useRef, useState } from 'react';
 import { addMsg, fetchChats } from 'src/store/apps/chat/ChatSlice';
 import { useDispatch, useSelector } from 'src/store/Store';
 import FileUpload from '../FileUpload';
-import { sub } from 'date-fns';
-import { reject } from 'lodash';
 
 const URL = 'ws://localhost:8080/api/v2/chats/'
 

@@ -1,9 +1,8 @@
+import { Box, Button, Grid } from '@mui/material';
 import React, { useState } from 'react';
-import axios from '../../utils/axios';
-import { Box, Button, Grid, Input } from '@mui/material';
-import img1 from 'src/assets/images/products/plus.jpg';
-import { MuiFileInput } from 'mui-file-input'
 import toast from 'react-hot-toast';
+import img1 from 'src/assets/images/products/plus.jpg';
+import axios from '../../utils/axios';
 
 
 function FileUpload({load} : {load : React.Dispatch<React.SetStateAction<string>>}) {

@@ -1,18 +1,17 @@
 import {
-    Backdrop,
-    Box,
-    Button,
-    ButtonBase,
-    CardMedia,
-    Chip,
-    Fade,
-    Grid,
-    InputAdornment,
-    Modal,
-    Skeleton,
-    Stack,
-    TextField,
-    Typography
+  Backdrop,
+  Box,
+  ButtonBase,
+  CardMedia,
+  Chip,
+  Fade,
+  Grid,
+  InputAdornment,
+  Modal,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography
 } from '@mui/material';
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -21,7 +20,6 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import BlankCard from 'src/components/shared/BlankCard';
 import { fetchPosts, SelectPost } from 'src/store/apps/posts/PostSlice';
-import { setBorderRadius } from 'src/store/customizer/CustomizerSlice';
 import { useDispatch, useSelector } from 'src/store/Store';
 import { PostType } from 'src/types/apps/posts';
 import PostInfo from './PostInfo';

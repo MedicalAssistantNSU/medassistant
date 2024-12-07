@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { sub } from 'date-fns';
 import { AppDispatch } from 'src/store/Store';
 import axios from '../../../utils/axios';
-import { MessageType } from 'src/types/apps/chat';
 
 const API_URL = '/api/v1/chats/';
 // 

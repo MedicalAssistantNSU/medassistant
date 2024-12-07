@@ -14,11 +14,11 @@ import React from 'react';
 import { useSelector } from 'src/store/Store';
 
 import { formatDistanceToNowStrict } from 'date-fns';
+import ReactMarkdown from 'react-markdown';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
 import { ChatsType } from 'src/types/apps/chat';
 import ChatInsideSidebar from './ChatInsideSidebar';
 import ChatMsgSent from './ChatMsgSent';
-import ReactMarkdown from 'react-markdown';
 import gif1 from '/src/assets/images/backgrounds/dots_2.gif';
 import gif2 from '/src/assets/images/backgrounds/Hover-v2.webp';
 
@@ -113,7 +113,7 @@ interface ChatContentProps {
                                                                   <Box
                                                                       mb={2}
                                                                       sx={{
-                                                                          p: 1,
+                                                                          p: 2,
                                                                           backgroundColor:
                                                                               'grey.100',
                                                                           mr: 'auto',

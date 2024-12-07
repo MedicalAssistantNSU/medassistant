@@ -3,7 +3,6 @@
 import { Box, Grid } from '@mui/material';
 import PostCard from 'src/components/apps/posts/PostCard';
 import PageContainer from 'src/components/container/PageContainer';
-import ChildCard from 'src/components/shared/ChildCard';
 
 
 const Posts = () => {
