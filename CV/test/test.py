@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from DocumentOCR import DocumentOCR
+from DocumentOCR import DocumentOCR  # noqa: E402
+
 
 def main():
     test_image_path = "test.jpeg"
@@ -21,6 +22,7 @@ def main():
     except SystemExit as e:
         exit_code = e.code
         sys.exit(exit_code)
+
 
 if __name__ == "__main__":
     main()
