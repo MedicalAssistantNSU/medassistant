@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import json
 from CV.DocumentOCR import DocumentOCR
 from LLM.ChatLLM import ChatLLM
@@ -42,7 +43,7 @@ def main(user_id="user_test", chat_id="chat_test", history="", image_path=None, 
         detected_text = ocr_processor.run(image_path)
 
         if detected_text is None:
-            raise ValueError("OCR did not return a valid response")
+            sys.exit(1)  # ValueError
         else:
             history += detected_text
 
@@ -59,7 +60,7 @@ def main(user_id="user_test", chat_id="chat_test", history="", image_path=None, 
 
     # Check if LLM returned a valid response
     if not chat_response:
-        raise ValueError("LLM did not return a valid response.")
+        sys.exit(1)  # ValueError
 
 
 if __name__ == "__main__":

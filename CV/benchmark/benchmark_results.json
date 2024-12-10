@@ -17,7 +17,7 @@
         "Exact Match Accuracy": false,
         "Edit Distance": 87
     },
-    "6.jpeg": "failed, blurry",
+    "6.jpeg": "failed with code 4",
     "4.jpg": {
         "Character Error Rate (CER)": 0.05,
         "Word Error Rate (WER)": 0.22826086956521738,

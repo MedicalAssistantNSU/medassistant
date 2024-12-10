@@ -65,12 +65,8 @@ for image_file in os.listdir(images_folder):
             metrics = calculate_metrics(true_text, detected_text)
             results[image_name] = metrics
 
-        except Exception as e:
-            error_message = str(e).strip().lower()
-            if "edge density" in error_message:
-                results[image_name] = "failed, blurry"
-            else:
-                results[image_name] = f"error: {error_message}"
+        except SystemExit as e:
+            results[image_name] = f"failed with code {e}"
 
 # Save results
 with open(results_file, 'w') as f:
