@@ -7,7 +7,7 @@ TEMPLATE """{{ if .System }}<|im_start|>system
 {{ end }}<|im_start|>assistant
 """
 
-PARAMETER num_ctx 512
+PARAMETER num_ctx 1024
 PARAMETER temperature 0.8
 PARAMETER num_predict -1
 PARAMETER min_p 0.05
@@ -17,7 +17,8 @@ PARAMETER stop "<|end_header_id|>"
 PARAMETER stop "<|eot_id|>"
 PARAMETER stop "<|im_end|>"
 PARAMETER stop "<|end_of_answer|>"
-PARAMETER stop "<|reserved_special_token"
+PARAMETER stop "<|reserved_special_token|>"
+PARAMETER stop "<|im_user|>"
 PARAMETER stop "User:"
 PARAMETER stop "user:"
 PARAMETER stop "Пользователь:"

@@ -1,6 +1,10 @@
 
 LLM/llm_gguf/*.gguf
 MedicalTextbooks/
+LLM/RAG_docs/*.txt
+LLM/RAG_docs/*.json
+LLM/RAG_docs_not_included/*.txt
+LLM/RAG_docs_not_included/*.json
 
 processed_output/
 *.jpg
