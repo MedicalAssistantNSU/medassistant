@@ -67,6 +67,8 @@ func main() {
 	services := service.NewService(repository)
 	handlers := transport.NewHandler(services)
 
+	services.Post.InitPosts()
+
 	srv := new(models.ServerApi)
 	go func() {
 		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {

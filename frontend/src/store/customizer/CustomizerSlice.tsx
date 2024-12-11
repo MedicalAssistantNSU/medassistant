@@ -25,11 +25,11 @@ const initialState = {
   MiniSidebarWidth: 0,
   TopbarHeight: 70,
   isLayout: 'boxed', // This can be full or boxed
-  isCollapse: false, // to make sidebar Mini by default
+  isCollapse: false,
   isSidebarHover: false,
   isMobileSidebar: false,
   isHorizontal: false,
-  isLanguage: 'en',
+  isLanguage: 'ru',
   isCardShadow: true,
   borderRadius: 7,
 };

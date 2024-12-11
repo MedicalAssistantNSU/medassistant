@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { Box, ButtonBase, Typography } from '@mui/material';
+import { Box, ButtonBase, Chip, Typography } from '@mui/material';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -26,7 +26,9 @@ const ScanHistoryPage = () => {
           {/* breadcrumb */}
           <Box mt={4} />
           {/* end breadcrumb */}
-          <Typography fontSize={30} color={"primary.main"} textAlign={'center'}> Недавние сканирования </Typography>
+          <Box p={2} boxShadow={15} sx={{backgroundColor:"secondary.contrastText"}} borderRadius={3} margin={"0 auto"}>
+          <Typography fontSize={25} color={"secondary.dark"} textAlign={'center'}> Недавние сканирования </Typography>
+          </Box>
           <Box p={1}>
                   {scans ? scans.map((scan) => (
                     <ButtonBase sx={{width: "90%", margin: "0 5%"}} component={Link} to="/apps/chats">
@@ -36,11 +38,11 @@ const ScanHistoryPage = () => {
                             p={2}
                             mt={3}
                             display="flex"
-                            sx={{backgroundColor: "white"}}
+                            sx={{backgroundColor: "secondary.contrastText"}}
                           >
                             <Box alignItems="flex-end" display="flex" flexDirection={'column'}>
                               {scan.createdAt ? (
-                                <Typography variant="body2" color="black" mb={1}>
+                                <Typography variant="body2" color="primary.main" mb={1}>
                                   {formatDistanceToNowStrict(new Date(scan.createdAt), {
                                       addSuffix: false,
                                     })}{' '}

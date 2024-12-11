@@ -8,8 +8,6 @@ import StillQuestions from 'src/components/pages/faq/StillQuestions';
 const Faq = () => {
     return (
         <PageContainer title="Помощь" description="this is Faq page">
-            {/* breadcrumb */}
-            {/* end breadcrumb */}
             <Grid container spacing={3}>
                 <Grid item xs>
                     <Questions />

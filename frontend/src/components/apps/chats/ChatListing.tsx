@@ -95,7 +95,7 @@ const ChatListing = () => {
             >
                 <Fade in={createChat}>
                     <Box sx={style}>
-                      <CreateChat/>
+                      <CreateChat setCreateChat={setCreateChat} />
                     </Box>
                 </Fade>
           </Modal>
@@ -150,7 +150,7 @@ const ChatListing = () => {
             <IconPlus />
           </Button>
         </Box>
-        <Scrollbar sx={{ height: 'calc(90vh - 155px)', overflow: 'auto', maxHeight: 'calc(90vh - 155px)' }}>
+        <Scrollbar sx={{ height: 'calc(100vh - 240px)', overflow: 'auto', maxHeight: 'calc(100vh - 240px)' }}>
           {chats && chats.length ? (
             chats.map((chat) => (
               <ListItemButton
@@ -177,21 +177,22 @@ const ChatListing = () => {
                   sx={{ my: 0 }}
                 />
                 <Box sx={{ flexShrink: '0' }} mt={0.5}>
-                  <Typography variant="body2">
-                    {formatDistanceToNowStrict(new Date(lastActivity(chat) ? lastActivity(chat) : 0), {
+                  {lastActivity(chat) ? <Typography variant="body2">
+                    {formatDistanceToNowStrict(new Date(lastActivity(chat)), {
                       addSuffix: false,
                     })}
-                  </Typography>
+                  </Typography> : <></>}
                 </Box>
               </ListItemButton>
             ))
           ) : (
             <Box m={2}>
-              <Alert severity="error" variant="filled" sx={{ color: 'white' }}>
+              <Alert severity="error" variant="filled" sx={{ color: 'primary.contrastText', bgcolor: "primary.light"}}>
                 Чаты не найдены
               </Alert>
             </Box>
           )}
+
         </Scrollbar>
       </List>
     </div>

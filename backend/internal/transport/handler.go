@@ -28,9 +28,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", h.signIn)
 	}
 
-	api := router.Group("/api/v1", h.userIdentity)
+	api1 := router.Group("/api/v1", h.userIdentity)
 	{
-		chats := api.Group("/chats")
+		chats := api1.Group("/chats")
 		{
 			chats.POST("/", h.createChat)
 			chats.GET("/", h.getAllChats)
@@ -48,16 +48,33 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			}
 		}
 
-		api.GET("/account/my-account", h.getAccountInfo)
+		posts := api1.Group("/posts")
+		{
+			posts.POST("/", h.createPost)
+			posts.GET("/", h.getAllPosts)
+			posts.GET("/:id", h.getPostById)
+			posts.PUT("/:id", h.updatePost)
+			posts.DELETE("/:id", h.deletePost)
+		}
 
-		files := api.Group("/files")
+		api1.GET("/account/my-account", h.getAccountInfo)
+
+		files := api1.Group("/files")
 		{
 			files.POST("/upload", h.uploadFile)
 		}
 
-		scans := api.Group("/scans")
+		scans := api1.Group("/scans")
 		{
 			scans.GET("/", h.getAllScans)
+		}
+	}
+
+	api2 := router.Group("/api/v2")
+	{
+		chats := api2.Group("/chats")
+		{
+			chats.GET("/:auth", h.wsChat)
 		}
 	}
 

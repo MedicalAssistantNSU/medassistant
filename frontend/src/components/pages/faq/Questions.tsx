@@ -9,7 +9,7 @@ const Questions = () => {
       <Grid container spacing={3} >
         <Grid item >
           <Box mt={2} mb={1}>
-        <Box  p={1} sx={{width: "90%", margin: "0 auto 0 auto"}}> 
+        <Box  p={1} sx={{width: "90%"}}> 
           <Typography variant="h3" textAlign="center" p={2} color='primary' >Часто задаваемые вопросы</Typography>
           <Typography variant="h6" fontWeight={400} sx={{color: "primary.contrastText"}} textAlign="center" mb={4}>Узнайте как использовать этот сайт.</Typography>
           </Box>
@@ -44,8 +44,10 @@ const Questions = () => {
             <Divider />
             <AccordionDetails>
               <Typography variant="subtitle1" pt={1} px={2} color="textSecondary">
-                Учитель может сам наполнять свои курсы разнообразными механиками, которые включают методы геймификации,
-                уроки, тэги и задачи.
+                Чат - это средство обмена информацией с нашим медицинским ассистентом. Вы можете предоставлять
+                ему выписки из поликлиник и просить расшифровать их или объяснить некоторые термины. Также вы можете 
+                задавать ему общие вопросы на счёт вышего здоровья, но помните, что ответы носят строго рекомендательный
+                характер.
               </Typography>
             </AccordionDetails>
           </Accordion>
@@ -62,8 +64,9 @@ const Questions = () => {
             <Divider />
             <AccordionDetails>
               <Typography variant="subtitle1" pt={1} px={2} color="textSecondary">
-                Урок включается в себя видео урок, учебные материалы(описание урока), а также вознаграждения
-                , которые будут получены за его прохождение.
+                Рекомендации - это сборник новостей или научных статей, который настраивается в соотвествии
+                с вашими запросами к медицинскому ассистенту, т.е если вы спрашиваете в чате "что такое миопия?" - 
+                через какое-то время в рекомендациях вам начнут высвечиваться статьи по миопии.
               </Typography>
             </AccordionDetails>
           </Accordion>
@@ -80,7 +83,8 @@ const Questions = () => {
             <Divider />
             <AccordionDetails>
               <Typography variant="subtitle1" pt={1} px={2} color="textSecondary">
-                Задача - вопрос преподавателя, по пройденному уроку или независимая боевая единица.
+                Да, ваши данные защищены. Они не будут передаваться 3-им лицам. Но все равно не советуем прикреплять
+                жизненно-важную для вас информацию.
               </Typography>
             </AccordionDetails>
           </Accordion>

@@ -33,7 +33,7 @@ const Menuitems: MenuitemsType[] = [
     id: uniqueId(),
     title: 'Домашняя страница',
     icon: IconHome2,
-    href: '/sample-page',
+    href: '/posts',
   },
   {
     id: uniqueId(),

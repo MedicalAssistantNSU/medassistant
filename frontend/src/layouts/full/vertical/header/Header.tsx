@@ -39,7 +39,7 @@ const Header = () => {
               {/* Toggle Button Sidebar */}
               {/* ------------------------------------------- */}
               <IconButton
-                  color="inherit"
+                  color={customizer.activeMode === 'dark' ? "secondary": "inherit"}
                   aria-label="menu"
                   onClick={
                       lgUp ? () => dispatch(toggleSidebar()) : () => dispatch(toggleMobileSidebar())

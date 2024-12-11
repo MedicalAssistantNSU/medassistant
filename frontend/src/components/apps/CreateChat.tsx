@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 import { AppendChat } from 'src/store/apps/chat/ChatSlice';
 import axiosServices from '../../utils/axios';
 import CustomTextField from '../forms/theme-elements/CustomTextField';
+import toast from 'react-hot-toast';
 
-
-const CreateChat = () => {
+const CreateChat = ({setCreateChat} : {setCreateChat: (value: React.SetStateAction<boolean>) => void}) => {
     const dispatch = useDispatch();
 
     const formik = useFormik({
@@ -21,7 +21,7 @@ const CreateChat = () => {
                     "name": values.name,
                   });
                 const response = await axiosServices.post('/api/v1/chats/', data, {
-                    headers: {
+                   headers: {
                         'Content-type': 'application/json',
                     },
                 });
@@ -32,13 +32,14 @@ const CreateChat = () => {
                     messages: []
                 }
                 console.log(newChat)
-                dispatch(AppendChat(newChat))
-                //toast.success('Урок создан.');
+                await dispatch(AppendChat(newChat))
+                toast.success('Чат создан.');
                 console.log(response);
             } catch (err: any) {
-                //toast.e\rror('Урок не был создан.');
+                toast.error('Чат не создался.');
                 console.log(err);
             }
+            setCreateChat(() => false)
         },
     });
 

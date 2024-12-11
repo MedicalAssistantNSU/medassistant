@@ -73,9 +73,9 @@ const ThemeColors = [
         dark: '#00B9C0',
       },
       secondary: {
-        main: '#FB9678',
-        light: '#FFF5F2',
-        dark: '#F48B6C',
+        main: '#0074BA',
+        light: '#EFF9FF',
+        dark: '#006FB1',
       },
     },
   },

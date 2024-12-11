@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { sub } from 'date-fns';
 import { AppDispatch } from 'src/store/Store';
 import axios from '../../../utils/axios';
 
@@ -75,18 +74,9 @@ export const fetchScans = () => async (dispatch: AppDispatch) => {
   }
 };
 
-export const addMsg = (chat_id: number, type: string, msg: string) => async (dispatch: AppDispatch) => {
+export const addMsg = (chat_id: number, msg: any) => async (dispatch: AppDispatch) => {
   try {
-    const newMessage = {
-      content: msg,
-      type: type,
-      createdAt: sub(new Date(), { seconds: 1 }),
-    };
-    dispatch(sendMsg({id: chat_id, msg: newMessage}));
-    const response = await axios.post("/api/v1/chats/" + chat_id + "/", newMessage);
-    console.log(response)
-    
-    dispatch(sendMsg({id: chat_id, msg: response.data.data}));
+    dispatch(sendMsg({id: chat_id, msg: msg}));
   } catch (err: any) {
     throw new Error(err);
   }

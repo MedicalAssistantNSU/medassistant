@@ -13,6 +13,7 @@ const (
 	messageTable = "messages"
 	usersChats   = "user_chats"
 	chatMessages = "chat_messages"
+	postsTable   = "posts"
 )
 
 type Config struct {
