@@ -1,5 +1,6 @@
 import json
 import argparse
+import sys
 
 from os import listdir
 from os.path import isfile, join
@@ -20,12 +21,12 @@ Output: None (everything now goes to stdout)
 class ChatLLM:
     def __init__(
             self,
-            url: str = 'http://host.docker.internal:11435',
-            # url: str = 'http://localhost:11435',
+            # url: str = 'http://host.docker.internal:11435',
+            url: str = 'http://localhost:11435',
             username: str = 'User',
             task='chat',
             config_file='../LLM/prompts_config.json',
-            rag_docs_path='../LLM/RAG_docs/Anatomy_Gray.txt',
+            rag_docs_path='../LLM/RAG_docs',
             # # For ChatLLM tests:
             # config_file='LLM/prompts_config.json',
             # rag_docs_path='LLM/RAG_docs',
@@ -45,10 +46,11 @@ class ChatLLM:
             model="phi",
             url=url,
             # For ChatLLM tests:
-            streaming_callback=lambda chunk: print(chunk.content, end="", flush=True),
+            streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
             generation_kwargs={
                 "temperature": 0.8,
-            }
+            },
+            timeout=300,
         )
         self.username = username
 
@@ -87,24 +89,27 @@ class ChatLLM:
         self.contextualize_builder = PromptBuilder(template=self.contextualize_template)
 
         document_store = InMemoryDocumentStore()
+        document_store.write_documents([
+            Document(content="Medical assistant is a helpful chatbot."),
+        ])
 
         # Files for RAG should be .txt with one json at one line
         # jsons with args [id, contents]
-        rag_files = [f for f in listdir(rag_docs_path) if isfile(join(rag_docs_path, f))]
-        for rag_filename in rag_files:
-            with open(f'{rag_docs_path}/{rag_filename}', 'r') as rag_file:
-                for line in rag_file.readlines():
-                    doc = json.loads(line)
-                    document_store.write_documents([
-                        Document(
-                            id=doc['id'],
-                            content=doc['contents'],
-                            # embedding=
-                        )
-                    ])
-                    print(f'{rag_filename} id={doc["id"]} loaded')
+        # rag_files = [f for f in listdir(rag_docs_path) if isfile(join(rag_docs_path, f))]
+        # for rag_filename in rag_files:
+        #     with open(f'{rag_docs_path}/{rag_filename}', 'r') as rag_file:
+        #         for line in rag_file.readlines():
+        #             doc = json.loads(line)
+        #             document_store.write_documents([
+        #                 Document(
+        #                     id=doc['id'],
+        #                     content=doc['contents'],
+        #                     # embedding=
+        #                 )
+        #             ])
+        #             # print(f'{rag_filename} id={doc["id"]} loaded')
 
-        print("RAG DOCS LOADED")
+        # print("RAG DOCS LOADED")
 
         self.rag_pipe = Pipeline()
         self.rag_pipe.add_component(
