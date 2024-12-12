@@ -20,7 +20,7 @@ import (
 
 // @title           HealthMate
 // @version         1.0
-// @host      localhost:8000
+// @host      localhost:8080
 // @BasePath  /
 // @securitydefinitions.apikey  ApiKeyAuth
 // @in header
