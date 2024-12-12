@@ -2,10 +2,9 @@
 LLM/llm_gguf/*.gguf
 MedicalTextbooks/
 
-processed_output/
-*.jpg
-*.jpeg
-*.png
+processed_output/*.jpg
+processed_output/*.jpeg
+processed_output/*.png
 
 .DS_Store
 
