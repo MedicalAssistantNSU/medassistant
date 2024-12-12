@@ -6,10 +6,9 @@ LLM/RAG_docs/*.json
 LLM/RAG_docs_not_included/*.txt
 LLM/RAG_docs_not_included/*.json
 
-processed_output/
-*.jpg
-*.jpeg
-*.png
+processed_output/*.jpg
+processed_output/*.jpeg
+processed_output/*.png
 
 .DS_Store
 
