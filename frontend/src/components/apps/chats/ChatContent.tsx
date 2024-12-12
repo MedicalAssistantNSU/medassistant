@@ -33,7 +33,17 @@ interface ChatContentProps {
   // const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
   const chatDetails: ChatsType = useSelector(
-    (state) => state.chatReducer.chats[state.chatReducer.chatContent - 1],
+    (state) => {
+        var output
+        for (var chat of state.chatReducer.chats) {
+            if (state.chatReducer.chatContent == chat.id ) {
+                output = chat
+                break
+            }
+        }
+
+        return output
+    }
   );
 
   return (

@@ -6,6 +6,7 @@ import { createContext, useEffect, useReducer } from 'react';
 import axios from 'src/utils/axios';
 import { isValidToken, setSession } from './Jwt';
 import toast from 'react-hot-toast';
+import { resetStore } from 'src/store/Store';
 
 // ----------------------------------------------------------------------
 export interface InitialStateType {
@@ -116,6 +117,7 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
   }, []);
 
   const signin = async (email: string, password: string) => {
+    dispatch(resetStore())
     const response = await axios.post('/auth/sign-in', {
       "username": email,
       "password": password,
@@ -132,6 +134,7 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
   };
 
   const signup = async (email: string, password: string, name: string) => {
+    dispatch(resetStore())
     const response = await axios.post('/auth/sign-up', {
       "username": email,
       "name": name,
@@ -150,6 +153,7 @@ function AuthProvider({ children }: { children: React.ReactElement }) {
   };
 
   const logout = async () => {
+    dispatch(resetStore())
     setSession(null);
     dispatch({ type: 'LOGOUT' });
   };

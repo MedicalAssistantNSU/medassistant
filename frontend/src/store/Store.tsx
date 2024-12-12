@@ -17,11 +17,21 @@ export const store = configureStore({
   },
 });
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   customizer: CustomizerReducer,
   chatReducer: ChatsReducer,
   postReducer: PostsReducer,
 });
+
+export const resetStore = () => ({ type: 'RESET' });
+
+// Корневой редьюсер
+const rootReducer = (state:any, action:any) => {
+  if (action.type === 'RESET') {
+    return undefined;
+  }
+  return state;
+};
 
 export type AppState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
