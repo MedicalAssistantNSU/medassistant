@@ -1,8 +1,9 @@
 import cv2
 import easyocr
+import numpy as np
 import os
+import sys
 import argparse
-from .exceptions import *
 from typing import Optional
 
 """
@@ -23,8 +24,8 @@ class DocumentOCR:
         os.makedirs(self.save_path, exist_ok=True)
         try:
             self.reader = easyocr.Reader(['ru', 'en'], gpu=False)
-        except Exception as e:
-            raise OCRProcessError(f"Failed to initialize OCR reader: {e}")
+        except Exception:
+            sys.exit(2)  # OCRProcessError
 
     @staticmethod
     def preprocess_document(image_path: str) -> Optional:
@@ -40,16 +41,23 @@ class DocumentOCR:
         image = cv2.imread(image_path)
 
         if image is None:
-            raise ImageReadError(f"Error reading image at {image_path}")
+            sys.exit(3)  # ImageReadError
 
         try:
             # Convert to grayscale and apply Gaussian Blur
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             blurred = cv2.GaussianBlur(gray, (1, 1), 0)
 
+            edges = cv2.Canny(blurred, 100, 200)
+            edge_density = np.sum(edges)
+            threshold_edge_density = 10000000
+
+            if edge_density < threshold_edge_density:
+                sys.exit(4)  # BlurryTextError
+
             return blurred
-        except Exception as e:
-            raise OCRProcessError(f"Error during image preprocessing: {e}")
+        except Exception:
+            sys.exit(2)  # OCRProcessError
 
     def ocr_image(self, image) -> str:
         """
@@ -68,8 +76,8 @@ class DocumentOCR:
 
             # Merge detected text
             return " ".join(filtered_texts).strip()
-        except Exception as e:
-            raise OCRProcessError(f"Error during OCR processing: {e}")
+        except Exception:
+            sys.exit(2)  # OCRProcessError
 
     def save_detected_text(self, text: str) -> None:
         """
@@ -82,9 +90,8 @@ class DocumentOCR:
             text_file_path = os.path.join(self.save_path, 'detected_text.txt')
             with open(text_file_path, 'w', encoding='utf-8') as file:
                 file.write(text)
-            print(f"OCR result saved to {text_file_path}")
-        except Exception as e:
-            raise SaveError(f"Failed to save detected text: {e}")
+        except Exception:
+            sys.exit(5)  # SaveError
 
     def run(self, image_path: str) -> str:
         """
@@ -103,9 +110,9 @@ class DocumentOCR:
                 ocr_result = self.ocr_image(processed_image)
                 return ocr_result
             else:
-                raise OCRProcessError("Image preprocessing returned None.")
-        except Exception as e:
-            raise CVException(f"An error occurred during OCR processing: {e}")
+                sys.exit(2)  # OCRProcessError
+        except Exception:
+            sys.exit(6)  # CVException
 
 
 def main():
