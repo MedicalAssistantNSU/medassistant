@@ -70,7 +70,8 @@ func (i *MessageService) Create(chat_id int, msg CreateMsg) (*CreateMsg, error) 
 			} else {
 				response.Content = output["answer"]
 			}
-			logrus.Info(out)
+			logrus.Info("HISTORY", output["history"])
+			logrus.Info("ANSWER", output["answer"])
 		}
 	} else {
 		out, err := pkg.RunTask(pkg.TaskConfig{

@@ -101,6 +101,18 @@ func goWorker(h *Handler, id int, conn *websocket.Conn, requests <-chan InputMsg
 			break
 		}
 
+		updatedChat := models.Chat{
+			Name:    chat.Name,
+			Context: answer.History,
+		}
+
+		logrus.Info(chat.Context)
+
+		if err := h.services.Chat.Update(id, req.ChatId, updatedChat); err != nil {
+			logrus.Error(err.Error())
+			break
+		}
+
 		if err = conn.WriteJSON(answer.Msg); err != nil {
 			logrus.Error(err.Error())
 			break
