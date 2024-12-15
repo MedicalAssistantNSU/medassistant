@@ -37,6 +37,7 @@ def main(user_id="user_test", chat_id="chat_test", history="", image_path=None, 
     os.makedirs(user_save_path, exist_ok=True)
     llm = ChatLLM()
     history = "" if history is None else history
+    detected_text = None
 
     # Chat task - interpret detected text or respond with prompt
     if prompt is None:
@@ -51,12 +52,13 @@ def main(user_id="user_test", chat_id="chat_test", history="", image_path=None, 
 
         if detected_text is None:
             sys.exit(1)  # ValueError
-        else:
-            prompt += "\nМедицинский документ:\n"
-            prompt += detected_text
 
     # Send the prompt to LLM with combined context
-    chat_response = llm.send_message(prompt, history)
+    chat_response = llm.send_message(
+        message=prompt,
+        history=history,
+        document=detected_text
+    )
     print(json.dumps(chat_response))
 
     # Check if LLM returned a valid response

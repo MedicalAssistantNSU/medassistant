@@ -39,8 +39,8 @@ class ChatLLM:
         :param config_file: Path to the configuration file with system prompts.
         """
         self.base_url = url
-        self.context_length = 2048
-        self.max_history_length = 3 * self.context_length
+        self.context_length = 1024
+        self.max_history_length = 5 * self.context_length
 
         self.generator = OllamaGenerator(
             model="phi",
@@ -52,6 +52,18 @@ class ChatLLM:
             },
             timeout=300,
         )
+
+        self.contextualize_generator = OllamaGenerator(
+            model="phi",
+            url=url,
+            # For ChatLLM tests:
+            streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
+            generation_kwargs={
+                "temperature": 0.8,
+            },
+            timeout=300,
+        )
+
         self.username = username
 
         with open(config_file, 'r') as file:
@@ -70,6 +82,11 @@ class ChatLLM:
 
             The previous dialog:
             {{history}}
+            
+            Medical document:
+            <|start_of_document|>
+            {{document}}
+            <|end_of_document|>
 
             Please, answer to this message from {{name}}: {{message}}
             """
@@ -129,24 +146,45 @@ class ChatLLM:
         self.rag_pipe.connect("retriever", "prompt_builder.documents")
         self.rag_pipe.connect("prompt_builder", "generator")
 
-    def send_message(self, message: str, history: str) -> dict:
+        self.contextualize_pipe = Pipeline()
+        self.contextualize_pipe.add_component("context_prompt_builder", self.contextualize_builder)
+        self.contextualize_pipe.add_component(
+            "contextualize_generator",
+            self.contextualize_generator
+        )
+        self.contextualize_pipe.connect("context_prompt_builder", "contextualize_generator")
+
+    def send_message(
+            self,
+            message: str,
+            document: str,
+            history: str,
+    ) -> dict:
         """
         Method for sending a question from the user to the model.
         Receives both new question and context from previous interactions.
         Parameters will be passed to prompt template and then to the model.
 
+        :param document: OCR result
         :param message: message to the model
         :param history: previous interactions
         :return: the answer and updated history for further interactions
         """
 
+        print(f"(ChatLLM) INPUT HISTORY: {history}", file=sys.stderr)
+        print(f"\n", file=sys.stderr)
+        print(f"(ChatLLM) END OF INPUT HISTORY", file=sys.stderr)
+        print(f"(ChatLLM) LEN OF HISTORY: {len(history)}", file=sys.stderr)
+
         if len(history) > self.max_history_length:
+            print("(ChatLLM) max history len exceeded, running contextualize", file=sys.stderr)
             history = self.contextualize(history)
 
         answer_full = self.rag_pipe.run({
             "prompt_builder": {
                 "prompt": self.system_prompt,
                 "history": history,
+                "document": "There is no medical document for this question" if document is None else document,
                 "name": self.username,
                 "message": message,
                 # "query": message
@@ -160,16 +198,23 @@ class ChatLLM:
         new_history = (history + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
 
         if len(new_history) > self.max_history_length:
+            print(
+                f"(ChatLLM) After generating max history len exceeded ({len(new_history)}), running contextualize",
+                file=sys.stderr
+            )
             new_history = self.contextualize(new_history)
 
         return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
-        formatted_prompt = self.contextualize_builder.run(
-            contextualize_prompt=self.contextualize_prompt,
-            context=context,
-        )['prompt']
-        return self.generator.run(formatted_prompt)
+        answer_full = self.contextualize_pipe.run({
+            "context_prompt_builder": {
+                "contextualize_prompt": self.contextualize_prompt,
+                "context": context,
+            }
+        })
+        answer = answer_full['contextualize_generator']['replies'][0]
+        return answer
 
 
 def main():
