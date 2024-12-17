@@ -1,0 +1,17 @@
+port: "8080"
+
+db:
+  dbname: "postgres"
+#  host: "db"
+  host: "localhost"
+  port: "5432"
+  user: "postgres"
+  sslmode: "disable"
+
+storage:
+  endpoint: "s3.ru-1.storage.selcloud.ru"
+  bucket: "first-test"
+  domain: "https://a5cc8782-a9cf-400e-8b1e-53c6ad294d87.selstorage.ru"
+
+cv:
+  path: "../CV/"
