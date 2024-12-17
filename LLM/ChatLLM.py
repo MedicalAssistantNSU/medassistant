@@ -2,9 +2,6 @@ import json
 import argparse
 import sys
 
-from os import listdir
-from os.path import isfile, join
-
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack import Pipeline, Document
 from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
@@ -82,7 +79,7 @@ class ChatLLM:
 
             The previous dialog:
             {{history}}
-            
+
             Medical document:
             <|start_of_document|>
             {{document}}
@@ -172,8 +169,8 @@ class ChatLLM:
         """
 
         print(f"(ChatLLM) INPUT HISTORY: {history}", file=sys.stderr)
-        print(f"\n", file=sys.stderr)
-        print(f"(ChatLLM) END OF INPUT HISTORY", file=sys.stderr)
+        print("\n", file=sys.stderr)
+        print("(ChatLLM) END OF INPUT HISTORY", file=sys.stderr)
         print(f"(ChatLLM) LEN OF HISTORY: {len(history)}", file=sys.stderr)
 
         if len(history) > self.max_history_length:
