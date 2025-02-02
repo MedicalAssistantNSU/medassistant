@@ -23,7 +23,7 @@ class DocumentOCR:
         self.save_path = save_path
         os.makedirs(self.save_path, exist_ok=True)
         try:
-            self.reader = easyocr.Reader(['ru', 'en'], gpu=False)
+            self.reader = easyocr.Reader(['ru', 'en'], gpu=True)
         except Exception:
             sys.exit(2)  # OCRProcessError
 
