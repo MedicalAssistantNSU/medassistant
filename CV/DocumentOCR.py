@@ -52,8 +52,8 @@ class DocumentOCR:
             edge_density = np.sum(edges)
             threshold_edge_density = 10000000
 
-            if edge_density < threshold_edge_density:
-                sys.exit(4)  # BlurryTextError
+            # if edge_density < threshold_edge_density:
+            #     sys.exit(4)  # BlurryTextError
 
             return blurred
         except Exception:
