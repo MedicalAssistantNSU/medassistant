@@ -3,7 +3,7 @@ import easyocr
 import os
 import sys
 import argparse
-import numpy as np
+import numpy as np  # noqa: F401
 import logging
 import time
 from dotenv import load_dotenv
