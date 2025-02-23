@@ -1,13 +1,20 @@
 import json
 import argparse
 import sys
-
+import time
+import logging
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack import Pipeline, Document
 from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
 from haystack.components.builders import PromptBuilder
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 """
 Usage: python3 LLM/ChatLLM.py <url> <username> <message> <history>
@@ -35,6 +42,10 @@ class ChatLLM:
         :param task: The task for which to load the system prompt (e.g., 'ocr', 'chat').
         :param config_file: Path to the configuration file with system prompts.
         """
+
+        start_time = time.time()
+        logger.info("Initializing ChatLLM...")
+
         self.base_url = url
         self.context_length = 1024
         self.max_history_length = 5 * self.context_length
@@ -44,9 +55,7 @@ class ChatLLM:
             url=url,
             # For ChatLLM tests:
             streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
-            generation_kwargs={
-                "temperature": 0.8,
-            },
+            generation_kwargs={"temperature": 0.8},
             timeout=300,
         )
 
@@ -55,9 +64,7 @@ class ChatLLM:
             url=url,
             # For ChatLLM tests:
             streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
-            generation_kwargs={
-                "temperature": 0.8,
-            },
+            generation_kwargs={"temperature": 0.8},
             timeout=300,
         )
 
@@ -135,28 +142,19 @@ class ChatLLM:
             )
         )
         self.rag_pipe.add_component("prompt_builder", self.prompt_builder)
-        self.rag_pipe.add_component(
-            "generator",
-            self.generator
-        )
+        self.rag_pipe.add_component("generator", self.generator)
 
         self.rag_pipe.connect("retriever", "prompt_builder.documents")
         self.rag_pipe.connect("prompt_builder", "generator")
 
         self.contextualize_pipe = Pipeline()
         self.contextualize_pipe.add_component("context_prompt_builder", self.contextualize_builder)
-        self.contextualize_pipe.add_component(
-            "contextualize_generator",
-            self.contextualize_generator
-        )
+        self.contextualize_pipe.add_component("contextualize_generator", self.contextualize_generator)
         self.contextualize_pipe.connect("context_prompt_builder", "contextualize_generator")
 
-    def send_message(
-            self,
-            message: str,
-            document: str,
-            history: str,
-    ) -> dict:
+        logger.info("ChatLLM initialization completed in %.2f seconds", time.time() - start_time)
+
+    def send_message(self, message: str, document: str, history: str) -> dict:
         """
         Method for sending a question from the user to the model.
         Receives both new question and context from previous interactions.
@@ -173,8 +171,11 @@ class ChatLLM:
         print("(ChatLLM) END OF INPUT HISTORY", file=sys.stderr)
         print(f"(ChatLLM) LEN OF HISTORY: {len(history)}", file=sys.stderr)
 
+        start_time = time.time()
+        logger.info("Processing message from user...")
+
         if len(history) > self.max_history_length:
-            print("(ChatLLM) max history len exceeded, running contextualize", file=sys.stderr)
+            logger.info("Max history length exceeded. Running contextualization.")
             history = self.contextualize(history)
 
         answer_full = self.rag_pipe.run({
@@ -195,15 +196,16 @@ class ChatLLM:
         new_history = (history + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
 
         if len(new_history) > self.max_history_length:
-            print(
-                f"(ChatLLM) After generating max history len exceeded ({len(new_history)}), running contextualize",
-                file=sys.stderr
-            )
+            logger.info("After generating, max history length exceeded. Running contextualization.")
             new_history = self.contextualize(new_history)
 
+        logger.info("Message processed in %.2f seconds", time.time() - start_time)
         return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
+        start_time = time.time()
+        logger.info("Contextualizing history...")
+
         answer_full = self.contextualize_pipe.run({
             "context_prompt_builder": {
                 "contextualize_prompt": self.contextualize_prompt,
@@ -211,6 +213,8 @@ class ChatLLM:
             }
         })
         answer = answer_full['contextualize_generator']['replies'][0]
+
+        logger.info("Contextualization completed in %.2f seconds", time.time() - start_time)
         return answer
 
 
@@ -222,10 +226,7 @@ def main():
     parser.add_argument('history', type=str, default='', help="History of interactions, fully handled by this script")
     args = parser.parse_args()
 
-    model = ChatLLM(
-        url=args.url,
-        username=args.username
-    )
+    model = ChatLLM(url=args.url, username=args.username)
     model.send_message(args.message, args.history)
 
 
