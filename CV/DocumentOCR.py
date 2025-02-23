@@ -3,6 +3,7 @@ import easyocr
 import os
 import sys
 import argparse
+import numpy as np
 import logging
 import time
 from dotenv import load_dotenv
@@ -24,6 +25,9 @@ class DocumentOCR:
     def __init__(self, save_path: str = 'processed_output'):
         """
         Initialize the DocumentOCR class.
+
+        :param save_path: Path to save the processed images and OCR output.
+        :raises OCRProcessError: If OCR reader initialization fails.
         """
         self.save_path = save_path
         os.makedirs(self.save_path, exist_ok=True)
@@ -40,6 +44,11 @@ class DocumentOCR:
     def preprocess_document(image_path: str) -> Optional:
         """
         Preprocess the input document by converting to grayscale, applying Gaussian blur
+
+        :param image_path: Path to the input image file.
+        :return: Preprocessed image or None if reading fails.
+        :raises OCRProcessError: If preprocessing fails.
+        :raises ImageReadError: If image reading fails.
         """
         logger.info(f"Preprocessing document: {image_path}")
         start_time = time.time()
@@ -52,6 +61,14 @@ class DocumentOCR:
         try:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             blurred = cv2.GaussianBlur(gray, (1, 1), 0)
+
+            edges = cv2.Canny(blurred, 100, 200)
+            edge_density = np.sum(edges)
+            threshold_edge_density = 10000000
+
+            # if edge_density < threshold_edge_density:
+            #     sys.exit(4)  # BlurryTextError
+
             logger.info(f"Image preprocessing completed in {time.time() - start_time:.2f} seconds.")
             return blurred
         except Exception:
@@ -61,6 +78,10 @@ class DocumentOCR:
     def ocr_image(self, image) -> str:
         """
         Perform Optical Character Recognition (OCR) on the processed image.
+
+        :param image: Preprocessed image to perform OCR on.
+        :return: Detected text as a string.
+        :raises OCRProcessError: If OCR fails.
         """
         logger.info("Performing OCR on the image...")
         start_time = time.time()
@@ -77,6 +98,9 @@ class DocumentOCR:
     def save_detected_text(self, text: str) -> None:
         """
         Save the detected text to 'detected_text.txt'.
+
+        :param text: The text to save.
+        :raises SaveError: If the text could not be saved.
         """
         logger.info("Saving detected text...")
         start_time = time.time()
@@ -92,6 +116,10 @@ class DocumentOCR:
     def run(self, image_path: str) -> str:
         """
         Execute the OCR process: preprocessing and OCR.
+
+        :param image_path: Path to the input image file.
+        :return: Detected text as a string.
+        :raises CVException: If something goes wrong.
         """
         logger.info(f"Starting OCR process for: {image_path}")
         start_time = time.time()
