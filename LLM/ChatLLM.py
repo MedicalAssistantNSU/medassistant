@@ -166,10 +166,9 @@ class ChatLLM:
         :return: the answer and updated history for further interactions
         """
 
-        print(f"(ChatLLM) INPUT HISTORY: {history}", file=sys.stderr)
-        print("\n", file=sys.stderr)
-        print("(ChatLLM) END OF INPUT HISTORY", file=sys.stderr)
-        print(f"(ChatLLM) LEN OF HISTORY: {len(history)}", file=sys.stderr)
+        logger.info(f"INPUT HISTORY: {history}")
+        logger.info("END OF INPUT HISTORY")
+        logger.info(f"LEN OF HISTORY: {len(history)}")
 
         start_time = time.time()
         logger.info("Processing message from user...")

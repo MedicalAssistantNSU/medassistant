@@ -9,6 +9,11 @@ import time
 from dotenv import load_dotenv
 from typing import Optional
 
+"""
+Usage: python3 DocumentOCR.py <path> (--save_path=<path>)
+Output: <path> if specified, otherwise "processed_output"
+"""
+
 # Load environment variables from .env file
 load_dotenv()
 
