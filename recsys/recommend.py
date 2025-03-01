@@ -1,3 +1,4 @@
+import argparse
 import json
 import numpy as np
 from scipy.spatial.distance import cosine
@@ -37,7 +38,7 @@ def example_run():
         print(f"Item ID: {item_id}, Similarity Score: {similarity:.4f}, Item Embedding slice: {item_embeddings[item_id][:5]}")
 
 
-def recommend(user_embedding: np.ndarray, k: int = 5):
+def recommend(user_embedding: np.ndarray, k: int = 5) -> list[(str, float)]:
     item_embeddings = load_embeddings_from_json(json_file_path)
     top_k_recommendations = get_top_k_recommendations(user_embedding, item_embeddings, k)
 
@@ -45,7 +46,15 @@ def recommend(user_embedding: np.ndarray, k: int = 5):
 
 
 if __name__ == "__main__":
-    example_run()
-
-    # TODO get embedding from args
-    # recommend()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--embedding', type=str, help="User embedding")
+    args = parser.parse_args()
+    # user_embedding = ", ".join(["0.1"] * 312)  # 312 - размер эмбеддинга пользователя
+    # print(user_embedding)
+    recs = [item[0] for item in recommend(
+        user_embedding=np.fromstring(args.embedding, dtype=float, sep=",")
+    )]
+    json_recs = {
+        "recs": recs
+    }
+    print(json.dumps(json_recs))
