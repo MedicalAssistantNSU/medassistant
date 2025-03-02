@@ -64,7 +64,7 @@ func (l *PostRepo) GetById(id int) (models.Post, error) {
 		lt.content,
 		lt.published_at ,
 		lt.image_url
-		FROM %s WHERE lt.id = $1`,
+		FROM %s lt WHERE lt.id = $1`,
 		postsTable)
 
 	err := l.db.Get(&post, query, id)

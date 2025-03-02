@@ -4,7 +4,7 @@ import numpy as np
 from scipy.spatial.distance import cosine
 
 
-json_file_path = 'vectorized_data/medical_articles_vectors.json'
+json_file_path = '../recsys/vectorized_data/medical_articles_vectors.json'
 
 
 def load_embeddings_from_json(file_path):
@@ -54,7 +54,4 @@ if __name__ == "__main__":
     recs = [item[0] for item in recommend(
         user_embedding=np.fromstring(args.embedding, dtype=float, sep=",")
     )]
-    json_recs = {
-        "recs": recs
-    }
-    print(json.dumps(json_recs))
+    print(*recs, sep=',')

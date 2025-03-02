@@ -10,7 +10,7 @@ import (
 func GetRecs(embedding string) (string, error) {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	cmd := exec.Command("python3", "../recsys/recommended.py", "--embedding", embedding)
+	cmd := exec.Command("python3", "../recsys/recommend.py", "--embedding", embedding)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {

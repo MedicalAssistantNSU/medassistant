@@ -42,11 +42,16 @@ func (p *PostService) Create(post models.Post) (int, error) {
 }
 
 func (p *PostService) GetRecs(userEmbeddig string) ([]models.Post, error) {
+	if len(userEmbeddig) == 0 {
+		userEmbeddig = createStartEmbedding()
+	}
 	rescString, err := pkg.GetRecs(userEmbeddig)
 	if err != nil {
 		logrus.Errorf("failed on getting recs: %s", err.Error())
 		return nil, err
 	}
+
+	logrus.Info(rescString)
 
 	result := strings.Split(rescString, ",")
 
@@ -138,4 +143,17 @@ func truncateText(s string, max int) string {
 		return s
 	}
 	return s[:strings.LastIndex(s[:max], " ")]
+}
+
+func createStartEmbedding() string {
+	var sb strings.Builder
+
+	for i := 0; i < 312; i++ {
+		sb.WriteString("0.1")
+		if i != 311 {
+			sb.WriteString(",")
+		}
+	}
+
+	return sb.String()
 }
