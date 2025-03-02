@@ -6,12 +6,14 @@ const API_URL = '/api/v1/posts/';
 // 
 interface StateType {
   posts: any[];
+  recommendedPosts: any[];
   selectedPost: any;
   postSearch: string;
 }
 
 const initialState = {
     posts: [],
+    recommendedPosts: [],
     selectedPost: {},
     postSearch: "",
 };
@@ -21,7 +23,10 @@ export const PostSlice = createSlice({
   initialState,
   reducers: {
     getPosts: (state: StateType, action) => {
-      state.posts= action.payload;
+      state.posts = action.payload;
+    },
+    getRecommendedPosts: (state: StateType, action) => {
+      state.recommendedPosts = action.payload
     },
     AppendPost: (state: StateType, action) => {
       state.posts = state.posts.concat([action.payload]);
@@ -35,12 +40,21 @@ export const PostSlice = createSlice({
   },
 });
 
-export const { getPosts, AppendPost, SearchPost, SelectPost} = PostSlice.actions;
+export const { getPosts, getRecommendedPosts, AppendPost, SearchPost, SelectPost} = PostSlice.actions;
 
 export const fetchPosts = () => async (dispatch: AppDispatch) => {
   try {
     const response = await axios.get(`${API_URL}`);
     dispatch(getPosts(response.data.data));
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const fetchRecommendedPosts = () => async (dispatch: AppDispatch) => {
+  try {
+    const response = await axios.get(`${API_URL}` + `recs`);
+    dispatch(getRecommendedPosts(response.data.data));
   } catch (err: any) {
     throw new Error(err);
   }

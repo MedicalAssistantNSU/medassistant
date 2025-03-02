@@ -11,6 +11,7 @@ type Authorization interface {
 	GetUser(username, password string) (models.User, error)
 	GetUserByUsername(username string) (models.User, error)
 	GetUserById(id int) (models.User, error)
+	UpdateUser(userId int, updatedUser models.User) error
 }
 
 type ChatRepozitory interface {
