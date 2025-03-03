@@ -1,4 +1,6 @@
 import json
+
+import numpy as np
 import torch
 from transformers import AutoTokenizer, AutoModel
 
@@ -15,7 +17,11 @@ def save_vectors_to_json(vectors, ids, output_file):
         json.dump(vectors_dict, file)
 
 
-def bert_embed(text, model, tokenizer):
+def bert_embed(
+        text,
+        model = AutoModel.from_pretrained("cointegrated/rubert-tiny"),
+        tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny")
+) -> np.ndarray:
     t = tokenizer(text, padding=True, truncation=True, return_tensors='pt')
     with torch.no_grad():
         model_output = model(**{k: v.to(model.device) for k, v in t.items()})

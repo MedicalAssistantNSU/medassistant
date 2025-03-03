@@ -59,6 +59,9 @@ def main(user_id="user_test", chat_id="chat_test", history="", image_path=None, 
         history=history,
         document=detected_text
     )
+
+    # добавить тут пересчет эмбеддинга
+
     print(json.dumps(chat_response))
 
     # Check if LLM returned a valid response
