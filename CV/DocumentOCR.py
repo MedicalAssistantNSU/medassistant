@@ -29,7 +29,7 @@ PREPROCESS_TIME = Histogram('document_preprocess_seconds', 'Time spent preproces
 OCR_TIME = Histogram('document_ocr_seconds', 'Time spent on OCR process', registry=registry)
 TOTAL_TIME = Histogram('document_total_seconds', 'Total time for OCR process', registry=registry)
 
-PUSH_GATEWAY = "0.0.0.0:9091" # default value, if you need to - fix it
+PUSH_GATEWAY = "0.0.0.0:9091"  # default value, if you need to - fix it
 
 
 def push_metrics_and_exit(exit_code: int):
@@ -61,9 +61,9 @@ class DocumentOCR:
             self.reader = easyocr.Reader(['ru', 'en'], gpu=True)
             elapsed = time.time() - start_time
             logger.info(f"OCR reader initialized successfully in {elapsed:.2f} seconds.")
-        except Exception as e:
+        except Exception:
             logger.error("Failed to initialize OCR reader.")
-            push_metrics_and_exit(2, None)  # Exit with code 2
+            push_metrics_and_exit(2)  # Exit with code 2
 
     @staticmethod
     def preprocess_document(image_path: str):
