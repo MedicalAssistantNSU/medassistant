@@ -24,7 +24,7 @@ while True:
     # Construct the command
     command = [
         "python3", "DocumentOCR.py", image_file,
-        "--save_path=output", "--pushgateway", "0.0.0.0:9091"
+        "--save_path=output"
     ]
 
     # Execute the command

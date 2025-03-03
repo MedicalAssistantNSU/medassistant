@@ -7,7 +7,6 @@ import numpy as np  # noqa: F401
 import logging
 import time
 from dotenv import load_dotenv
-from typing import Optional
 
 from prometheus_client import CollectorRegistry, Histogram, push_to_gateway
 
@@ -30,6 +29,23 @@ PREPROCESS_TIME = Histogram('document_preprocess_seconds', 'Time spent preproces
 OCR_TIME = Histogram('document_ocr_seconds', 'Time spent on OCR process', registry=registry)
 TOTAL_TIME = Histogram('document_total_seconds', 'Total time for OCR process', registry=registry)
 
+PUSH_GATEWAY = "0.0.0.0:9091" # default value, if you need to - fix it
+
+
+def push_metrics_and_exit(exit_code: int):
+    """
+    Push metrics to Prometheus and force exit with the given exit code.
+    :param exit_code: The exit code to use.
+    """
+    if PUSH_GATEWAY:
+        try:
+            push_to_gateway(PUSH_GATEWAY, job='ocr_job', registry=registry)
+            logger.info("Metrics pushed before exiting.")
+        except Exception as e:
+            logger.error("Failed to push metrics before exiting: %s", e)
+
+    sys.exit(exit_code)  # Force exit with the given exit code
+
 
 class DocumentOCR:
     def __init__(self, save_path: str = 'processed_output'):
@@ -47,7 +63,7 @@ class DocumentOCR:
             logger.info(f"OCR reader initialized successfully in {elapsed:.2f} seconds.")
         except Exception as e:
             logger.error("Failed to initialize OCR reader.")
-            sys.exit(2)
+            push_metrics_and_exit(2, None)  # Exit with code 2
 
     @staticmethod
     def preprocess_document(image_path: str):
@@ -60,7 +76,8 @@ class DocumentOCR:
         image = cv2.imread(image_path)
         if image is None:
             logger.error("Failed to read image file.")
-            sys.exit(3)
+            push_metrics_and_exit(3)  # Exit with code 3
+
         try:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             blurred = cv2.GaussianBlur(gray, (1, 1), 0)
@@ -68,7 +85,7 @@ class DocumentOCR:
             return blurred
         except Exception:
             logger.error("Image preprocessing failed.")
-            sys.exit(2)
+            push_metrics_and_exit(2)  # Exit with code 2
 
     def ocr_image(self, image) -> str:
         """
@@ -85,7 +102,7 @@ class DocumentOCR:
             return " ".join(filtered_texts).strip()
         except Exception:
             logger.error("OCR processing failed.")
-            sys.exit(2)
+            push_metrics_and_exit(2)  # Exit with code 2
 
     def save_detected_text(self, text: str) -> None:
         """
@@ -100,32 +117,33 @@ class DocumentOCR:
             logger.info("Detected text saved successfully.")
         except Exception:
             logger.error("Failed to save detected text.")
-            sys.exit(5)
+            push_metrics_and_exit(5)  # Exit with code 5
 
-    def run(self, image_path: str, push_gateway: Optional[str] = None) -> str:
+    def run(self, image_path: str) -> str:
         """
-        Execute the OCR process: preprocessing and OCR, and optionally push metrics.
+        Execute the OCR process and exit on error while ensuring metrics are pushed.
         :param image_path: Path to the input image file.
-        :param push_gateway: Optional Pushgateway address (e.g., 'localhost:9091').
         :return: Detected text as a string.
         """
         logger.info(f"Starting OCR process for: {image_path}")
+
         with TOTAL_TIME.time():
             with PREPROCESS_TIME.time():
-                processed_image = self.preprocess_document(image_path)
+                processed_image = self.preprocess_document(image_path)  # May exit
+
             with OCR_TIME.time():
-                ocr_result = self.ocr_image(processed_image)
-            self.save_detected_text(ocr_result)
+                ocr_result = self.ocr_image(processed_image)  # May exit
+
+            self.save_detected_text(ocr_result)  # May exit
+
         logger.info("OCR process completed successfully.")
 
-        if push_gateway:
+        if PUSH_GATEWAY:
             try:
-                push_to_gateway(push_gateway, job='ocr_job', registry=registry)
-                logger.info("Metrics pushed to Pushgateway at %s", push_gateway)
+                push_to_gateway(PUSH_GATEWAY, job='ocr_job', registry=registry)
+                logger.info("Metrics pushed successfully.")
             except Exception as e:
                 logger.error("Failed to push metrics to Pushgateway: %s", e)
-        else:
-            logger.info("No push_gateway")
 
         return ocr_result
 
@@ -136,12 +154,10 @@ def main():
     )
     parser.add_argument('image_path', type=str, help="Path to the image file to process")
     parser.add_argument('--save_path', type=str, default='processed_images', help="Directory to save results")
-    parser.add_argument('--pushgateway', type=str, default=None,
-                        help="Optional Pushgateway address (e.g., 'localhost:9091')")
     args = parser.parse_args()
 
     ocr_processor = DocumentOCR(save_path=args.save_path)
-    ocr_processor.run(args.image_path, push_gateway=args.pushgateway)
+    ocr_processor.run(args.image_path)
 
 
 if __name__ == "__main__":
