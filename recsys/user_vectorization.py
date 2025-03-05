@@ -10,6 +10,7 @@ def embed_user(new_history: str, old_embedding: np.ndarray):
 
     return (new_embedding + old_embedding) / 2
 
+
 def test_embed():
     old_embedding = np.array([0] * 312)
     new_history = "some history"
@@ -17,6 +18,7 @@ def test_embed():
 
     new_embedding = embed_user(new_history, old_embedding)
     print(f"new embedding of a user: {new_embedding[:10]}")
+
 
 if __name__ == "__main__":
     test_embed()
