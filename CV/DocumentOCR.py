@@ -1,6 +1,6 @@
 import cv2
 import easyocr
-import numpy as np
+# import numpy as np
 import os
 import sys
 import argparse
