@@ -19,8 +19,8 @@ def save_vectors_to_json(vectors, ids, output_file):
 
 def bert_embed(
         text,
-        model = AutoModel.from_pretrained("cointegrated/rubert-tiny"),
-        tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny")
+        model=AutoModel.from_pretrained("cointegrated/rubert-tiny"),
+        tokenizer=AutoTokenizer.from_pretrained("cointegrated/rubert-tiny")
 ) -> np.ndarray:
     t = tokenizer(text, padding=True, truncation=True, return_tensors='pt')
     with torch.no_grad():
