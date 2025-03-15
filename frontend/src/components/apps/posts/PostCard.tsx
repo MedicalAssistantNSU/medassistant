@@ -19,7 +19,7 @@ import {
 import { formatDistanceToNowStrict } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import BlankCard from 'src/components/shared/BlankCard';
-import { fetchPosts, SelectPost } from 'src/store/apps/posts/PostSlice';
+import { fetchPosts, fetchRecommendedPosts, SelectPost } from 'src/store/apps/posts/PostSlice';
 import { useDispatch, useSelector } from 'src/store/Store';
 import { PostType } from 'src/types/apps/posts';
 import PostInfo from './PostInfo';
@@ -42,6 +42,7 @@ const PostCard = () => {
 
     useEffect(() => {
       dispatch(fetchPosts());
+      dispatch(fetchRecommendedPosts());
     }, [dispatch]);
 
     const handleClick = (post: PostType) => {
@@ -52,6 +53,7 @@ const PostCard = () => {
   
     const [_, setSearch] = React.useState('');
     const posts : PostType[]  = useSelector((state) => state.postReducer.posts);
+    const recs : PostType[] = useSelector((state) => state.postReducer.recommendedPosts);
   
     // skeleton
     const [isLoading, setLoading] = React.useState(true);
@@ -87,7 +89,6 @@ const PostCard = () => {
               <Box>
                 <Typography variant="h3">
                   Статьи и новости &nbsp;
-                  <Chip label={posts ? posts.length : 0} color="primary" size="small" />
                 </Typography>
               </Box>
               <Box ml="auto">
@@ -110,6 +111,58 @@ const PostCard = () => {
                 />
               </Box>
             </Stack>
+          </Grid>
+          <Grid item sm={12} lg={12}>
+                <Typography variant="h5">
+                  Рекомендации
+                  <Chip label={recs ? recs.length : 0} color="primary" size="small" />
+                </Typography>
+          </Grid>
+          {recs ? recs.map((post) => {
+            return (
+              <Grid item xs={12} lg={4} key={post.id}>
+                <ButtonBase onClick={()=>handleClick(post)}>
+                <BlankCard className="hoverCard" >
+                  {isLoading ? (
+                    <>
+                      <Skeleton
+                        variant="rectangular"
+                        animation="wave"
+                        width="100%"
+                        height={220}
+                      ></Skeleton>
+                    </>
+                  ) : (
+                    <CardMedia component={'img'} height="220" alt="Remy Sharp" src={post.image_url} />
+                  )}
+                  <Box p={3}>
+                    <Stack direction="row" gap={1}>
+                      <Box>
+                        <Typography variant="h6">{post.title}</Typography>
+                        <br/>
+                        <Typography variant="caption">
+                          {post.created_at ? (
+                                  <Typography variant="body2" color="black" mb={1}>
+                                    {formatDistanceToNowStrict(new Date(post.created_at), {
+                                        addSuffix: false,
+                                      })}{' '}
+                                    ago
+                                  </Typography>
+                                ) : null}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Box>
+                </BlankCard>
+                </ButtonBase>
+              </Grid>
+            );
+          }) : null}
+           <Grid item sm={12} lg={12}>
+                <Typography variant="h5">
+                  Все статьи
+                  <Chip label={posts ? posts.length : 0} color="primary" size="small" />
+                </Typography>
           </Grid>
           {posts ? posts.map((post) => {
             return (
