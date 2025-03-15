@@ -1,13 +1,19 @@
 import json
 import argparse
+import pickle
 import sys
+from os import listdir
+from os.path import isfile, join
 
+from haystack.components.embedders import SentenceTransformersDocumentEmbedder, SentenceTransformersTextEmbedder
+from haystack.components.retrievers import InMemoryEmbeddingRetriever
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack import Pipeline, Document
 from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
 from haystack.components.builders import PromptBuilder
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
+from LLM.RAG_utils.vectorize_utils import vectorized_storage
 
 """
 Usage: python3 LLM/ChatLLM.py <url> <username> <message> <history>
@@ -22,11 +28,11 @@ class ChatLLM:
             # url: str = 'http://localhost:11435',
             username: str = 'User',
             task='chat',
-            config_file='../LLM/prompts_config.json',
-            rag_docs_path='../LLM/RAG_docs',
+            # config_file='../LLM/prompts_config.json',
+            # rag_docs_path='../LLM/RAG_docs',
             # # For ChatLLM tests:
-            # config_file='LLM/prompts_config.json',
-            # rag_docs_path='LLM/RAG_docs',
+            config_file='LLM/prompts_config.json',
+            rag_docs_path='LLM/RAG_docs',
     ):
         """
         Initialize the ChatLLM class with a task-based system prompt.
@@ -102,36 +108,26 @@ class ChatLLM:
             """
         self.contextualize_builder = PromptBuilder(template=self.contextualize_template)
 
-        document_store = InMemoryDocumentStore()
-        document_store.write_documents([
-            Document(content="Medical assistant is a helpful chatbot."),
-        ])
+        ## RAG
+        if isfile(join(rag_docs_path, "vectorized.pkl")):
+            with open(join(rag_docs_path, "vectorized.pkl"), "rb") as f:
+                documents_with_embeddings = pickle.load(f)
+            document_store = InMemoryDocumentStore(embedding_similarity_function="cosine")
+            document_store.write_documents(documents_with_embeddings)
+        else:
+            document_store = vectorized_storage(rag_docs_path)
 
-        # Files for RAG should be .txt with one json at one line
-        # jsons with args [id, contents]
-        # rag_files = [f for f in listdir(rag_docs_path) if isfile(join(rag_docs_path, f))]
-        # for rag_filename in rag_files:
-        #     with open(f'{rag_docs_path}/{rag_filename}', 'r') as rag_file:
-        #         for line in rag_file.readlines():
-        #             doc = json.loads(line)
-        #             document_store.write_documents([
-        #                 Document(
-        #                     id=doc['id'],
-        #                     content=doc['contents'],
-        #                     # embedding=
-        #                 )
-        #             ])
-        #             # print(f'{rag_filename} id={doc["id"]} loaded')
-
-        # print("RAG DOCS LOADED")
-
+        print(f"STORE: {document_store.count_documents()}")
         self.rag_pipe = Pipeline()
         self.rag_pipe.add_component(
+            "text_embedder",
+            SentenceTransformersTextEmbedder()
+        )
+        self.rag_pipe.add_component(
             "retriever",
-            InMemoryBM25Retriever(
+            InMemoryEmbeddingRetriever(
                 document_store=document_store,
-                top_k=1,
-                # scale_score=True
+                top_k=1
             )
         )
         self.rag_pipe.add_component("prompt_builder", self.prompt_builder)
@@ -140,15 +136,18 @@ class ChatLLM:
             self.generator
         )
 
-        self.rag_pipe.connect("retriever", "prompt_builder.documents")
-        self.rag_pipe.connect("prompt_builder", "generator")
-
         self.contextualize_pipe = Pipeline()
         self.contextualize_pipe.add_component("context_prompt_builder", self.contextualize_builder)
         self.contextualize_pipe.add_component(
             "contextualize_generator",
             self.contextualize_generator
         )
+
+
+        self.rag_pipe.connect("text_embedder.embedding", "retriever.query_embedding")
+        self.rag_pipe.connect("retriever", "prompt_builder.documents")
+        self.rag_pipe.connect("prompt_builder", "generator")
+
         self.contextualize_pipe.connect("context_prompt_builder", "contextualize_generator")
 
     def send_message(
@@ -186,8 +185,8 @@ class ChatLLM:
                 "message": message,
                 # "query": message
             },
-            "retriever": {
-                "query": message,
+            "text_embedder": {
+                "text": message,
             }
         })
         answer = answer_full['generator']['replies'][0]
@@ -226,10 +225,10 @@ def main():
         url=args.url,
         username=args.username
     )
-    model.send_message(args.message, args.history)
+    model.send_message(args.message, "", args.history)
 
 
 if __name__ == "__main__":
     main()
 
-# python3 LLM/ChatLLM.py http://localhost:11435 name "Расскажи анекдот" ""
+# PYTHONPATH=. python3 LLM/ChatLLM.py http://localhost:11435 name "Расскажи анекдот" ""
