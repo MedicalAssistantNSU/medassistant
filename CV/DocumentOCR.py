@@ -1,6 +1,6 @@
 import cv2
 import easyocr
-import numpy as np
+# import numpy as np
 import os
 import sys
 import argparse
@@ -48,9 +48,9 @@ class DocumentOCR:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             blurred = cv2.GaussianBlur(gray, (1, 1), 0)
 
-            edges = cv2.Canny(blurred, 100, 200)
-            edge_density = np.sum(edges)
-            threshold_edge_density = 10000000
+            # edges = cv2.Canny(blurred, 100, 200)
+            # edge_density = np.sum(edges)
+            # threshold_edge_density = 10000000
 
             # if edge_density < threshold_edge_density:
             #     sys.exit(4)  # BlurryTextError

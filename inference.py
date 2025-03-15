@@ -2,8 +2,12 @@ import argparse
 import os
 import sys
 import json
+
+import numpy as np
+
 from CV.DocumentOCR import DocumentOCR
 from LLM.ChatLLM import ChatLLM
+from recsys.user_vectorization import embed_user
 
 
 def save_to_history(user_save_path, text):
@@ -21,7 +25,14 @@ def load_detected_text(file_path):
     return None
 
 
-def main(user_id="user_test", chat_id="chat_test", history="", image_path=None, prompt=None):
+def main(
+        user_id="user_test",
+        chat_id="chat_test",
+        history="",
+        user_embedding: np.ndarray = np.zeros(312),
+        image_path=None,
+        prompt=None
+):
     """
     Main function to process OCR and interact with a language model (LLM).
 
@@ -59,6 +70,8 @@ def main(user_id="user_test", chat_id="chat_test", history="", image_path=None, 
         history=history,
         document=detected_text
     )
+    chat_response["user_embedding"] = embed_user(new_history=chat_response["history"], old_embedding=user_embedding)
+
     print(json.dumps(chat_response))
 
     # Check if LLM returned a valid response
@@ -71,10 +84,11 @@ if __name__ == "__main__":
     parser.add_argument('user_id', type=str, help="Unique identifier for the user")
     parser.add_argument('chat_id', type=str, help="Unique identifier for the chat session")
     parser.add_argument('--history', type=str, help="History of chat")
+    parser.add_argument('--user_embedding', type=str, help="Embedding of a user")
     parser.add_argument('--image_path', type=str, help="Path to the new image file to process")
     parser.add_argument('--prompt', type=str, help="Custom prompt to send to the LLM")
 
     args = parser.parse_args()
-    main(args.user_id, args.chat_id, args.history, args.image_path, args.prompt)
+    main(args.user_id, args.chat_id, args.history, args.user_embedding, args.image_path, args.prompt)
 
 # python3 inference.py 0 0 --history "" --image_path "./test3.jpg"
