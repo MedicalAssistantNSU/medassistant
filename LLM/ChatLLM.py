@@ -2,14 +2,12 @@ import json
 import argparse
 import pickle
 import sys
-from os import listdir
 from os.path import isfile, join
 
-from haystack.components.embedders import SentenceTransformersDocumentEmbedder, SentenceTransformersTextEmbedder
+from haystack.components.embedders import SentenceTransformersTextEmbedder
 from haystack.components.retrievers import InMemoryEmbeddingRetriever
 from haystack.document_stores.in_memory import InMemoryDocumentStore
-from haystack import Pipeline, Document
-from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
+from haystack import Pipeline
 from haystack.components.builders import PromptBuilder
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
@@ -108,7 +106,7 @@ class ChatLLM:
             """
         self.contextualize_builder = PromptBuilder(template=self.contextualize_template)
 
-        ## RAG
+        # RAG
         if isfile(join(rag_docs_path, "vectorized.pkl")):
             with open(join(rag_docs_path, "vectorized.pkl"), "rb") as f:
                 documents_with_embeddings = pickle.load(f)
@@ -142,7 +140,6 @@ class ChatLLM:
             "contextualize_generator",
             self.contextualize_generator
         )
-
 
         self.rag_pipe.connect("text_embedder.embedding", "retriever.query_embedding")
         self.rag_pipe.connect("retriever", "prompt_builder.documents")

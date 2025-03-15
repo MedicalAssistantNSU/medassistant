@@ -6,7 +6,6 @@ from os.path import isfile, join
 from haystack import Document
 from haystack.components.embedders import SentenceTransformersDocumentEmbedder
 from haystack.document_stores.in_memory import InMemoryDocumentStore
-from ollama import embeddings
 
 
 def vectorized_storage(
@@ -30,7 +29,7 @@ def vectorized_storage(
                 )
                 # print(f'{rag_filename} id={doc["id"]} loaded')
 
-    print("Start embedding process")
+    # print("Start embedding process")
     document_embedder = SentenceTransformersDocumentEmbedder()
     document_embedder.warm_up()
 
