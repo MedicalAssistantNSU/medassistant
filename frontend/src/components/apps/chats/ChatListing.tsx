@@ -150,7 +150,7 @@ const ChatListing = () => {
             <IconPlus />
           </Button>
         </Box>
-        <Scrollbar sx={{ height: 'calc(100vh - 240px)', overflow: 'auto', maxHeight: 'calc(100vh - 240px)' }}>
+        <Scrollbar sx={{ height: 'calc(100vh - 230px)', overflow: 'auto', maxHeight: 'calc(100vh - 250px)' }}>
           {chats && chats.length ? (
             chats.map((chat) => (
               <ListItemButton

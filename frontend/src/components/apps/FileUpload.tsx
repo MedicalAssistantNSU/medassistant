@@ -78,7 +78,7 @@ function FileUpload({load} : {load : React.Dispatch<React.SetStateAction<string>
             <br />
 
             <Box justifyContent={'center'}>
-                    <img  width={"100%"} src={file ? URL.createObjectURL(file) : img1}  />
+                    <img  width={"100%"} src={file ? URL.createObjectURL(file) : ""}  />
                 </Box>
             </Grid>
             </Grid>    

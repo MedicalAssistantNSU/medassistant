@@ -87,9 +87,9 @@ interface ChatContentProps {
                       <Box width="100%">
                           <Scrollbar
                               sx={{
-                                  height: 'calc(100vh - 240px)',
+                                  height: 'calc(100vh - 270px)',
                                   overflow: 'auto',
-                                  maxHeight: 'calc(100vh - 240px)',
+                                  maxHeight: 'calc(100vh - 270px)',
                                   '&:before': {
                                       content: '""',
                                       background: 'radial-gradient(#2C3E50, #4CA1AF)',

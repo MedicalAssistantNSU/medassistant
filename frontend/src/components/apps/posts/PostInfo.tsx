@@ -1,18 +1,27 @@
-import { Box, CardMedia, Typography } from '@mui/material';
+import { Box, ButtonBase, CardMedia, Typography } from '@mui/material';
+import { IconX } from '@tabler/icons-react';
 import { useSelector } from 'src/store/Store';
 import { PostType } from 'src/types/apps/posts';
 
-const PostInfo = () => {
+const PostInfo = ({setOpenPost} : {setOpenPost: (value: React.SetStateAction<boolean>) => void}) => {
     const post : PostType = useSelector((state) => state.postReducer.selectedPost);
 
     return (
         <>
          <CardMedia component={'img'} height="220" alt="Remy Sharp" src={post.image_url}/> 
+         <ButtonBase sx={{ position: 'absolute' as 'absolute',
+                        top: '5%',
+                        left: '85%',
+                        backgroundColor: `primary.light`,
+                        borderRadius: 5,
+                }} onClick={() => {setOpenPost(false)}}>
+                    <IconX />
+                </ButtonBase>
             <Box
                 p={2}
                 sx={
                     {
-                        width: "90%",
+                        width: "95%",
                         margin: "auto"
                     }
                 }

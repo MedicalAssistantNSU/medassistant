@@ -30,8 +30,9 @@ type InferenceJSON struct {
 }
 
 type CreateMsg struct {
-	Msg     models.Message
-	History string
+	Msg       models.Message
+	History   string
+	Embedding string
 }
 
 func (i *MessageService) Create(chat_id int, msg CreateMsg) (*CreateMsg, error) {
@@ -103,8 +104,9 @@ func (i *MessageService) Create(chat_id int, msg CreateMsg) (*CreateMsg, error) 
 	newMsg, err := i.repo.GetMsgById(id)
 
 	return &CreateMsg{
-		Msg:     newMsg,
-		History: output["history"],
+		Msg:       newMsg,
+		History:   output["history"],
+		Embedding: output["user_embedding"],
 	}, err
 }
 

@@ -78,7 +78,7 @@ const PostCard = () => {
             >
                 <Fade in={openPost}>
                     <Box sx={style}>
-                      <PostInfo />
+                      <PostInfo setOpenPost={setOpenPost}/>
                     </Box>
                 </Fade>
          </Modal>
