@@ -4,9 +4,11 @@
 PROMETHEUS_CONFIG_PATH="/usr/local/etc/prometheus/prometheus.yml"
 PUSHGATEWAY_VERSION="1.11.0"
 PUSHGATEWAY_DIR="/usr/local/bin"
-GRAFANA_CONFIG_PATH="/usr/local/etc/grafana/provisioning/dashboards"
-GRAFANA_DASHBOARD_JSON_PATH="/usr/local/etc/grafana/provisioning/dashboards/dashboard.json"
-GRAFANA_DASHBOARD_YAML_PATH="/usr/local/etc/grafana/provisioning/dashboards/dashboard.yaml"
+GRAFANA_PROVISIONING_DASHBOARDS="/usr/local/etc/grafana/provisioning/dashboards"
+GRAFANA_DASHBOARD_JSON_PATH="./ocr_dashboard.json"
+GRAFANA_DASHBOARD_YAML_PATH="$GRAFANA_PROVISIONING_DASHBOARDS/dashboard.yaml"
+GRAFANA_PROVISIONING_DATASOURCES="/usr/local/etc/grafana/provisioning/datasources"
+GRAFANA_DATASOURCE_YAML_PATH="$GRAFANA_PROVISIONING_DATASOURCES/datasource.yaml"
 
 # Step 1: Install Prometheus
 echo "Installing Prometheus..."
@@ -30,7 +32,6 @@ echo "Starting Prometheus..."
 brew services start prometheus
 
 # Step 4: Install Pushgateway
-# IMPORTANT !!! This is a setup for Intel-based Macbook, if you have Apple Silicon - find the suitable release for you (darwin-arm64 probably)
 echo "Installing Pushgateway..."
 if ! command -v pushgateway &> /dev/null
 then
@@ -51,256 +52,57 @@ pushgateway &
 echo "Installing Grafana..."
 brew install grafana
 
-# Step 7: Configure Grafana dashboard
-echo "Setting up Grafana dashboard..."
-sudo mkdir -p $GRAFANA_CONFIG_PATH
-
-cat <<EOL | sudo tee $GRAFANA_DASHBOARD_JSON_PATH
-{
-  "id": 1,
-  "type": "timeseries",
-  "title": "Panel Title",
-  "gridPos": {
-    "x": 0,
-    "y": 0,
-    "h": 8,
-    "w": 12
-  },
-  "fieldConfig": {
-    "defaults": {
-      "custom": {
-        "drawStyle": "line",
-        "lineInterpolation": "smooth",
-        "barAlignment": 0,
-        "barWidthFactor": 0.6,
-        "lineWidth": 1,
-        "fillOpacity": 0,
-        "gradientMode": "none",
-        "spanNulls": false,
-        "insertNulls": false,
-        "showPoints": "auto",
-        "pointSize": 5,
-        "stacking": {
-          "mode": "none",
-          "group": "A"
-        },
-        "axisPlacement": "auto",
-        "axisLabel": "",
-        "axisColorMode": "text",
-        "axisBorderShow": false,
-        "scaleDistribution": {
-          "type": "linear"
-        },
-        "axisCenteredZero": false,
-        "hideFrom": {
-          "tooltip": false,
-          "viz": false,
-          "legend": false
-        },
-        "thresholdsStyle": {
-          "mode": "off"
-        }
-      },
-      "color": {
-        "mode": "palette-classic"
-      },
-      "mappings": [],
-      "thresholds": {
-        "mode": "absolute",
-        "steps": [
-          {
-            "color": "green",
-            "value": null
-          },
-          {
-            "color": "red",
-            "value": 80
-          }
-        ]
-      },
-      "fieldMinMax": false
-    },
-    "overrides": []
-  },
-  "pluginVersion": "11.5.1",
-  "targets": [
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "eeemedz3k9e68b"
-      },
-      "disableTextWrap": false,
-      "editorMode": "builder",
-      "expr": "histogram_quantile(0.95, sum by(le) (rate(document_ocr_seconds_bucket[5m])))",
-      "fullMetaSearch": false,
-      "hide": false,
-      "includeNullMetadata": false,
-      "instant": false,
-      "legendFormat": "OCR Processing Time (95th percentile)",
-      "range": true,
-      "refId": "A",
-      "useBackend": false
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "eeemedz3k9e68b"
-      },
-      "disableTextWrap": false,
-      "editorMode": "builder",
-      "expr": "rate(document_ocr_seconds_sum[5m])",
-      "fullMetaSearch": false,
-      "hide": false,
-      "includeNullMetadata": false,
-      "instant": false,
-      "legendFormat": "OCR Total Processing Time Rate",
-      "range": true,
-      "refId": "B",
-      "useBackend": false
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "eeemedz3k9e68b"
-      },
-      "disableTextWrap": false,
-      "editorMode": "builder",
-      "expr": "histogram_quantile(0.95, sum by(le) (rate(document_preprocess_seconds_bucket[5m])))",
-      "fullMetaSearch": false,
-      "hide": false,
-      "includeNullMetadata": false,
-      "instant": false,
-      "legendFormat": "Preprocessing Time (95th percentile)",
-      "range": true,
-      "refId": "C",
-      "useBackend": false
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "eeemedz3k9e68b"
-      },
-      "disableTextWrap": false,
-      "editorMode": "builder",
-      "expr": "rate(document_preprocess_seconds_sum[5m])",
-      "fullMetaSearch": false,
-      "hide": false,
-      "includeNullMetadata": false,
-      "instant": false,
-      "legendFormat": "Preprocessing Total Time Rate",
-      "range": true,
-      "refId": "D",
-      "useBackend": false
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "eeemedz3k9e68b"
-      },
-      "disableTextWrap": false,
-      "editorMode": "builder",
-      "expr": "rate(document_total_seconds_sum[5m])",
-      "fullMetaSearch": false,
-      "hide": false,
-      "includeNullMetadata": false,
-      "instant": false,
-      "legendFormat": "Overall Processing Time Rate",
-      "range": true,
-      "refId": "E",
-      "useBackend": false
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "eeemedz3k9e68b"
-      },
-      "disableTextWrap": false,
-      "editorMode": "builder",
-      "expr": "rate(document_ocr_seconds_count[5m])",
-      "fullMetaSearch": false,
-      "hide": false,
-      "includeNullMetadata": false,
-      "instant": false,
-      "legendFormat": "OCR Requests per 5 min",
-      "range": true,
-      "refId": "F",
-      "useBackend": false
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "eeemedz3k9e68b"
-      },
-      "disableTextWrap": false,
-      "editorMode": "builder",
-      "expr": "rate(document_preprocess_seconds_count[5m])",
-      "fullMetaSearch": false,
-      "hide": false,
-      "includeNullMetadata": false,
-      "instant": false,
-      "legendFormat": "Preprocessing requests per 5 min",
-      "range": true,
-      "refId": "G",
-      "useBackend": false
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "eeemedz3k9e68b"
-      },
-      "disableTextWrap": false,
-      "editorMode": "builder",
-      "expr": "rate(document_total_seconds_count[5m])",
-      "fullMetaSearch": false,
-      "hide": false,
-      "includeNullMetadata": false,
-      "instant": false,
-      "legendFormat": "Total requests per 5 min",
-      "range": true,
-      "refId": "H",
-      "useBackend": false
-    }
-  ],
-  "datasource": {
-    "type": "prometheus",
-    "uid": "eeemedz3k9e68b"
-  },
-  "options": {
-    "tooltip": {
-      "mode": "single",
-      "sort": "none",
-      "hideZeros": false
-    },
-    "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom",
-      "calcs": []
-    }
-  }
-}
-EOL
-
-cat <<EOL | sudo tee $GRAFANA_DASHBOARD_YAML_PATH
+# Step 7: Provision Grafana Datasource
+echo "Provisioning Grafana datasource..."
+sudo mkdir -p $GRAFANA_PROVISIONING_DATASOURCES
+sudo tee $GRAFANA_DATASOURCE_YAML_PATH > /dev/null <<EOL
 apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://localhost:9090
+    isDefault: true
+    editable: true
+EOL
+echo "Grafana datasource YAML file created."
+
+# Step 8: Provision Grafana Dashboard
+echo "Provisioning Grafana dashboard..."
+sudo mkdir -p $GRAFANA_PROVISIONING_DASHBOARDS
+
+# Copy the dashboard JSON file
+SCRIPT_DIR=$(dirname "$0")
+SOURCE_DASHBOARD_JSON="$SCRIPT_DIR/dashboard.json"
+if [ -f "$SOURCE_DASHBOARD_JSON" ]; then
+  sudo cp "$SOURCE_DASHBOARD_JSON" $GRAFANA_DASHBOARD_JSON_PATH
+  echo "Dashboard JSON file copied to provisioning directory."
+else
+  echo "Warning: Dashboard JSON file not found at $SOURCE_DASHBOARD_JSON"
+fi
+
+# Create the provisioning YAML file for dashboards
+sudo tee $GRAFANA_DASHBOARD_YAML_PATH > /dev/null <<EOL
+apiVersion: 1
+
 providers:
   - name: 'default'
     orgId: 1
     folder: ''
     type: file
     disableDeletion: false
-    updateIntervalSeconds: 60
+    updateIntervalSeconds: 10
     options:
-      path: /usr/local/etc/grafana/provisioning/dashboards/
+      path: $GRAFANA_PROVISIONING_DASHBOARDS
 EOL
+echo "Grafana dashboard provisioning YAML file created."
 
-# Step 8: Restart Grafana to apply the changes
+# Step 9: Restart Grafana to apply the changes
 echo "Restarting Grafana..."
 brew services restart grafana
 
 echo "Setup complete!"
 echo "Prometheus, Pushgateway, and Grafana have been installed and configured."
-
-# Output reminder
-echo "To access Grafana dashboard, visit http://localhost:3000"
+echo "To access the Grafana dashboard, visit http://localhost:3000"
 echo "Default login: admin/admin"
