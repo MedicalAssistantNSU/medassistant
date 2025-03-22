@@ -33,8 +33,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
 
   const formik = useFormik({
     initialValues: {
-      email: 'demo@demo.com',
-      password: 'demo123',
+      email: '',
+      password: '',
       submit: null,
     },
 
