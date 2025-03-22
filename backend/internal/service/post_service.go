@@ -149,7 +149,7 @@ func createStartEmbedding() string {
 	var sb strings.Builder
 
 	for i := 0; i < 312; i++ {
-		sb.WriteString("0.1")
+		sb.WriteString("0")
 		if i != 311 {
 			sb.WriteString(",")
 		}
