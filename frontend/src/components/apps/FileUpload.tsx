@@ -1,7 +1,6 @@
 import { Box, Button, Grid } from '@mui/material';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import img1 from 'src/assets/images/products/plus.jpg';
 import axios from '../../utils/axios';
 
 
