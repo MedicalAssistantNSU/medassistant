@@ -115,7 +115,7 @@ class ChatLLM:
         else:
             document_store = vectorized_storage(rag_docs_path)
 
-        print(f"STORE: {document_store.count_documents()}")
+        print(f"STORE: {document_store.count_documents()}", file=sys.stderr)
         self.rag_pipe = Pipeline()
         self.rag_pipe.add_component(
             "text_embedder",

@@ -28,6 +28,9 @@ export const ChatSlice = createSlice({
     getScans: (state: StateType, action) => {
       state.scans = action.payload;
     },
+    DeleteChat: (state: StateType, action) => {
+      state.chats = state.chats.filter((chat) => chat.id != action.payload.id);
+    },
     AppendChat: (state: StateType, action) => {
       state.chats = state.chats.concat([action.payload]);
     },
@@ -53,12 +56,21 @@ export const ChatSlice = createSlice({
   },
 });
 
-export const { SearchChat, getChats, sendMsg, SelectChat, AppendChat, getScans} = ChatSlice.actions;
+export const { SearchChat, getChats, sendMsg, SelectChat, AppendChat, getScans, DeleteChat} = ChatSlice.actions;
 
 export const fetchChats = () => async (dispatch: AppDispatch) => {
   try {
     const response = await axios.get(`${API_URL}`);
     dispatch(getChats(response.data.data));
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const deleteChat = (id: string) => async (dispatch: AppDispatch) => {
+  try {
+    await axios.delete(`${API_URL}` + id);
+    dispatch(DeleteChat({id}));
   } catch (err: any) {
     throw new Error(err);
   }

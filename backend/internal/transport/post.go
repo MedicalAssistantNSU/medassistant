@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 type GetAllPostsResponses struct {
@@ -69,8 +68,6 @@ func (h *Handler) getRecommendedPosts(c *gin.Context) {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	logrus.Info(posts)
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"data": posts,
