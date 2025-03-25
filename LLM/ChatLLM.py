@@ -1,17 +1,17 @@
 import json
 import argparse
-import pickle
+# import pickle
 import sys
-from os.path import isfile, join
+# from os.path import isfile, join
 
-from haystack.components.embedders import SentenceTransformersTextEmbedder
-from haystack.components.retrievers import InMemoryEmbeddingRetriever
-from haystack.document_stores.in_memory import InMemoryDocumentStore
+# from haystack.components.embedders import SentenceTransformersTextEmbedder
+# from haystack.components.retrievers import InMemoryEmbeddingRetriever
+# from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack import Pipeline
 from haystack.components.builders import PromptBuilder
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
-from LLM.RAG_utils.vectorize_utils import vectorized_storage
+# from LLM.RAG_utils.vectorize_utils import vectorized_storage
 
 """
 Usage: python3 LLM/ChatLLM.py <url> <username> <message> <history>
