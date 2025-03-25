@@ -73,7 +73,12 @@ def main(
 
     if len(user_embedding) == 0:
         user_embedding = ",".join(["0"] * 312)
-    chat_response["user_embedding"] = embed_user(new_history=chat_response["history"], old_embedding=user_embedding).tolist()
+    chat_response["user_embedding"] = (
+        str(
+            embed_user(new_history=chat_response["history"], old_embedding=user_embedding).tolist()
+        ).replace("[", "").replace("]", "")
+    )
+
 
     print(json.dumps(chat_response))
 
