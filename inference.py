@@ -79,7 +79,6 @@ def main(
         ).replace("[", "").replace("]", "")
     )
 
-
     print(json.dumps(chat_response))
 
     # Check if LLM returned a valid response
