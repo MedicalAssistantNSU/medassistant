@@ -22,15 +22,15 @@ Output: None (everything now goes to stdout)
 class ChatLLM:
     def __init__(
             self,
-            # url: str = 'http://host.docker.internal:11435',
-            url: str = 'http://localhost:11435',
+            url: str = 'http://host.docker.internal:11435',
+            # url: str = 'http://localhost:11435',
             username: str = 'User',
             task='chat',
-            # config_file='../LLM/prompts_config.json',
-            # rag_docs_path='../LLM/RAG_docs',
+            config_file='../LLM/prompts_config.json',
+            rag_docs_path='../LLM/RAG_docs',
             # # For ChatLLM tests:
-            config_file='LLM/prompts_config.json',
-            rag_docs_path='LLM/RAG_docs',
+            # config_file='LLM/prompts_config.json',
+            # rag_docs_path='LLM/RAG_docs',
     ):
         """
         Initialize the ChatLLM class with a task-based system prompt.
@@ -188,7 +188,12 @@ class ChatLLM:
         })
         answer = answer_full['generator']['replies'][0]
 
-        new_history = (history + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
+        if document is None or len(document) == 0:
+            new_history = (history + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
+        else:
+            new_history = (
+                    f"Medical document: {document}\n{history}\n" + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt']
+            )
 
         if len(new_history) > self.max_history_length:
             print(
