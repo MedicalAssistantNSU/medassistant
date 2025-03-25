@@ -9,7 +9,6 @@ import IntroCard from 'src/components/apps/userprofile/profile/IntroCard';
 import PhotosCard from 'src/components/apps/userprofile/profile/PhotosCard';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import useMounted from 'src/guards/authGuard/UseMounted';
 import useAuth from 'src/guards/authGuard/UseAuth';
 
 const UserProfile = () => {
