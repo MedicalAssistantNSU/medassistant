@@ -2,12 +2,23 @@ import argparse
 import os
 import sys
 import json
-
+import logging
+from dotenv import load_dotenv
 import numpy as np
-
 from CV.DocumentOCR import DocumentOCR
 from LLM.ChatLLM import ChatLLM
 from recsys.user_vectorization import embed_user
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Set up logging
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logging.basicConfig(
+    level=getattr(logging, log_level, logging.INFO),
+    format='%(asctime)s - %(levelname)s - %(message)s',
+)
+logger = logging.getLogger(__name__)
 
 
 def save_to_history(user_save_path, text):
@@ -43,7 +54,8 @@ def main(
     - image_path (str): Path to the new image file to process.
     - prompt (str): Custom prompt to send to LLM if a specific question needs to be asked.
     """
-    # Set up paths and initialize LLM
+    logger.info(f"Starting processing for user: {user_id}, chat: {chat_id}")
+
     user_save_path = os.path.join("processed_output", user_id, chat_id)
     os.makedirs(user_save_path, exist_ok=True)
     llm = ChatLLM()
@@ -58,11 +70,13 @@ def main(
                   "The answer should be in Russian.")
 
     if image_path:
+        logger.info(f"Processing image: {image_path}")
         ocr_processor = DocumentOCR(save_path=user_save_path)
         detected_text = ocr_processor.run(image_path)
 
         if detected_text is None:
-            sys.exit(1)  # ValueError
+            logger.error("OCR failed to detect any text.")
+            sys.exit(1)
 
     # Send the prompt to LLM with combined context
     chat_response = llm.send_message(
@@ -83,7 +97,11 @@ def main(
 
     # Check if LLM returned a valid response
     if not chat_response:
-        sys.exit(1)  # ValueError
+        logger.error("LLM returned an empty response.")
+        sys.exit(1)
+
+    logger.info("Processing completed successfully.")
+    print(json.dumps(chat_response))
 
 
 if __name__ == "__main__":
