@@ -58,7 +58,7 @@ class DocumentOCR:
         try:
             logger.info("Initializing OCR reader...")
             start_time = time.time()
-            self.reader = easyocr.Reader(['ru', 'en'], gpu=True)
+            self.reader = easyocr.Reader(['ru', 'en'], gpu=False, quantize=False)
             elapsed = time.time() - start_time
             logger.info(f"OCR reader initialized successfully in {elapsed:.2f} seconds.")
         except Exception:
