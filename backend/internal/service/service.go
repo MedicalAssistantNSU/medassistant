@@ -13,6 +13,8 @@ type Authorization interface {
 	ParseToken(token string) (int, error)
 	GetUserByUsername(username string) (models.User, error)
 	GetUserById(id int) (models.User, error)
+	UpdateUser(userId int, user models.User) error
+	DeleteUser(userId int) error
 }
 
 type Chat interface {
@@ -39,6 +41,7 @@ type Post interface {
 	GetById(id int) (models.Post, error)
 	Delete(id int) error
 	Update(id int, updatedPost models.Post) error
+	GetRecs(userEmbeddig string) ([]models.Post, error)
 	InitPosts()
 }
 

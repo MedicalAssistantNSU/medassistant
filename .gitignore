@@ -2,9 +2,9 @@
 LLM/llm_gguf/*.gguf
 MedicalTextbooks/
 LLM/RAG_docs/*.txt
-LLM/RAG_docs/*.json
+LLM/RAG_docs/*.jsonl
 LLM/RAG_docs_not_included/*.txt
-LLM/RAG_docs_not_included/*.json
+LLM/RAG_docs_not_included/*.jsonl
 
 processed_output/*.jpg
 processed_output/*.jpeg
@@ -183,3 +183,4 @@ cython_debug/
 /test7.jpg
 /test8.jpg
 /processed_output/
+/CV/output/

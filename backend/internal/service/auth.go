@@ -34,6 +34,15 @@ func (a *AuthService) CreateUser(user models.User) (int, error) {
 	return a.repo.CreateUser(user)
 }
 
+func (a *AuthService) UpdateUser(userId int, user models.User) error {
+	user.Password = a.generatePasswordHash(user.Password)
+	return a.repo.UpdateUser(userId, user)
+}
+
+func (a *AuthService) DeleteUser(userId int) error {
+	return a.repo.DeleteUser(userId)
+}
+
 func (a *AuthService) GenerateToken(username, password string) (string, error) {
 	user, err := a.repo.GetUser(username, a.generatePasswordHash(password))
 	if err != nil {

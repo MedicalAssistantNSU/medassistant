@@ -82,6 +82,12 @@ class DocumentOCR:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             blurred = cv2.GaussianBlur(gray, (1, 1), 0)
             logger.info("Image preprocessing completed.")
+            # edges = cv2.Canny(blurred, 100, 200)
+            # edge_density = np.sum(edges)
+            # threshold_edge_density = 10000000
+
+            # if edge_density < threshold_edge_density:
+            #     sys.exit(4)  # BlurryTextError
             return blurred
         except Exception:
             logger.error("Image preprocessing failed.")

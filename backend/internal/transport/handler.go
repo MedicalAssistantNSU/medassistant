@@ -51,6 +51,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		posts := api1.Group("/posts")
 		{
 			posts.POST("/", h.createPost)
+			posts.GET("/recs", h.getRecommendedPosts)
 			posts.GET("/", h.getAllPosts)
 			posts.GET("/:id", h.getPostById)
 			posts.PUT("/:id", h.updatePost)
@@ -58,6 +59,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		}
 
 		api1.GET("/account/my-account", h.getAccountInfo)
+		api1.DELETE("/account/my-account", h.deleteAccount)
+		api1.PUT("/account/my-account")
 
 		files := api1.Group("/files")
 		{

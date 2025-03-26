@@ -6,3 +6,11 @@ haystack-ai
 ollama-haystack
 prometheus-client
 python-dotenv
+nltk~=3.9.1
+numpy~=1.26.4
+pandas~=2.2.3
+scikit-learn~=1.6.1
+torch>=2.4.0
+transformers~=4.49.0
+urllib3~=1.26.7
+sentence-transformers>=3.0.0

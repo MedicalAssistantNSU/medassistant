@@ -42,6 +42,38 @@ func (h *Handler) getAllPosts(c *gin.Context) {
 	})
 }
 
+// @Summary Get recommended posts
+// @Security ApiKeyAuth
+// @Tags posts
+// @Description Get recommended posts
+// @ID get-recommended-posts
+// @Accept  json
+// @Produce  json
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} transort_error
+// @Failure 500 {object} transort_error
+// @Failure default {object} transort_error
+// @Router /api/v1/posts/recs [get]
+func (h *Handler) getRecommendedPosts(c *gin.Context) {
+	userId, ok := c.Get(UserId)
+	if !ok {
+		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
+		return
+	}
+
+	user, _ := h.services.Authorization.GetUserById(userId.(int))
+
+	posts, err := h.services.Post.GetRecs(user.Embedding)
+	if err != nil {
+		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"data": posts,
+	})
+}
+
 // @Summary Create post
 // @Security ApiKeyAuth
 // @Tags posts

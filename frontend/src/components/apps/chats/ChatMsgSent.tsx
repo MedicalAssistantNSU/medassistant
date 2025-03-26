@@ -126,9 +126,6 @@ const ChatMsgSent = ({setIsLoaging, IsLoading} : {setIsLoaging: React.Dispatch<R
         >
           <IconSend stroke={1.5} size="20" />
         </IconButton>
-        {/* <IconButton aria-label="delete" onClick={() => setOpenImage(true)}>
-          <IconPhoto stroke={1.5} size="20" />
-        </IconButton> */}
         <IconButton aria-label="delete" onClick={() => setOpenImage(true)}>
           <IconPaperclip stroke={1.5} size="20" />
         </IconButton>
