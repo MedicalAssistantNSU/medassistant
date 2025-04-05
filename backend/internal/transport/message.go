@@ -127,10 +127,17 @@ func (h *Handler) createMessage(c *gin.Context) {
 		return
 	}
 
+	user, err := h.services.GetUserById(user_id.(int))
+	if err != nil {
+		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	input.SenderId = user_id.(int)
 	response, err := h.services.Message.Create(chat_id, service.CreateMsg{
-		Msg:     input,
-		History: chat.Context,
+		Msg:       input,
+		History:   chat.Context,
+		Embedding: user.Embedding,
 	})
 	if err != nil {
 		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -141,6 +148,9 @@ func (h *Handler) createMessage(c *gin.Context) {
 		Name:    chat.Name,
 		Context: response.History,
 	}
+
+	user.Embedding = response.Embedding
+	h.services.UpdateUser(user.Id, user)
 
 	logrus.Info(chat.Context)
 

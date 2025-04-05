@@ -1,7 +1,6 @@
 import { Box, Button, Grid } from '@mui/material';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import img1 from 'src/assets/images/products/plus.jpg';
 import axios from '../../utils/axios';
 
 
@@ -78,7 +77,7 @@ function FileUpload({load} : {load : React.Dispatch<React.SetStateAction<string>
             <br />
 
             <Box justifyContent={'center'}>
-                    <img  width={"100%"} src={file ? URL.createObjectURL(file) : img1}  />
+                    <img  width={"100%"} src={file ? URL.createObjectURL(file) : ""}  />
                 </Box>
             </Grid>
             </Grid>    

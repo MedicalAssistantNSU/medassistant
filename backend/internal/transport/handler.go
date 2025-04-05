@@ -59,6 +59,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		}
 
 		api1.GET("/account/my-account", h.getAccountInfo)
+		api1.DELETE("/account/my-account", h.deleteAccount)
+		api1.PUT("/account/my-account")
 
 		files := api1.Group("/files")
 		{

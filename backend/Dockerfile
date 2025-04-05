@@ -13,11 +13,13 @@ RUN apt install -y pip
 RUN mkdir -p /app/backend
 RUN mkdir -p /app/CV
 RUN mkdir -p /app/LLM
+RUN mkdir -p /app/recsys
 
 ADD backend/ /app/backend
 
 ADD CV/ /app/CV/
 ADD LLM/ /app/LLM/
+ADD recsys/ /app/recsys
 ADD inference.py /app/
 ADD requirements.txt /app/
 

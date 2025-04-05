@@ -134,3 +134,31 @@ func (h *Handler) getAccountInfo(c *gin.Context) {
 		User: user,
 	})
 }
+
+// @Summary Delete Account
+// @Security ApiKeyAuth
+// @Tags account
+// @Description Delete accound by id
+// @ID delete-account
+// @Produce  json
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} transort_error
+// @Failure 500 {object} transort_error
+// @Failure default {object} transort_error
+// @Router /api/v1/account/my-account [delete]
+func (h *Handler) deleteAccount(c *gin.Context) {
+	userId, ok := c.Get(UserId)
+	if !ok {
+		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
+		return
+	}
+
+	if err := h.services.Authorization.DeleteUser(userId.(int)); err != nil {
+		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "user deleted",
+	})
+}

@@ -9,9 +9,9 @@ import {
   ListItemText,
   Typography
 } from '@mui/material';
-import { IconChevronLeft, IconDotsVertical } from '@tabler/icons-react';
+import { IconChevronLeft, IconDotsVertical, IconTrash } from '@tabler/icons-react';
 import React from 'react';
-import { useSelector } from 'src/store/Store';
+import { useDispatch, useSelector } from 'src/store/Store';
 
 import { formatDistanceToNowStrict } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
@@ -21,6 +21,7 @@ import ChatInsideSidebar from './ChatInsideSidebar';
 import ChatMsgSent from './ChatMsgSent';
 import gif1 from '/src/assets/images/backgrounds/dots_2.gif';
 import gif2 from '/src/assets/images/backgrounds/Hover-v2.webp';
+import { deleteChat } from 'src/store/apps/chat/ChatSlice';
 
 
 interface ChatContentProps {
@@ -28,6 +29,7 @@ interface ChatContentProps {
 }
 
   const ChatContent: React.FC<ChatContentProps> = ({ toggleChatSidebar }) => {
+    const dispatch = useDispatch();
   const [open, setOpen] = React.useState(true);
   const [isLoading, setIsLoaging] = React.useState(false);
   // const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
@@ -45,6 +47,10 @@ interface ChatContentProps {
         return output
     }
   );
+
+  const handleDelete = () => {
+    dispatch(deleteChat(String(chatDetails.id)))
+  }
 
   return (
       <Box>
@@ -68,7 +74,10 @@ interface ChatContentProps {
                                   primary={<Typography variant="h5">{chatDetails.name}</Typography>}
                               />
                           </ListItem>
-
+                              
+                          <IconButton onClick={handleDelete}>
+                              <IconTrash stroke={1.5} />
+                          </IconButton>
                           <IconButton aria-label="delete" onClick={() => setOpen(!open)}>
                               <IconDotsVertical stroke={1.5} />
                           </IconButton>
@@ -87,9 +96,9 @@ interface ChatContentProps {
                       <Box width="100%">
                           <Scrollbar
                               sx={{
-                                  height: 'calc(100vh - 240px)',
+                                  height: 'calc(100vh - 270px)',
                                   overflow: 'auto',
-                                  maxHeight: 'calc(100vh - 240px)',
+                                  maxHeight: 'calc(100vh - 270px)',
                                   '&:before': {
                                       content: '""',
                                       background: 'radial-gradient(#2C3E50, #4CA1AF)',

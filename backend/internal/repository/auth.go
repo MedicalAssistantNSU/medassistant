@@ -68,6 +68,13 @@ func (a *AuthPostgres) UpdateUser(userId int, updatedUser models.User) error {
 	return err
 }
 
+func (a *AuthPostgres) DeleteUser(userId int) error {
+	query := fmt.Sprintf("DELETE FROM %s lt WHERE lt.id = $1",
+		usersTable)
+	_, err := a.db.Exec(query, userId)
+	return err
+}
+
 func createStartEmbedding() string {
 	var sb strings.Builder
 

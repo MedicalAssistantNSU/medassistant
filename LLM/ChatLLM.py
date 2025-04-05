@@ -1,17 +1,29 @@
 import json
 import argparse
-import pickle
+# import pickle
 import sys
-from os.path import isfile, join
-
-from haystack.components.embedders import SentenceTransformersTextEmbedder
-from haystack.components.retrievers import InMemoryEmbeddingRetriever
+import time
+import logging
 from haystack.document_stores.in_memory import InMemoryDocumentStore
-from haystack import Pipeline
+from haystack import Pipeline, Document
+from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
 from haystack.components.builders import PromptBuilder
 from haystack_integrations.components.generators.ollama import OllamaGenerator
+# from os.path import isfile, join
 
-from LLM.RAG_utils.vectorize_utils import vectorized_storage
+# from haystack.components.embedders import SentenceTransformersTextEmbedder
+# from haystack.components.retrievers import InMemoryEmbeddingRetriever
+# from haystack.document_stores.in_memory import InMemoryDocumentStore
+
+# from LLM.RAG_utils.vectorize_utils import vectorized_storage
+
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 """
 Usage: python3 LLM/ChatLLM.py <url> <username> <message> <history>
@@ -26,11 +38,11 @@ class ChatLLM:
             # url: str = 'http://localhost:11435',
             username: str = 'User',
             task='chat',
-            # config_file='../LLM/prompts_config.json',
-            # rag_docs_path='../LLM/RAG_docs',
+            config_file='../LLM/prompts_config.json',
+            rag_docs_path='../LLM/RAG_docs',
             # # For ChatLLM tests:
-            config_file='LLM/prompts_config.json',
-            rag_docs_path='LLM/RAG_docs',
+            # config_file='LLM/prompts_config.json',
+            # rag_docs_path='LLM/RAG_docs',
     ):
         """
         Initialize the ChatLLM class with a task-based system prompt.
@@ -39,6 +51,10 @@ class ChatLLM:
         :param task: The task for which to load the system prompt (e.g., 'ocr', 'chat').
         :param config_file: Path to the configuration file with system prompts.
         """
+
+        start_time = time.time()
+        logger.info("Initializing ChatLLM...")
+
         self.base_url = url
         self.context_length = 1024
         self.max_history_length = 5 * self.context_length
@@ -48,9 +64,7 @@ class ChatLLM:
             url=url,
             # For ChatLLM tests:
             streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
-            generation_kwargs={
-                "temperature": 0.8,
-            },
+            generation_kwargs={"temperature": 0.8},
             timeout=300,
         )
 
@@ -59,9 +73,7 @@ class ChatLLM:
             url=url,
             # For ChatLLM tests:
             streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
-            generation_kwargs={
-                "temperature": 0.8,
-            },
+            generation_kwargs={"temperature": 0.8},
             timeout=300,
         )
 
@@ -107,52 +119,47 @@ class ChatLLM:
         self.contextualize_builder = PromptBuilder(template=self.contextualize_template)
 
         # RAG
-        if isfile(join(rag_docs_path, "vectorized.pkl")):
-            with open(join(rag_docs_path, "vectorized.pkl"), "rb") as f:
-                documents_with_embeddings = pickle.load(f)
-            document_store = InMemoryDocumentStore(embedding_similarity_function="cosine")
-            document_store.write_documents(documents_with_embeddings)
-        else:
-            document_store = vectorized_storage(rag_docs_path)
-
-        print(f"STORE: {document_store.count_documents()}")
+        # if isfile(join(rag_docs_path, "vectorized.pkl")):
+        #     with open(join(rag_docs_path, "vectorized.pkl"), "rb") as f:
+        #         documents_with_embeddings = pickle.load(f)
+        #     document_store = InMemoryDocumentStore(embedding_similarity_function="cosine")
+        #     document_store.write_documents(documents_with_embeddings)
+        # else:
+        #     document_store = vectorized_storage(rag_docs_path)
+        #
+        # print(f"STORE: {document_store.count_documents()}", file=sys.stderr)
         self.rag_pipe = Pipeline()
-        self.rag_pipe.add_component(
-            "text_embedder",
-            SentenceTransformersTextEmbedder()
-        )
-        self.rag_pipe.add_component(
-            "retriever",
-            InMemoryEmbeddingRetriever(
-                document_store=document_store,
-                top_k=1
-            )
-        )
+        # self.rag_pipe.add_component(
+        #     "text_embedder",
+        #     SentenceTransformersTextEmbedder()
+        # )
+        # self.rag_pipe.add_component(
+        #     "retriever",
+        #     InMemoryEmbeddingRetriever(
+        #         document_store=document_store,
+        #         top_k=1
+        #     )
+        # )
         self.rag_pipe.add_component("prompt_builder", self.prompt_builder)
-        self.rag_pipe.add_component(
-            "generator",
-            self.generator
-        )
+        self.rag_pipe.add_component("generator", self.generator)
 
         self.contextualize_pipe = Pipeline()
         self.contextualize_pipe.add_component("context_prompt_builder", self.contextualize_builder)
+
         self.contextualize_pipe.add_component(
             "contextualize_generator",
             self.contextualize_generator
         )
 
-        self.rag_pipe.connect("text_embedder.embedding", "retriever.query_embedding")
-        self.rag_pipe.connect("retriever", "prompt_builder.documents")
+        # self.rag_pipe.connect("text_embedder.embedding", "retriever.query_embedding")
+        # self.rag_pipe.connect("retriever", "prompt_builder.documents")
         self.rag_pipe.connect("prompt_builder", "generator")
 
         self.contextualize_pipe.connect("context_prompt_builder", "contextualize_generator")
 
-    def send_message(
-            self,
-            message: str,
-            document: str,
-            history: str,
-    ) -> dict:
+        logger.info("ChatLLM initialization completed in %.2f seconds", time.time() - start_time)
+
+    def send_message(self, message: str, document: str, history: str) -> dict:
         """
         Method for sending a question from the user to the model.
         Receives both new question and context from previous interactions.
@@ -164,13 +171,15 @@ class ChatLLM:
         :return: the answer and updated history for further interactions
         """
 
-        print(f"(ChatLLM) INPUT HISTORY: {history}", file=sys.stderr)
-        print("\n", file=sys.stderr)
-        print("(ChatLLM) END OF INPUT HISTORY", file=sys.stderr)
-        print(f"(ChatLLM) LEN OF HISTORY: {len(history)}", file=sys.stderr)
+        logger.info(f"INPUT HISTORY: {history}")
+        logger.info("END OF INPUT HISTORY")
+        logger.info(f"LEN OF HISTORY: {len(history)}")
+
+        start_time = time.time()
+        logger.info("Processing message from user...")
 
         if len(history) > self.max_history_length:
-            print("(ChatLLM) max history len exceeded, running contextualize", file=sys.stderr)
+            logger.info("Max history length exceeded. Running contextualization.")
             history = self.contextualize(history)
 
         answer_full = self.rag_pipe.run({
@@ -182,24 +191,30 @@ class ChatLLM:
                 "message": message,
                 # "query": message
             },
-            "text_embedder": {
-                "text": message,
-            }
+            # "text_embedder": {
+            #     "text": message,
+            # }
         })
         answer = answer_full['generator']['replies'][0]
 
-        new_history = (history + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
+        if document is None or len(document) == 0:
+            new_history = (history + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt'])
+        else:
+            new_history = (
+                    f"Medical document: {document}\n{history}\n" + self.history_builder.run(message=message, name=self.username, answer=answer)['prompt']
+            )
 
         if len(new_history) > self.max_history_length:
-            print(
-                f"(ChatLLM) After generating max history len exceeded ({len(new_history)}), running contextualize",
-                file=sys.stderr
-            )
+            logger.info("After generating, max history length exceeded. Running contextualization.")
             new_history = self.contextualize(new_history)
 
+        logger.info("Message processed in %.2f seconds", time.time() - start_time)
         return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
+        start_time = time.time()
+        logger.info("Contextualizing history...")
+
         answer_full = self.contextualize_pipe.run({
             "context_prompt_builder": {
                 "contextualize_prompt": self.contextualize_prompt,
@@ -207,6 +222,8 @@ class ChatLLM:
             }
         })
         answer = answer_full['contextualize_generator']['replies'][0]
+
+        logger.info("Contextualization completed in %.2f seconds", time.time() - start_time)
         return answer
 
 
