@@ -7,6 +7,7 @@ type attachType = {
 export type MessageType = {
     createdAt?: any;
     content: string;
+    image?: string;
     senderId: number | string;
     type: string;
     attachment?: attachType[];

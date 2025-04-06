@@ -24,6 +24,7 @@ CREATE TABLE user_chats
 CREATE TABLE messages
 (
     id          serial       not null unique,
+    image       text, 
     content     text,
     sender_id   serial       not null, 
     type        varchar(256) not null,

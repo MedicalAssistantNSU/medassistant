@@ -8,9 +8,9 @@ import (
 )
 
 type TaskConfig struct {
-	TaskType      string
 	UserEmbedding string
-	Value         string
+	Prompt        string
+	FilePath      string
 	UserId        string
 	ChatId        string
 	History       string
@@ -18,15 +18,13 @@ type TaskConfig struct {
 
 func RunTask(cfg TaskConfig) (string, error) {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
-	var cmd *exec.Cmd
+	commandArr := []string{"../inference.py", cfg.UserId, cfg.ChatId,
+		"--history", cfg.History, "--user_embedding", cfg.UserEmbedding, "--prompt", cfg.Prompt}
 
-	if cfg.TaskType == "ocr" {
-		cmd = exec.Command("python3", "../inference.py", cfg.UserId, cfg.ChatId,
-			"--image_path", cfg.Value, "--history", cfg.History, "--user_embedding", cfg.UserEmbedding)
-	} else {
-		cmd = exec.Command("python3", "../inference.py", cfg.UserId, cfg.ChatId,
-			"--prompt", cfg.Value, "--history", cfg.History, "--user_embedding", cfg.UserEmbedding)
+	if cfg.FilePath != "" {
+		commandArr = append(commandArr, "--image_path", cfg.FilePath)
 	}
+	cmd := exec.Command("python3", commandArr...)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
