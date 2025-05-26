@@ -24,7 +24,7 @@ func (i *MessageRepo) Create(chat_id int, msg models.Message) (int, error) {
 		return 0, err
 	}
 
-	query1 := fmt.Sprintf("INSERT INTO %s (image, content, sender_id, type, created_at) values ($1, $2, $3, $4) RETURNING id", messageTable)
+	query1 := fmt.Sprintf("INSERT INTO %s (image, content, sender_id, type, created_at) values ($1, $2, $3, $4, $5) RETURNING id", messageTable)
 	row := tr.QueryRow(query1, msg.Image, msg.Content, msg.SenderId, msg.Type, msg.CreatedAt)
 	if err := row.Scan(&id); err != nil {
 		return 0, err

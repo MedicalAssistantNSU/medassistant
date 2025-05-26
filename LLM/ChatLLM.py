@@ -38,11 +38,11 @@ class ChatLLM:
             url: str = 'http://localhost:11435',
             username: str = 'User',
             task='chat',
-            # config_file='../LLM/prompts_config.json',
-            # rag_docs_path='../LLM/RAG_docs',
+            config_file='../LLM/prompts_config.json',
+            rag_docs_path='../LLM/RAG_docs',
             # # For ChatLLM tests:
-            config_file='LLM/prompts_config.json',
-            rag_docs_path='LLM/RAG_docs',
+            # config_file='LLM/prompts_config.json',
+            # rag_docs_path='LLM/RAG_docs',
     ):
         """
         Initialize the ChatLLM class with a task-based system prompt.
