@@ -13,12 +13,12 @@ from recsys.user_vectorization import embed_user
 load_dotenv()
 
 # Set up logging
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-logging.basicConfig(
-    level=getattr(logging, log_level, logging.INFO),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-)
-logger = logging.getLogger(__name__)
+# log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+# logging.basicConfig(
+#     level=getattr(logging, log_level, logging.INFO),
+#     format='%(asctime)s - %(levelname)s - %(message)s',
+# )
+logger = logging.getLogger("medass")
 
 
 def save_to_history(user_save_path, text):
@@ -85,7 +85,7 @@ def main(
         document=detected_text
     )
 
-    if len(user_embedding) == 0:
+    if user_embedding is None or len(user_embedding) == 0:
         user_embedding = ",".join(["0"] * 312)
     chat_response["user_embedding"] = (
         str(

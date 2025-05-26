@@ -14,12 +14,12 @@ from prometheus_client import CollectorRegistry, Histogram, push_to_gateway
 load_dotenv()
 
 # Set up logging
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-logging.basicConfig(
-    level=getattr(logging, log_level, logging.INFO),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-)
-logger = logging.getLogger(__name__)
+# log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+# logging.basicConfig(
+#     level=getattr(logging, log_level, logging.INFO),
+#     format='%(asctime)s - %(levelname)s - %(message)s',
+# )
+logger = logging.getLogger("medass")
 
 # Create a registry for Prometheus metrics
 registry = CollectorRegistry()

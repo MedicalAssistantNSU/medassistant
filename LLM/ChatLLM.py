@@ -19,11 +19,11 @@ from haystack_integrations.components.generators.ollama import OllamaGenerator
 
 
 # Set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("medass")
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format='%(asctime)s - %(levelname)s - %(message)s'
+# )
 
 """
 Usage: python3 LLM/ChatLLM.py <url> <username> <message> <history>
@@ -38,11 +38,11 @@ class ChatLLM:
             url: str = 'http://localhost:11435',
             username: str = 'User',
             task='chat',
-            config_file='../LLM/prompts_config.json',
-            rag_docs_path='../LLM/RAG_docs',
+            # config_file='../LLM/prompts_config.json',
+            # rag_docs_path='../LLM/RAG_docs',
             # # For ChatLLM tests:
-            # config_file='LLM/prompts_config.json',
-            # rag_docs_path='LLM/RAG_docs',
+            config_file='LLM/prompts_config.json',
+            rag_docs_path='LLM/RAG_docs',
     ):
         """
         Initialize the ChatLLM class with a task-based system prompt.
