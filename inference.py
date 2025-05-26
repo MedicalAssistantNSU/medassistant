@@ -40,6 +40,7 @@ def main(
         user_id="user_test",
         chat_id="chat_test",
         history="",
+        info="",
         user_embedding: np.ndarray = np.zeros(312),
         image_path=None,
         prompt=None
@@ -82,6 +83,7 @@ def main(
     chat_response = llm.send_message(
         message=prompt,
         history=history,
+        info=info,
         document=detected_text
     )
 
@@ -107,11 +109,12 @@ if __name__ == "__main__":
     parser.add_argument('user_id', type=str, help="Unique identifier for the user")
     parser.add_argument('chat_id', type=str, help="Unique identifier for the chat session")
     parser.add_argument('--history', type=str, help="History of chat")
+    parser.add_argument('--info', type=str, help="Info about user")
     parser.add_argument('--user_embedding', type=str, help="Embedding of a user")
     parser.add_argument('--image_path', type=str, help="Path to the new image file to process")
     parser.add_argument('--prompt', type=str, help="Custom prompt to send to the LLM")
 
     args = parser.parse_args()
-    main(args.user_id, args.chat_id, args.history, args.user_embedding, args.image_path, args.prompt)
+    main(args.user_id, args.chat_id, args.history, args.info, args.user_embedding, args.image_path, args.prompt)
 
 # python3 inference.py 0 0 --history "" --image_path "./test3.jpg"

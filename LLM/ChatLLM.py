@@ -92,6 +92,8 @@ class ChatLLM:
             {% for doc in documents %}
                 {{ doc.content }}
             {% endfor %}
+            
+            You are talking with a person {{name}} with this profile info: {{info}}
 
             The previous dialog:
             {{history}}
@@ -159,7 +161,7 @@ class ChatLLM:
 
         logger.debug("ChatLLM initialization completed in %.2f seconds", time.time() - start_time)
 
-    def send_message(self, message: str, document: str, history: str) -> dict:
+    def send_message(self, message: str, document: str, history: str, info: str) -> dict:
         """
         Method for sending a question from the user to the model.
         Receives both new question and context from previous interactions.
@@ -186,6 +188,7 @@ class ChatLLM:
             "prompt_builder": {
                 "prompt": self.system_prompt,
                 "history": history,
+                "info": info,
                 "document": "There is no medical document for this question" if document is None else document,
                 "name": self.username,
                 "message": message,
