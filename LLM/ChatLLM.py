@@ -106,19 +106,28 @@ class ChatLLM:
             Please, answer to this message from {{name}}: {{message}}
             """
 
-        self.prompt_builder = PromptBuilder(template=self.prompt_template)
+        self.prompt_builder = PromptBuilder(
+            template=self.prompt_template,
+            required_variables=["prompt", "name", "info", "history", "document", "message"]
+        )
 
         self.history_template = """
             {{name}}: {{message}}
             MedAssistant: {{answer}}
             """
-        self.history_builder = PromptBuilder(template=self.history_template)
+        self.history_builder = PromptBuilder(
+            template=self.history_template,
+            required_variables=["name", "message", "answer"]
+        )
 
         self.contextualize_template = """
             {{contextualize_prompt}}
             Chat history: {{context}}
             """
-        self.contextualize_builder = PromptBuilder(template=self.contextualize_template)
+        self.contextualize_builder = PromptBuilder(
+            template=self.contextualize_template,
+            required_variables=["contextualize_prompt", "context"]
+        )
 
         # RAG
         # if isfile(join(rag_docs_path, "vectorized.pkl")):
@@ -161,7 +170,7 @@ class ChatLLM:
 
         logger.debug("ChatLLM initialization completed in %.2f seconds", time.time() - start_time)
 
-    def send_message(self, message: str, document: str, history: str, info: str) -> dict:
+    def send_message(self, message: str = "", document: str = "", history: str = "", info: str = "") -> dict:
         """
         Method for sending a question from the user to the model.
         Receives both new question and context from previous interactions.
