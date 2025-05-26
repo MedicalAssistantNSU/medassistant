@@ -54,7 +54,7 @@ def main(
     - image_path (str): Path to the new image file to process.
     - prompt (str): Custom prompt to send to LLM if a specific question needs to be asked.
     """
-    logger.info(f"Starting processing for user: {user_id}, chat: {chat_id}")
+    logger.debug(f"Starting processing for user: {user_id}, chat: {chat_id}")
 
     user_save_path = os.path.join("processed_output", user_id, chat_id)
     os.makedirs(user_save_path, exist_ok=True)
@@ -70,7 +70,7 @@ def main(
                   "The answer should be in Russian.")
 
     if image_path:
-        logger.info(f"Processing image: {image_path}")
+        logger.debug(f"Processing image: {image_path}")
         ocr_processor = DocumentOCR(save_path=user_save_path)
         detected_text = ocr_processor.run(image_path)
 
@@ -93,14 +93,12 @@ def main(
         ).replace("[", "").replace("]", "")
     )
 
-    print(json.dumps(chat_response))
-
     # Check if LLM returned a valid response
     if not chat_response:
         logger.error("LLM returned an empty response.")
         sys.exit(1)
 
-    logger.info("Processing completed successfully.")
+    logger.debug("Processing completed successfully.")
     print(json.dumps(chat_response))
 
 

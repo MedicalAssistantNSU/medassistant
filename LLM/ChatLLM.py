@@ -53,7 +53,7 @@ class ChatLLM:
         """
 
         start_time = time.time()
-        logger.info("Initializing ChatLLM...")
+        logger.debug("Initializing ChatLLM...")
 
         self.base_url = url
         self.context_length = 1024
@@ -63,7 +63,7 @@ class ChatLLM:
             model="phi",
             url=url,
             # For ChatLLM tests:
-            streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
+            # streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
             generation_kwargs={"temperature": 0.8},
             timeout=300,
         )
@@ -72,7 +72,7 @@ class ChatLLM:
             model="phi",
             url=url,
             # For ChatLLM tests:
-            streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
+            # streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
             generation_kwargs={"temperature": 0.8},
             timeout=300,
         )
@@ -157,7 +157,7 @@ class ChatLLM:
 
         self.contextualize_pipe.connect("context_prompt_builder", "contextualize_generator")
 
-        logger.info("ChatLLM initialization completed in %.2f seconds", time.time() - start_time)
+        logger.debug("ChatLLM initialization completed in %.2f seconds", time.time() - start_time)
 
     def send_message(self, message: str, document: str, history: str) -> dict:
         """
@@ -171,15 +171,15 @@ class ChatLLM:
         :return: the answer and updated history for further interactions
         """
 
-        logger.info(f"INPUT HISTORY: {history}")
-        logger.info("END OF INPUT HISTORY")
-        logger.info(f"LEN OF HISTORY: {len(history)}")
+        logger.debug(f"INPUT HISTORY: {history}")
+        logger.debug("END OF INPUT HISTORY")
+        logger.debug(f"LEN OF HISTORY: {len(history)}")
 
         start_time = time.time()
-        logger.info("Processing message from user...")
+        logger.debug("Processing message from user...")
 
         if len(history) > self.max_history_length:
-            logger.info("Max history length exceeded. Running contextualization.")
+            logger.debug("Max history length exceeded. Running contextualization.")
             history = self.contextualize(history)
 
         answer_full = self.rag_pipe.run({
@@ -205,15 +205,15 @@ class ChatLLM:
             )
 
         if len(new_history) > self.max_history_length:
-            logger.info("After generating, max history length exceeded. Running contextualization.")
+            logger.debug("After generating, max history length exceeded. Running contextualization.")
             new_history = self.contextualize(new_history)
 
-        logger.info("Message processed in %.2f seconds", time.time() - start_time)
+        logger.debug("Message processed in %.2f seconds", time.time() - start_time)
         return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
         start_time = time.time()
-        logger.info("Contextualizing history...")
+        logger.debug("Contextualizing history...")
 
         answer_full = self.contextualize_pipe.run({
             "context_prompt_builder": {
@@ -223,7 +223,7 @@ class ChatLLM:
         })
         answer = answer_full['contextualize_generator']['replies'][0]
 
-        logger.info("Contextualization completed in %.2f seconds", time.time() - start_time)
+        logger.debug("Contextualization completed in %.2f seconds", time.time() - start_time)
         return answer
 
 
