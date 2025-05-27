@@ -67,7 +67,8 @@ const ChatMsgSent = ({setIsLoaging, IsLoading} : {setIsLoaging: React.Dispatch<R
   
     const newMessage = {
       chatId: id,
-      content: image != "" ? image : msg,
+      image: image != "" ? image : "",
+      content: msg != "" ? msg : "",
       type: image != "" ? "image" : "text",
       createdAt: sub(new Date(), { seconds: 1 }),
     };

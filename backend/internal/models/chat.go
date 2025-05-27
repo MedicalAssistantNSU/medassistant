@@ -9,6 +9,7 @@ type Chat struct {
 type Message struct {
 	Id        int    `json:"id"`
 	SenderId  int    `json:"senderId" db:"sender_id"`
+	Image     string `json:"image"`
 	Content   string `json:"content"`
 	Type      string `json:"type"`
 	CreatedAt string `json:"createdAt" db:"created_at"`

@@ -120,14 +120,6 @@ interface ChatContentProps {
                                                       <Box display="flex">
                                                       <Avatar src={gif2} sx={{transform:"scale(1.3)"}}/>
                                                           <Box maxWidth={'70%'} ml={2}>
-                                                              {/* {chat.createdAt ? (
-                                  <Typography variant="body2" color="white" mb={1}>
-                                    {formatDistanceToNowStrict(new Date(chat.createdAt), {
-                                      addSuffix: false,
-                                    })}{' '}
-                                    ago
-                                  </Typography>
-                                ) : null} */}
                                                               {chat.type === 'text' ? (
                                                                   <Box
                                                                       mb={2}
@@ -141,23 +133,6 @@ interface ChatContentProps {
                                                                       <ReactMarkdown>
                                                                           {chat.content}
                                                                       </ReactMarkdown>
-                                                                  </Box>
-                                                              ) : null}
-                                                              {chat.type === 'image' ? (
-                                                                  <Box
-                                                                      mb={1}
-                                                                      sx={{
-                                                                          overflow: 'hidden',
-                                                                          lineHeight: '0px',
-                                                                      }}
-                                                                  >
-                                                                      <a href={chat.content}>
-                                                                          <img
-                                                                              src={chat.content}
-                                                                              alt="attach"
-                                                                              width="250"
-                                                                          />
-                                                                      </a>
                                                                   </Box>
                                                               ) : null}
                                                           </Box>
@@ -190,7 +165,24 @@ interface ChatContentProps {
                                                                   ago
                                                               </Typography>
                                                           ) : null}
-                                                          {chat.type === 'text' ? (
+                                                          {chat.image !== "" && (
+                                                              <Box
+                                                                  mb={1}
+                                                                  sx={{
+                                                                      overflow: 'hidden',
+                                                                      lineHeight: '0px',
+                                                                  }}
+                                                              >
+                                                                  <a href={chat.image}>
+                                                                      <img
+                                                                          src={chat.image}
+                                                                          alt="attach"
+                                                                          width="250"
+                                                                      />
+                                                                  </a>
+                                                              </Box>
+                                                          )}
+                                                          {chat.content !== "" && (
                                                               <Box
                                                                   mb={1}
                                                                   key={chat.id}
@@ -203,24 +195,7 @@ interface ChatContentProps {
                                                               >
                                                                   {chat.content}
                                                               </Box>
-                                                          ) : null}
-                                                          {chat.type === 'image' ? (
-                                                              <Box
-                                                                  mb={1}
-                                                                  sx={{
-                                                                      overflow: 'hidden',
-                                                                      lineHeight: '0px',
-                                                                  }}
-                                                              >
-                                                                  <a href={chat.content}>
-                                                                      <img
-                                                                          src={chat.content}
-                                                                          alt="attach"
-                                                                          width="250"
-                                                                      />
-                                                                  </a>
-                                                              </Box>
-                                                          ) : null}
+                                                          )}
                                                       </Box>
                                                   </Box>
                                               )}
