@@ -60,7 +60,7 @@ class ChatLLM:
         self.max_history_length = 5 * self.context_length
 
         self.generator = OllamaGenerator(
-            model="phi",
+            model="qwen3:14b",
             url=url,
             # For ChatLLM tests:
             # streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
@@ -69,7 +69,7 @@ class ChatLLM:
         )
 
         self.contextualize_generator = OllamaGenerator(
-            model="phi",
+            model="qwen3:14b",
             url=url,
             # For ChatLLM tests:
             # streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),

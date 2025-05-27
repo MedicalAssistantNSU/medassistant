@@ -68,7 +68,7 @@ def main(
         # Default prompt to simplify the text in Russian
         prompt = ("Tell the same what is written in the last document by a doctor but in simpler terms for easier"
                   " understanding in Russian. It should remain all the details. "
-                  "The answer should be in Russian.")
+                  "The answer should be in Russian. /no_think")
 
     if image_path:
         logger.debug(f"Processing image: {image_path}")
