@@ -135,6 +135,80 @@ func (h *Handler) getAccountInfo(c *gin.Context) {
 	})
 }
 
+// @Summary Get Profile Info
+// @Security ApiKeyAuth
+// @Tags profile
+// @Description Get profile info by id
+// @ID get-profile-info
+// @Produce  json
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} transort_error
+// @Failure 500 {object} transort_error
+// @Failure default {object} transort_error
+// @Router /api/v1/account/profile [get]
+func (h *Handler) getProfileInfo(c *gin.Context) {
+	userId, ok := c.Get(UserId)
+	if !ok {
+		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
+		return
+	}
+
+	user, err := h.services.Authorization.GetProfileInfo(userId.(int))
+
+	if err != nil {
+		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"profile": user,
+	})
+}
+
+// @Summary Update Profile
+// @Security ApiKeyAuth
+// @Tags profile
+// @Description Update profile info by id
+// @ID update-profile-info
+// @Accept json
+// @Produce  json
+// @Param input body models.InputUserProfile true "profile info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} transort_error
+// @Failure 500 {object} transort_error
+// @Failure default {object} transort_error
+// @Router /api/v1/account/profile [put]
+func (h *Handler) updateProfileInfo(c *gin.Context) {
+	userId, ok := c.Get(UserId)
+	if !ok {
+		NewTransportErrorResponse(c, http.StatusBadRequest, "You are not authorized!!!")
+		return
+	}
+
+	var input models.InputUserProfile
+
+	if err := c.BindJSON(&input); err != nil {
+		NewTransportErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	user, err := h.services.Authorization.GetUserById(userId.(int))
+	if err != nil {
+		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err = h.services.UpdateUser(userId.(int), user, &input)
+	if err != nil {
+		NewTransportErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "profile updated",
+	})
+}
+
 // @Summary Delete Account
 // @Security ApiKeyAuth
 // @Tags account

@@ -2,7 +2,6 @@ package transport
 
 import (
 	"med-asis/internal/models"
-	"med-asis/internal/service"
 	"net/http"
 	"sync"
 
@@ -92,9 +91,10 @@ func goWorker(h *Handler, id int, conn *websocket.Conn, requests <-chan InputMsg
 		}
 
 		inputMsg.SenderId = id
-		answer, err := h.services.Message.Create(req.ChatId, service.CreateMsg{
+		answer, err := h.services.Message.Create(req.ChatId, models.CreateMsg{
 			Msg:     inputMsg,
 			History: chat.Context,
+			ChatId:  chat.Id,
 		})
 		if err != nil {
 			logrus.Error(err.Error())

@@ -8,12 +8,14 @@ import {
   useSelector as useAppSelector,
   TypedUseSelectorHook,
 } from 'react-redux';
+import ProfileReducer from './apps/profile/ProfileSlice';
 
 export const store = configureStore({
   reducer: {
     customizer: CustomizerReducer,
     chatReducer: ChatsReducer,
     postReducer: PostsReducer,
+    profileReducer: ProfileReducer
   },
 });
 

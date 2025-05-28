@@ -9,6 +9,23 @@ definitions:
       name:
         type: string
     type: object
+  models.InputUserProfile:
+    properties:
+      age:
+        type: integer
+      avatar_url:
+        type: string
+      gender:
+        type: string
+      height:
+        type: integer
+      profession:
+        type: string
+      user_id:
+        type: integer
+      weight:
+        type: integer
+    type: object
   models.Message:
     properties:
       content:
@@ -65,6 +82,37 @@ info:
   version: "1.0"
 paths:
   /api/v1/account/my-account:
+    delete:
+      description: Delete accound by id
+      operationId: delete-account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Account
+      tags:
+      - account
     get:
       description: Get accound by id
       operationId: get-account
@@ -96,6 +144,78 @@ paths:
       summary: Get Account Ingo
       tags:
       - account
+  /api/v1/account/profile:
+    get:
+      description: Get profile info by id
+      operationId: get-profile-info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Profile Info
+      tags:
+      - profile
+    put:
+      consumes:
+      - application/json
+      description: Update profile info by id
+      operationId: update-profile-info
+      parameters:
+      - description: profile info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.InputUserProfile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Profile
+      tags:
+      - profile
   /api/v1/chats/:
     get:
       consumes:
@@ -736,6 +856,40 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update Post
+      tags:
+      - posts
+  /api/v1/posts/recs:
+    get:
+      consumes:
+      - application/json
+      description: Get recommended posts
+      operationId: get-recommended-posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/transport.transort_error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get recommended posts
       tags:
       - posts
   /api/v1/scans/:

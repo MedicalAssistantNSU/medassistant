@@ -5,6 +5,8 @@ import (
 	"io"
 	"med-asis/internal/models"
 	"med-asis/internal/repository"
+
+	"github.com/gorilla/websocket"
 )
 
 type Authorization interface {
@@ -13,7 +15,8 @@ type Authorization interface {
 	ParseToken(token string) (int, error)
 	GetUserByUsername(username string) (models.User, error)
 	GetUserById(id int) (models.User, error)
-	UpdateUser(userId int, user models.User) error
+	UpdateUser(userId int, user models.User, profile *models.InputUserProfile) error
+	GetProfileInfo(userId int) (*models.UserProfile, error)
 	DeleteUser(userId int) error
 }
 
@@ -27,7 +30,7 @@ type Chat interface {
 }
 
 type Message interface {
-	Create(chat_id int, msg CreateMsg) (*CreateMsg, error)
+	Create(chat_id int, msg models.CreateMsg) (*models.CreateMsg, error)
 	GetAll(user_id, chat_id int) ([]models.Message, error)
 	GetItemById(user_id, message_id int) (models.Message, error)
 	Delete(user_id, message_id int) error
@@ -45,6 +48,12 @@ type Post interface {
 	InitPosts()
 }
 
+type ITaskService interface {
+	RegisterConnection(userID int, conn *websocket.Conn)
+	UnregisterConnection(userID int)
+	EnqueueTask(userID int, message models.CreateMsg)
+}
+
 type Uploader interface {
 	Upload(ctx context.Context, file io.Reader, size int64, contentType string) (string, error)
 }
@@ -55,14 +64,22 @@ type Service struct {
 	Message
 	Post
 	Uploader
+	ITaskService
 }
 
 func NewService(repos *repository.Respository) *Service {
+
+	chatService := NewChatService(repos.ChatRepozitory, repos.MessageRepository)
+	messageService := NewMessageService(repos.MessageRepository)
+
+	taskService := NewTaskService(chatService, messageService)
+
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
-		Chat:          NewChatService(repos.ChatRepozitory, repos.MessageRepository),
-		Message:       NewMessageService(repos.MessageRepository),
+		Chat:          chatService,
+		Message:       messageService,
 		Uploader:      NewUpdoaderService(repos.FileStorage),
 		Post:          NewPostService(repos.PostRepository),
+		ITaskService:  taskService,
 	}
 }

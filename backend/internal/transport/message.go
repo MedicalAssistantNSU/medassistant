@@ -2,7 +2,6 @@ package transport
 
 import (
 	"med-asis/internal/models"
-	"med-asis/internal/service"
 	"net/http"
 	"strconv"
 
@@ -134,7 +133,7 @@ func (h *Handler) createMessage(c *gin.Context) {
 	}
 
 	input.SenderId = user_id.(int)
-	response, err := h.services.Message.Create(chat_id, service.CreateMsg{
+	response, err := h.services.Message.Create(chat_id, models.CreateMsg{
 		Msg:       input,
 		History:   chat.Context,
 		Embedding: user.Embedding,
@@ -150,7 +149,7 @@ func (h *Handler) createMessage(c *gin.Context) {
 	}
 
 	user.Embedding = response.Embedding
-	h.services.UpdateUser(user.Id, user)
+	h.services.UpdateUser(user.Id, user, nil)
 
 	logrus.Info(chat.Context)
 

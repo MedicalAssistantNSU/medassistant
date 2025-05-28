@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
 	"med-asis/internal/models"
+
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -55,17 +57,72 @@ func (a *AuthPostgres) GetUserById(id int) (models.User, error) {
 	return user, err
 }
 
-func (a *AuthPostgres) UpdateUser(userId int, updatedUser models.User) error {
+func (a *AuthPostgres) UpdateUser(userId int, updatedUser models.User, profile *models.InputUserProfile) error {
+	tx, err := a.db.Beginx()
+	if err != nil {
+		return err
+	}
 	query := fmt.Sprintf(`UPDATE %s lt SET 
 		name = $1, 
 		username = $2, 
 		password_hash = $3, 
-		embedding = $4,
+		embedding = $4
 		WHERE lt.id = $5`,
 		usersTable)
 
-	_, err := a.db.Exec(query, updatedUser.Name, updatedUser.Username, updatedUser.Password, updatedUser.Embedding, userId)
-	return err
+	_, err = tx.Exec(query, updatedUser.Name, updatedUser.Username, updatedUser.Password, updatedUser.Embedding, userId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// Проверяем, есть ли уже профиль
+	var exists bool
+	err = tx.Get(&exists, `SELECT EXISTS (SELECT 1 FROM user_profiles WHERE user_id = $1)`, userId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	profile.UserID = userId
+
+	if exists {
+		// Обновляем
+		_, err = tx.NamedExec(`
+            UPDATE user_profiles
+            SET avatar_url = :avatar_url,
+                age = :age,
+                height = :height,
+				weight = :weight,
+				gender = :gender,
+				profession = :profession
+            WHERE user_id = :user_id
+        `, profile)
+	} else {
+		// Вставляем новый профиль
+		_, err = tx.NamedExec(`
+            INSERT INTO user_profiles (user_id, avatar_url, age, height, weight, gender, profession)
+            VALUES (:user_id, :avatar_url, :age, :height, :weight, :gender, :profession)
+        `, profile)
+	}
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
+}
+
+func (a *AuthPostgres) GetUserProfile(userID int) (*models.UserProfile, error) {
+	var profile models.UserProfile
+	err := a.db.Get(&profile, "SELECT * FROM user_profiles WHERE user_id = $1", userID)
+
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+
+	return &profile, nil
 }
 
 func (a *AuthPostgres) DeleteUser(userId int) error {
