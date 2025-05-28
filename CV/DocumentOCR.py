@@ -14,12 +14,12 @@ from prometheus_client import CollectorRegistry, Histogram, push_to_gateway
 load_dotenv()
 
 # Set up logging
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-logging.basicConfig(
-    level=getattr(logging, log_level, logging.INFO),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-)
-logger = logging.getLogger(__name__)
+# log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+# logging.basicConfig(
+#     level=getattr(logging, log_level, logging.INFO),
+#     format='%(asctime)s - %(levelname)s - %(message)s',
+# )
+logger = logging.getLogger("medass")
 
 # Create a registry for Prometheus metrics
 registry = CollectorRegistry()
@@ -40,7 +40,7 @@ def push_metrics_and_exit(exit_code: int):
     if PUSH_GATEWAY:
         try:
             push_to_gateway(PUSH_GATEWAY, job='ocr_job', registry=registry)
-            logger.info("Metrics pushed before exiting.")
+            logger.debug("Metrics pushed before exiting.")
         except Exception as e:
             logger.error("Failed to push metrics before exiting: %s", e)
 
@@ -56,11 +56,11 @@ class DocumentOCR:
         self.save_path = save_path
         os.makedirs(self.save_path, exist_ok=True)
         try:
-            logger.info("Initializing OCR reader...")
+            logger.debug("Initializing OCR reader...")
             start_time = time.time()
             self.reader = easyocr.Reader(['ru', 'en'], gpu=False, quantize=False)
             elapsed = time.time() - start_time
-            logger.info(f"OCR reader initialized successfully in {elapsed:.2f} seconds.")
+            logger.debug(f"OCR reader initialized successfully in {elapsed:.2f} seconds.")
         except Exception:
             logger.error("Failed to initialize OCR reader.")
             push_metrics_and_exit(2)  # Exit with code 2
@@ -72,7 +72,7 @@ class DocumentOCR:
         :param image_path: Path to the input image file.
         :return: Preprocessed image.
         """
-        logger.info(f"Preprocessing document: {image_path}")
+        logger.debug(f"Preprocessing document: {image_path}")
         image = cv2.imread(image_path)
         if image is None:
             logger.error("Failed to read image file.")
@@ -81,7 +81,7 @@ class DocumentOCR:
         try:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             blurred = cv2.GaussianBlur(gray, (1, 1), 0)
-            logger.info("Image preprocessing completed.")
+            logger.debug("Image preprocessing completed.")
             # edges = cv2.Canny(blurred, 100, 200)
             # edge_density = np.sum(edges)
             # threshold_edge_density = 10000000
@@ -99,12 +99,12 @@ class DocumentOCR:
         :param image: Preprocessed image to perform OCR on.
         :return: Detected text as a string.
         """
-        logger.info("Performing OCR on the image...")
+        logger.debug("Performing OCR on the image...")
         try:
             result = self.reader.readtext(image, detail=1)
             threshold = 0.5
             filtered_texts = [text for (_, text, prob) in result if prob > threshold]
-            logger.info("OCR processing completed.")
+            logger.debug("OCR processing completed.")
             return " ".join(filtered_texts).strip()
         except Exception:
             logger.error("OCR processing failed.")
@@ -115,12 +115,12 @@ class DocumentOCR:
         Save the detected text to 'detected_text.txt'.
         :param text: The text to save.
         """
-        logger.info("Saving detected text...")
+        logger.debug("Saving detected text...")
         try:
             text_file_path = os.path.join(self.save_path, 'detected_text.txt')
             with open(text_file_path, 'w', encoding='utf-8') as file:
                 file.write(text)
-            logger.info("Detected text saved successfully.")
+            logger.debug("Detected text saved successfully.")
         except Exception:
             logger.error("Failed to save detected text.")
             push_metrics_and_exit(5)  # Exit with code 5
@@ -131,7 +131,7 @@ class DocumentOCR:
         :param image_path: Path to the input image file.
         :return: Detected text as a string.
         """
-        logger.info(f"Starting OCR process for: {image_path}")
+        logger.debug(f"Starting OCR process for: {image_path}")
 
         with TOTAL_TIME.time():
             with PREPROCESS_TIME.time():
@@ -142,12 +142,12 @@ class DocumentOCR:
 
             self.save_detected_text(ocr_result)  # May exit
 
-        logger.info("OCR process completed successfully.")
+        logger.debug("OCR process completed successfully.")
 
         if PUSH_GATEWAY:
             try:
                 push_to_gateway(PUSH_GATEWAY, job='ocr_job', registry=registry)
-                logger.info("Metrics pushed successfully.")
+                logger.debug("Metrics pushed successfully.")
             except Exception as e:
                 logger.error("Failed to push metrics to Pushgateway: %s", e)
 

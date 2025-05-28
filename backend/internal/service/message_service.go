@@ -42,53 +42,35 @@ func (i *MessageService) Create(chat_id int, msg models.CreateMsg) (*models.Crea
 	response.SenderId = 0
 	response.Type = "text"
 
+	flpath := ""
+
 	if msg.Msg.Type == "image" {
 		path := "../"
-		flpath := path + filepath.Base(msg.Msg.Content)
+		flpath = path + filepath.Base(msg.Msg.Content)
 		if err := DownloadFile(flpath, msg.Msg.Content); err != nil {
 			response.Content = "Не удалось загрузить файл."
 		}
 		defer os.Remove(flpath)
+	}
 
-		out, err := pkg.RunTask(pkg.TaskConfig{
-			TaskType: "ocr",
-			Value:    flpath,
-			UserId:   fmt.Sprintf("%d", msg.Msg.SenderId),
-			ChatId:   fmt.Sprintf("%d", chat_id),
-			History:  msg.History,
-		})
+	out, err := pkg.RunTask(pkg.TaskConfig{
+		FilePath: flpath,
+		Prompt:   response.Content,
+		UserId:   fmt.Sprintf("%d", msg.Msg.SenderId),
+		ChatId:   fmt.Sprintf("%d", chat_id),
+		History:  msg.History,
+	})
 
-		if err != nil {
-			response.Content = err.Error()
-		} else {
-			if err := json.Unmarshal([]byte(out), &output); err != nil {
-				response.Content = err.Error()
-			} else {
-				response.Content = output["answer"]
-			}
-			logrus.Info("HISTORY", output["history"])
-			logrus.Info("ANSWER", output["answer"])
-		}
+	if err != nil {
+		response.Content = err.Error()
 	} else {
-		out, err := pkg.RunTask(pkg.TaskConfig{
-			TaskType: "chat",
-			Value:    msg.Msg.Content,
-			UserId:   fmt.Sprintf("%d", msg.Msg.SenderId),
-			ChatId:   fmt.Sprintf("%d", chat_id),
-			History:  msg.History,
-		})
-
-		if err != nil {
+		if err := json.Unmarshal([]byte(out), &output); err != nil {
 			response.Content = err.Error()
 		} else {
-			if err := json.Unmarshal([]byte(out), &output); err != nil {
-				response.Content = err.Error()
-			} else {
-				response.Content = output["answer"]
-			}
-			logrus.Info("HISTORY", output["history"])
-			logrus.Info("ANSWER", output["answer"])
+			response.Content = output["answer"]
 		}
+		logrus.Info("HISTORY", output["history"])
+		logrus.Info("ANSWER", output["answer"])
 	}
 
 	id, err := i.repo.Create(chat_id, response)

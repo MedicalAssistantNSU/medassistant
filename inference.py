@@ -13,12 +13,12 @@ from recsys.user_vectorization import embed_user
 load_dotenv()
 
 # Set up logging
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-logging.basicConfig(
-    level=getattr(logging, log_level, logging.INFO),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-)
-logger = logging.getLogger(__name__)
+# log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+# logging.basicConfig(
+#     level=getattr(logging, log_level, logging.INFO),
+#     format='%(asctime)s - %(levelname)s - %(message)s',
+# )
+logger = logging.getLogger("medass")
 
 
 def save_to_history(user_save_path, text):
@@ -40,6 +40,7 @@ def main(
         user_id="user_test",
         chat_id="chat_test",
         history="",
+        info="",
         user_embedding: np.ndarray = np.zeros(312),
         image_path=None,
         prompt=None
@@ -54,7 +55,7 @@ def main(
     - image_path (str): Path to the new image file to process.
     - prompt (str): Custom prompt to send to LLM if a specific question needs to be asked.
     """
-    logger.info(f"Starting processing for user: {user_id}, chat: {chat_id}")
+    logger.debug(f"Starting processing for user: {user_id}, chat: {chat_id}")
 
     user_save_path = os.path.join("processed_output", user_id, chat_id)
     os.makedirs(user_save_path, exist_ok=True)
@@ -67,10 +68,10 @@ def main(
         # Default prompt to simplify the text in Russian
         prompt = ("Tell the same what is written in the last document by a doctor but in simpler terms for easier"
                   " understanding in Russian. It should remain all the details. "
-                  "The answer should be in Russian.")
+                  "The answer should be in Russian. /no_think")
 
     if image_path:
-        logger.info(f"Processing image: {image_path}")
+        logger.debug(f"Processing image: {image_path}")
         ocr_processor = DocumentOCR(save_path=user_save_path)
         detected_text = ocr_processor.run(image_path)
 
@@ -82,10 +83,11 @@ def main(
     chat_response = llm.send_message(
         message=prompt,
         history=history,
+        info=info,
         document=detected_text
     )
 
-    if len(user_embedding) == 0:
+    if user_embedding is None or len(user_embedding) == 0:
         user_embedding = ",".join(["0"] * 312)
     chat_response["user_embedding"] = (
         str(
@@ -93,14 +95,12 @@ def main(
         ).replace("[", "").replace("]", "")
     )
 
-    print(json.dumps(chat_response))
-
     # Check if LLM returned a valid response
     if not chat_response:
         logger.error("LLM returned an empty response.")
         sys.exit(1)
 
-    logger.info("Processing completed successfully.")
+    logger.debug("Processing completed successfully.")
     print(json.dumps(chat_response))
 
 
@@ -109,11 +109,12 @@ if __name__ == "__main__":
     parser.add_argument('user_id', type=str, help="Unique identifier for the user")
     parser.add_argument('chat_id', type=str, help="Unique identifier for the chat session")
     parser.add_argument('--history', type=str, help="History of chat")
+    parser.add_argument('--info', type=str, help="Info about user")
     parser.add_argument('--user_embedding', type=str, help="Embedding of a user")
     parser.add_argument('--image_path', type=str, help="Path to the new image file to process")
     parser.add_argument('--prompt', type=str, help="Custom prompt to send to the LLM")
 
     args = parser.parse_args()
-    main(args.user_id, args.chat_id, args.history, args.user_embedding, args.image_path, args.prompt)
+    main(args.user_id, args.chat_id, args.history, args.info, args.user_embedding, args.image_path, args.prompt)
 
 # python3 inference.py 0 0 --history "" --image_path "./test3.jpg"

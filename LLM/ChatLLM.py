@@ -19,11 +19,11 @@ from haystack_integrations.components.generators.ollama import OllamaGenerator
 
 
 # Set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("medass")
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format='%(asctime)s - %(levelname)s - %(message)s'
+# )
 
 """
 Usage: python3 LLM/ChatLLM.py <url> <username> <message> <history>
@@ -35,7 +35,7 @@ class ChatLLM:
     def __init__(
             self,
             url: str = 'http://host.docker.internal:11435',
-            # url: str = 'http://localhost:11435',
+            #url: str = 'http://localhost:11435',
             username: str = 'User',
             task='chat',
             config_file='../LLM/prompts_config.json',
@@ -53,26 +53,26 @@ class ChatLLM:
         """
 
         start_time = time.time()
-        logger.info("Initializing ChatLLM...")
+        logger.debug("Initializing ChatLLM...")
 
         self.base_url = url
         self.context_length = 1024
         self.max_history_length = 5 * self.context_length
 
         self.generator = OllamaGenerator(
-            model="phi",
+            model="qwen3:14b",
             url=url,
             # For ChatLLM tests:
-            streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
+            # streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
             generation_kwargs={"temperature": 0.8},
             timeout=300,
         )
 
         self.contextualize_generator = OllamaGenerator(
-            model="phi",
+            model="qwen3:14b",
             url=url,
             # For ChatLLM tests:
-            streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
+            # streaming_callback=lambda chunk: print(chunk.content, file=sys.stderr, end="", flush=True),
             generation_kwargs={"temperature": 0.8},
             timeout=300,
         )
@@ -92,6 +92,8 @@ class ChatLLM:
             {% for doc in documents %}
                 {{ doc.content }}
             {% endfor %}
+            
+            You are talking with a person {{name}} with this profile info: {{info}}
 
             The previous dialog:
             {{history}}
@@ -104,19 +106,28 @@ class ChatLLM:
             Please, answer to this message from {{name}}: {{message}}
             """
 
-        self.prompt_builder = PromptBuilder(template=self.prompt_template)
+        self.prompt_builder = PromptBuilder(
+            template=self.prompt_template,
+            required_variables=["prompt", "name", "info", "history", "document", "message"]
+        )
 
         self.history_template = """
             {{name}}: {{message}}
             MedAssistant: {{answer}}
             """
-        self.history_builder = PromptBuilder(template=self.history_template)
+        self.history_builder = PromptBuilder(
+            template=self.history_template,
+            required_variables=["name", "message", "answer"]
+        )
 
         self.contextualize_template = """
             {{contextualize_prompt}}
             Chat history: {{context}}
             """
-        self.contextualize_builder = PromptBuilder(template=self.contextualize_template)
+        self.contextualize_builder = PromptBuilder(
+            template=self.contextualize_template,
+            required_variables=["contextualize_prompt", "context"]
+        )
 
         # RAG
         # if isfile(join(rag_docs_path, "vectorized.pkl")):
@@ -157,9 +168,9 @@ class ChatLLM:
 
         self.contextualize_pipe.connect("context_prompt_builder", "contextualize_generator")
 
-        logger.info("ChatLLM initialization completed in %.2f seconds", time.time() - start_time)
+        logger.debug("ChatLLM initialization completed in %.2f seconds", time.time() - start_time)
 
-    def send_message(self, message: str, document: str, history: str) -> dict:
+    def send_message(self, message: str = "", document: str = "", history: str = "", info: str = "") -> dict:
         """
         Method for sending a question from the user to the model.
         Receives both new question and context from previous interactions.
@@ -171,21 +182,22 @@ class ChatLLM:
         :return: the answer and updated history for further interactions
         """
 
-        logger.info(f"INPUT HISTORY: {history}")
-        logger.info("END OF INPUT HISTORY")
-        logger.info(f"LEN OF HISTORY: {len(history)}")
+        logger.debug(f"INPUT HISTORY: {history}")
+        logger.debug("END OF INPUT HISTORY")
+        logger.debug(f"LEN OF HISTORY: {len(history)}")
 
         start_time = time.time()
-        logger.info("Processing message from user...")
+        logger.debug("Processing message from user...")
 
         if len(history) > self.max_history_length:
-            logger.info("Max history length exceeded. Running contextualization.")
+            logger.debug("Max history length exceeded. Running contextualization.")
             history = self.contextualize(history)
 
         answer_full = self.rag_pipe.run({
             "prompt_builder": {
                 "prompt": self.system_prompt,
                 "history": history,
+                "info": info,
                 "document": "There is no medical document for this question" if document is None else document,
                 "name": self.username,
                 "message": message,
@@ -205,15 +217,15 @@ class ChatLLM:
             )
 
         if len(new_history) > self.max_history_length:
-            logger.info("After generating, max history length exceeded. Running contextualization.")
+            logger.debug("After generating, max history length exceeded. Running contextualization.")
             new_history = self.contextualize(new_history)
 
-        logger.info("Message processed in %.2f seconds", time.time() - start_time)
+        logger.debug("Message processed in %.2f seconds", time.time() - start_time)
         return {'answer': answer, 'history': new_history}
 
     def contextualize(self, context: str):
         start_time = time.time()
-        logger.info("Contextualizing history...")
+        logger.debug("Contextualizing history...")
 
         answer_full = self.contextualize_pipe.run({
             "context_prompt_builder": {
@@ -223,7 +235,7 @@ class ChatLLM:
         })
         answer = answer_full['contextualize_generator']['replies'][0]
 
-        logger.info("Contextualization completed in %.2f seconds", time.time() - start_time)
+        logger.debug("Contextualization completed in %.2f seconds", time.time() - start_time)
         return answer
 
 
