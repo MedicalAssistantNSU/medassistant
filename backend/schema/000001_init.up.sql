@@ -7,6 +7,18 @@ CREATE TABLE users
     embedding     text         not null
 );
 
+CREATE TABLE user_profiles
+(
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    age           int ,
+    weight        int ,
+    height        int ,
+    gender        varchar(255) ,
+    profession    varchar(255),
+    avatar_url varchar(255)
+);
+
+
 CREATE TABLE chats
 (
     id          serial       not null unique,

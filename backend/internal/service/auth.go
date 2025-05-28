@@ -34,9 +34,13 @@ func (a *AuthService) CreateUser(user models.User) (int, error) {
 	return a.repo.CreateUser(user)
 }
 
-func (a *AuthService) UpdateUser(userId int, user models.User) error {
+func (a *AuthService) GetProfileInfo(userId int) (*models.UserProfile, error) {
+	return a.repo.GetUserProfile(userId)
+}
+
+func (a *AuthService) UpdateUser(userId int, user models.User, profile *models.InputUserProfile) error {
 	user.Password = a.generatePasswordHash(user.Password)
-	return a.repo.UpdateUser(userId, user)
+	return a.repo.UpdateUser(userId, user, profile)
 }
 
 func (a *AuthService) DeleteUser(userId int) error {

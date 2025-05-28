@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+
 	"med-asis/internal/models"
 	"med-asis/internal/repository"
 	"med-asis/pkg"
@@ -29,13 +30,7 @@ type InferenceJSON struct {
 	History string
 }
 
-type CreateMsg struct {
-	Msg       models.Message
-	History   string
-	Embedding string
-}
-
-func (i *MessageService) Create(chat_id int, msg CreateMsg) (*CreateMsg, error) {
+func (i *MessageService) Create(chat_id int, msg models.CreateMsg) (*models.CreateMsg, error) {
 	_, err := i.repo.Create(chat_id, msg.Msg)
 	if err != nil {
 		return nil, err
@@ -103,7 +98,7 @@ func (i *MessageService) Create(chat_id int, msg CreateMsg) (*CreateMsg, error) 
 
 	newMsg, err := i.repo.GetMsgById(id)
 
-	return &CreateMsg{
+	return &models.CreateMsg{
 		Msg:       newMsg,
 		History:   output["history"],
 		Embedding: output["user_embedding"],

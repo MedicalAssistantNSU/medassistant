@@ -10,8 +10,9 @@ type Authorization interface {
 	CreateUser(user models.User) (int, error)
 	GetUser(username, password string) (models.User, error)
 	GetUserByUsername(username string) (models.User, error)
+	GetUserProfile(userID int) (*models.UserProfile, error)
 	GetUserById(id int) (models.User, error)
-	UpdateUser(userId int, updatedUser models.User) error
+	UpdateUser(userId int, updatedUser models.User, profile *models.InputUserProfile) error
 	DeleteUser(userId int) error
 }
 

@@ -25,3 +25,10 @@ type UsersChats struct {
 	UserId int
 	ChatId int
 }
+
+type CreateMsg struct {
+	Msg       Message
+	ChatId    int
+	History   string
+	Embedding string
+}

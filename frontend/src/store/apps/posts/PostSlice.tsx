@@ -19,7 +19,7 @@ const initialState = {
 };
 
 export const PostSlice = createSlice({
-  name: 'postt',
+  name: 'posts',
   initialState,
   reducers: {
     getPosts: (state: StateType, action) => {
