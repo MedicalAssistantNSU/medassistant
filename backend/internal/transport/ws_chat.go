@@ -19,6 +19,7 @@ var upgrader = websocket.Upgrader{
 type InputMsgWithChatId struct {
 	ChatId    int    `json:"chatId"`
 	Content   string `json:"content"`
+	ImageUrl  string `json:"image"`
 	Type      string `json:"type"`
 	CreatedAt string `json:"createdAt"`
 }
@@ -77,6 +78,7 @@ func goWorker(h *Handler, id int, conn *websocket.Conn, requests <-chan InputMsg
 		req := <-requests
 
 		inputMsg := models.Message{
+			Image:     req.ImageUrl,
 			Content:   req.Content,
 			Type:      req.Type,
 			CreatedAt: req.CreatedAt,

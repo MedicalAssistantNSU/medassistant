@@ -70,7 +70,7 @@ type Service struct {
 func NewService(repos *repository.Respository) *Service {
 
 	chatService := NewChatService(repos.ChatRepozitory, repos.MessageRepository)
-	messageService := NewMessageService(repos.MessageRepository)
+	messageService := NewMessageService(repos.MessageRepository, repos.Authorization)
 
 	taskService := NewTaskService(chatService, messageService)
 

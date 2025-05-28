@@ -37,9 +37,8 @@ const ChatMsgSent = ({setIsLoaging, IsLoading} : {setIsLoaging: React.Dispatch<R
     socketRef.current = new WebSocket(URL + token);
 
     socketRef.current.onmessage = (event) => {
-       console.log("here1")
       const response = JSON.parse(event.data);
-      console.log("here2")
+    
       console.log(response)
       dispatch(addMsg(id ? id: 1, response));
       dispatch(fetchChats());

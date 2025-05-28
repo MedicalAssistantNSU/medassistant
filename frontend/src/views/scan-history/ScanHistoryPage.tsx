@@ -51,7 +51,7 @@ const ScanHistoryPage = () => {
                               ) : null}
                               {scan.type === 'image' ? (
                                 <Box mb={1} sx={{ overflow: 'hidden', lineHeight: '0px' }}>
-                                  <a href={scan.content}><img src={scan.content} alt="attach" width="70" /></a>
+                                  <a href={scan.image}><img src={scan.image} alt="attach" width="70" /></a>
                                 </Box>
                               ) : null}
                             </Box>

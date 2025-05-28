@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"encoding/json"
+	"med-asis/internal/models"
 	"os/exec"
 	"strings"
 
@@ -14,12 +16,20 @@ type TaskConfig struct {
 	UserId        string
 	ChatId        string
 	History       string
+	Profile       *models.UserProfile
 }
 
 func RunTask(cfg TaskConfig) (string, error) {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	commandArr := []string{"../inference.py", cfg.UserId, cfg.ChatId,
 		"--history", cfg.History, "--user_embedding", cfg.UserEmbedding, "--prompt", cfg.Prompt}
+
+	if cfg.Profile != nil {
+		info, err := json.Marshal(cfg.Profile)
+		if err == nil {
+			commandArr = append(commandArr, "--info", string(info))
+		}
+	}
 
 	if cfg.FilePath != "" {
 		commandArr = append(commandArr, "--image_path", cfg.FilePath)

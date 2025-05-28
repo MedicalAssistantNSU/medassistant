@@ -86,7 +86,7 @@ const GalleryCard = () => {
                     ></Skeleton>
                   </>
                 ) : (
-                  <CardMedia component={'img'} height="220" alt="Remy Sharp" src={photo.content} />
+                  <CardMedia component={'img'} height="220" alt="Remy Sharp" src={photo.image} />
                 )}
                 <Box p={3}>
                   <Stack direction="row" gap={1}>

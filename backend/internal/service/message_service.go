@@ -16,12 +16,14 @@ import (
 )
 
 type MessageService struct {
-	repo repository.MessageRepository
+	repo     repository.MessageRepository
+	userRepo repository.Authorization
 }
 
-func NewMessageService(repo repository.MessageRepository) *MessageService {
+func NewMessageService(repo repository.MessageRepository, userRepo repository.Authorization) *MessageService {
 	return &MessageService{
-		repo: repo,
+		repo:     repo,
+		userRepo: userRepo,
 	}
 }
 
@@ -46,19 +48,22 @@ func (i *MessageService) Create(chat_id int, msg models.CreateMsg) (*models.Crea
 
 	if msg.Msg.Type == "image" {
 		path := "../"
-		flpath = path + filepath.Base(msg.Msg.Content)
-		if err := DownloadFile(flpath, msg.Msg.Content); err != nil {
+		flpath = path + filepath.Base(msg.Msg.Image)
+		if err := DownloadFile(flpath, msg.Msg.Image); err != nil {
 			response.Content = "Не удалось загрузить файл."
 		}
 		defer os.Remove(flpath)
 	}
 
+	profile, _ := i.userRepo.GetUserProfile(msg.Msg.SenderId)
+
 	out, err := pkg.RunTask(pkg.TaskConfig{
 		FilePath: flpath,
-		Prompt:   response.Content,
+		Prompt:   msg.Msg.Content,
 		UserId:   fmt.Sprintf("%d", msg.Msg.SenderId),
 		ChatId:   fmt.Sprintf("%d", chat_id),
 		History:  msg.History,
+		Profile:  profile,
 	})
 
 	if err != nil {
